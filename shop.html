@@ -21,9 +21,15 @@
       <li><a href="index.html">หน้าแรก</a></li>
       <li><a href="download.html">ดาวน์โหลด</a></li>
       <li><a href="contact.html">ติดต่อ</a></li>
-      <li id="navGuest"><a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a></li>
-      <li id="navGuest2"><a href="register.html" class="btn btn-primary">สมัครสมาชิก</a></li>
-      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+      <li id="navGuest"><a href="login.html" class="btn btn-outline" data-i18n="nav_login">เข้าสู่ระบบ</a></li>
+      <li id="navGuest2"><a href="register.html" class="btn btn-primary" data-i18n="nav_register">สมัครสมาชิก</a></li>
+      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
+      <li>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="th">TH</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </li>
     </ul>
   </nav>
 
@@ -262,6 +268,8 @@
 
   <script type="module">
     import { auth, db, onAuthStateChanged, collection, query, where, getDocs } from './js/firebase.js';
+    import { initI18n } from './js/i18n.js';
+    initI18n();
 
     // โหลดสต็อกคีย์และแสดงในการ์ด
     async function loadStock() {

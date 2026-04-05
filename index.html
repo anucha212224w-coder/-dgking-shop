@@ -37,9 +37,15 @@
       <li><a href="news.html">ข่าวสาร</a></li>
       <li><a href="#features">ฟีเจอร์</a></li>
       <li><a href="#videos">วิดีโอ</a></li>
-      <li id="navGuest"><a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a></li>
-      <li id="navGuest2"><a href="register.html" class="btn btn-primary">สมัครสมาชิก</a></li>
-      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+      <li id="navGuest"><a href="login.html" class="btn btn-outline" data-i18n="nav_login">เข้าสู่ระบบ</a></li>
+      <li id="navGuest2"><a href="register.html" class="btn btn-primary" data-i18n="nav_register">สมัครสมาชิก</a></li>
+      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
+      <li>
+        <div class="lang-switcher">
+          <button class="lang-btn active" data-lang="th">TH</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </li>
     </ul>
   </nav>
 
@@ -123,22 +129,22 @@
 
     <div class="kv-content">
       <div class="kv-left">
-        <div class="kv-tag">PUBG MOBILE HACK SERVICE</div>
-        <h1 class="kv-title">บริการแฮก<br><span>PUBG Mobile</span></h1>
-        <p class="kv-desc">มีระบบกันแบน ดูแลตลอด 24 ชั่วโมง<br>ใช้งานง่าย รองรับโหลดเดอร์ส่วนตัว</p>
+        <div class="kv-tag" data-i18n="kv_tag">PUBG MOBILE HACK SERVICE</div>
+        <h1 class="kv-title" data-i18n="kv_title">บริการแฮก<br><span>PUBG Mobile</span></h1>
+        <p class="kv-desc" data-i18n="kv_desc">มีระบบกันแบน ดูแลตลอด 24 ชั่วโมง<br>ใช้งานง่าย รองรับโหลดเดอร์ส่วนตัว</p>
         <div class="kv-badges">
-          <span class="kv-badge">ระบบกันแบน</span>
-          <span class="kv-badge">ดูแล 24 ชม.</span>
-          <span class="kv-badge">ใช้งานทันที</span>
+          <span class="kv-badge" data-i18n="kv_badge1">ระบบกันแบน</span>
+          <span class="kv-badge" data-i18n="kv_badge2">ดูแล 24 ชม.</span>
+          <span class="kv-badge" data-i18n="kv_badge3">ใช้งานทันที</span>
         </div>
-        <a href="shop.html" class="btn-kv">ซื้อเลย</a>
+        <a href="shop.html" class="btn-kv" data-i18n="kv_buy">ซื้อเลย</a>
       </div>
 
       <div class="kv-right">
         <div class="kv-panel">
           <div class="kv-panel-tabs">
-            <button class="kv-tab active" data-tab="news">ข่าวสาร</button>
-            <button class="kv-tab" data-tab="promo">โปรโมชัน</button>
+            <button class="kv-tab active" data-tab="news" data-i18n="tab_news">ข่าวสาร</button>
+            <button class="kv-tab" data-tab="promo" data-i18n="tab_promo">โปรโมชัน</button>
           </div>
           <div class="kv-panel-slides">
             <div class="kv-thumb-list active" id="tab-news">
@@ -158,8 +164,8 @@
   <!-- FEATURES SECTION -->
   <section class="home-section features-section" id="features">
     <div class="section-inner">
-      <p class="section-label">ความสามารถ</p>
-      <p class="section-title">ฟีเจอร์โหลดเดอร์</p>
+      <p class="section-label" data-i18n="feat_label">ความสามารถ</p>
+      <p class="section-title" data-i18n="feat_title">ฟีเจอร์โหลดเดอร์</p>
       <div class="features-grid">
         <div class="feat-card">
           <h3>ESP & Visual</h3>
@@ -192,8 +198,8 @@
   <!-- PRICING PREVIEW -->
   <section class="home-section pricing-preview-section">
     <div class="section-inner">
-      <p class="section-label">เลือกแพ็กเกจ</p>
-      <p class="section-title">ราคาคีย์</p>
+      <p class="section-label" data-i18n="price_label">เลือกแพ็กเกจ</p>
+      <p class="section-title" data-i18n="price_title">ราคาคีย์</p>
       <div class="pricing-preview-grid">
         <div class="pp-card">
           <div class="pp-duration">1 วัน</div>
@@ -225,9 +231,9 @@
   <!-- VIDEO SECTION -->
   <section class="home-section video-section" id="videos">
     <div class="section-inner">
-      <p class="section-label">รีวิวและสาธิต</p>
-      <p class="section-title">วิดีโอตัวอย่าง</p>
-      <p class="section-sub">ดูการใช้งานจริงก่อนตัดสินใจซื้อ</p>
+      <p class="section-label" data-i18n="video_label">รีวิวและสาธิต</p>
+      <p class="section-title" data-i18n="video_title">วิดีโอตัวอย่าง</p>
+      <p class="section-sub" data-i18n="video_sub">ดูการใช้งานจริงก่อนตัดสินใจซื้อ</p>
       <div class="video-grid" id="homeVideoGrid">
         <div class="video-box">
           <div class="video-placeholder">
@@ -259,6 +265,10 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script type="module">
+    import { initI18n } from './js/i18n.js';
+    initI18n();
+  </script>
   <script>
     // KV Slider
     const kvSlides = document.querySelectorAll('.kv-slide');
@@ -297,8 +307,8 @@
       การใช้งานเว็บไซต์ต่อไปถือว่าคุณยอมรับ <a href="#">นโยบายความเป็นส่วนตัว</a>
     </div>
     <div class="cookie-btns">
-      <button class="cookie-accept" onclick="acceptCookie()">ยอมรับ</button>
-      <button class="cookie-decline" onclick="declineCookie()">ปิด</button>
+      <button class="cookie-accept" onclick="acceptCookie()" data-i18n="cookie_accept">ยอมรับ</button>
+      <button class="cookie-decline" onclick="declineCookie()" data-i18n="cookie_decline">ปิด</button>
     </div>
   </div>
 

@@ -19,18 +19,24 @@
     <ul class="nav-links">
       <li><a href="index.html">หน้าแรก</a></li>
       <li><a href="shop.html">ร้านค้า</a></li>
-      <li id="navGuest"><a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a></li>
-      <li id="navGuest2"><a href="register.html" class="btn btn-primary">สมัครสมาชิก</a></li>
-      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+      <li id="navGuest"><a href="login.html" class="btn btn-outline" data-i18n="nav_login">เข้าสู่ระบบ</a></li>
+      <li id="navGuest2"><a href="register.html" class="btn btn-primary" data-i18n="nav_register">สมัครสมาชิก</a></li>
+      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
+      <li>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="th">TH</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </li>
     </ul>
   </nav>
 
   <div class="dl-banner">
     <div class="dl-banner-overlay"></div>
     <div class="dl-banner-content">
-      <div class="dl-tag">Android Only</div>
-      <h1 class="dl-title">ดาวน์โหลด <span>DG KING</span></h1>
-      <p class="dl-desc">โหลดเดอร์สำหรับ PUBG Mobile บน Android รองรับระบบกันแบน ใช้งานง่าย อัปเดตฟรีตลอด</p>
+      <div class="dl-tag" data-i18n="dl_tag">Android Only</div>
+      <h1 class="dl-title" data-i18n="dl_title">ดาวน์โหลด <span>DG KING</span></h1>
+      <p class="dl-desc" data-i18n="dl_desc">โหลดเดอร์สำหรับ PUBG Mobile บน Android รองรับระบบกันแบน ใช้งานง่าย อัปเดตฟรีตลอด</p>
     </div>
   </div>
 
@@ -41,7 +47,7 @@
         <div class="dl-app-name">DG KING Loader</div>
         <div class="dl-version" id="dlVersion">เวอร์ชัน 4.3 &nbsp;|&nbsp; รองรับ Android 8.0 ขึ้นไป</div>
         <div class="dl-size" id="dlSize">ขนาดไฟล์: ~25 MB</div>
-        <a href="#" class="btn btn-primary dl-btn" id="dlBtn">ดาวน์โหลด APK</a>
+        <a href="#" class="btn btn-primary dl-btn" id="dlBtn" data-i18n="dl_btn">ดาวน์โหลด APK</a>
         <p class="dl-note">กรุณาเปิด "ติดตั้งจากแหล่งที่ไม่รู้จัก" ในการตั้งค่าก่อนติดตั้ง</p>
       </div>
       <div class="dl-card-right">
@@ -137,6 +143,8 @@
 
   <script type="module">
     import { auth, db, onAuthStateChanged, doc, getDoc } from './js/firebase.js';
+    import { initI18n } from './js/i18n.js';
+    initI18n();
 
     onAuthStateChanged(auth, (user) => {
       const guests = document.querySelectorAll('#navGuest, #navGuest2');

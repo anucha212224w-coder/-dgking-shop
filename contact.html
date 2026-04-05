@@ -20,9 +20,15 @@
       <li><a href="index.html">หน้าแรก</a></li>
       <li><a href="shop.html">ร้านค้า</a></li>
       <li><a href="download.html">ดาวน์โหลด</a></li>
-      <li id="navGuest"><a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a></li>
-      <li id="navGuest2"><a href="register.html" class="btn btn-primary">สมัครสมาชิก</a></li>
-      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+      <li id="navGuest"><a href="login.html" class="btn btn-outline" data-i18n="nav_login">เข้าสู่ระบบ</a></li>
+      <li id="navGuest2"><a href="register.html" class="btn btn-primary" data-i18n="nav_register">สมัครสมาชิก</a></li>
+      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
+      <li>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="th">TH</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </li>
     </ul>
   </nav>
 
@@ -30,9 +36,9 @@
   <div class="contact-banner">
     <div class="contact-banner-overlay"></div>
     <div class="contact-banner-content">
-      <div class="contact-tag">ติดต่อเรา</div>
-      <h1 class="contact-title">พร้อมช่วยเหลือ<br><span>ตลอด 24 ชั่วโมง</span></h1>
-      <p class="contact-desc">มีคำถามหรือต้องการความช่วยเหลือ ติดต่อทีมงานได้ทุกช่องทาง</p>
+      <div class="contact-tag" data-i18n="contact_tag">ติดต่อเรา</div>
+      <h1 class="contact-title" data-i18n="contact_title">พร้อมช่วยเหลือ<br><span>ตลอด 24 ชั่วโมง</span></h1>
+      <p class="contact-desc" data-i18n="contact_desc">มีคำถามหรือต้องการความช่วยเหลือ ติดต่อทีมงานได้ทุกช่องทาง</p>
     </div>
   </div>
 
@@ -141,6 +147,8 @@
 
   <script type="module">
     import { auth, onAuthStateChanged } from './js/firebase.js';
+    import { initI18n } from './js/i18n.js';
+    initI18n();
     onAuthStateChanged(auth, (user) => {
       const guests = document.querySelectorAll('#navGuest, #navGuest2');
       const member = document.getElementById('navUser');
