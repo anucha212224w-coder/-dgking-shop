@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" href="favicon_io/apple-touch-icon.png" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/shop.css" />
+  <script src="js/i18n.js"></script>
 </head>
 <body>
 
@@ -268,8 +269,6 @@
 
   <script type="module">
     import { auth, db, onAuthStateChanged, collection, query, where, getDocs } from './js/firebase.js';
-    import { initI18n } from './js/i18n.js';
-    initI18n();
 
     // โหลดสต็อกคีย์และแสดงในการ์ด
     async function loadStock() {

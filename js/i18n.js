@@ -219,11 +219,19 @@ function updateLangBtn(lang) {
 
 function initI18n() {
   const lang = getLang();
-  applyLang(lang);
-  updateLangBtn(lang);
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => setLang(btn.dataset.lang));
-  });
+  const run = () => {
+    applyLang(lang);
+    updateLangBtn(lang);
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
 }
 
 export { initI18n, getLang, setLang, translations };
+window.initI18n = initI18n;
