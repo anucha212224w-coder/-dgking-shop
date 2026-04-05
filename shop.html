@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ร้านค้า - DG KING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/shop.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar" style="opacity:0;">
+    <a href="index.html" class="logo">DG <span>KING</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าแรก</a></li>
+      <li><a href="download.html">ดาวน์โหลด</a></li>
+      <li><a href="contact.html">ติดต่อ</a></li>
+      <li id="navGuest"><a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a></li>
+      <li id="navGuest2"><a href="register.html" class="btn btn-primary">สมัครสมาชิก</a></li>
+      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+    </ul>
+  </nav>
+
+  <!-- SHOP BANNER -->
+  <div class="shop-banner" style="background-image: url('images/bg.jpg');">
+    <div class="shop-banner-overlay"></div>
+    <div class="shop-banner-content">
+      <div class="shop-banner-left">
+        <div class="shop-game-info">
+          <div class="shop-game-title">DG KING</div>
+          <div class="shop-official-tag">บริการแฮก PUBG Mobile</div>
+          <div class="shop-banner-desc">มีระบบกันแบน ดูแลตลอด 24 ชั่วโมง ใช้งานง่าย</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="shop-tabs">
+    <div class="shop-tabs-inner">
+      <button class="shop-tab active" data-tab="key">คีย์โหลดเดอร์</button>
+      <button class="shop-tab" data-tab="promo">โปรโมชัน</button>
+    </div>
+  </div>
+
+  <!-- MARKETING BAR -->
+  <div class="marketing-bar">
+    <div class="marketing-bar-inner" id="marketingBar">
+      <div class="marketing-item active">ระบบกันแบนอัปเกรดแล้ว รองรับ PUBG Mobile 4.3</div>
+      <div class="marketing-item">สมัครใหม่วันนี้ รับส่วนลดพิเศษ ติดต่อแอดมิน</div>
+      <div class="marketing-item">ดูแลตลอด 24 ชั่วโมง ทีมงานพร้อมช่วยเหลือ</div>
+    </div>
+    <div class="marketing-dots" id="marketingDots"></div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="shop-main-wrapper">
+  <div class="shop-main">
+    <!-- PRODUCT GRID -->
+    <div class="shop-products">
+      <div class="products-header" id="keyHeader">
+        <div class="products-count">สินค้าทั้งหมด <span id="productCount">6</span> รายการ</div>
+        <div class="products-sort">
+          <select id="sortSelect" onchange="sortProducts()">
+            <option value="default">เรียงตามค่าเริ่มต้น</option>
+            <option value="price-asc">ราคา: ต่ำ - สูง</option>
+            <option value="price-desc">ราคา: สูง - ต่ำ</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="products-grid" id="productsGrid">
+
+        <!-- 1 วัน -->
+        <div class="product-card" data-duration="1" data-price="50">
+          <div class="product-card-top" style="background-image: url('images/bg3.jpg')">
+            <div class="product-card-overlay"></div>
+          </div>
+          <div class="product-card-body">
+            <div class="product-duration">1 วัน</div>
+            <div class="product-price"><sup>฿</sup>50</div>
+            <div class="product-stock">กำลังโหลด...</div>
+            <div class="product-per-day">฿50 / วัน</div>
+            <ul class="product-features">
+              <li>ESP & Visual เต็มรูปแบบ</li>
+              <li>ระบบกันแบนในตัว</li>
+              <li>รองรับ PUBG Mobile 4.3</li>
+              <li>ซัพพอร์ตตลอด 24 ชม.</li>
+            </ul>
+            <button class="product-buy-btn btn-outline" onclick="buyProduct('1 วัน', 50)">ซื้อเลย</button>
+          </div>
+        </div>
+
+        <!-- 3 วัน -->
+        <div class="product-card" data-duration="3" data-price="120">
+          <div class="product-card-top" style="background-image: url('images/bg3.jpg')">
+            <div class="product-card-overlay"></div>
+          </div>
+          <div class="product-card-body">
+            <div class="product-duration">3 วัน</div>
+            <div class="product-price"><sup>฿</sup>120</div>
+            <div class="product-stock">กำลังโหลด...</div>
+            <div class="product-per-day">฿40 / วัน</div>
+            <ul class="product-features">
+              <li>ESP & Visual เต็มรูปแบบ</li>
+              <li>ระบบกันแบนในตัว</li>
+              <li>Bullet Tracking</li>
+              <li>ซัพพอร์ตตลอด 24 ชม.</li>
+            </ul>
+            <button class="product-buy-btn btn-outline" onclick="buyProduct('3 วัน', 120)">ซื้อเลย</button>
+          </div>
+        </div>
+
+        <!-- 7 วัน - แนะนำ -->
+        <div class="product-card product-popular" data-duration="7" data-price="270">
+          <div class="product-badge badge-red">แนะนำ</div>
+          <div class="product-card-top" style="background-image: url('images/bg3.jpg')">
+            <div class="product-card-overlay"></div>
+          </div>
+          <div class="product-card-body">
+            <div class="product-duration">7 วัน</div>
+            <div class="product-price gold"><sup>฿</sup>270</div>
+            <div class="product-stock">กำลังโหลด...</div>
+            <div class="product-per-day">฿38.57 / วัน</div>
+            <ul class="product-features">
+              <li>ESP & Visual + Item ESP</li>
+              <li>ระบบกันแบน Extra Safe Mode</li>
+              <li>Bullet Tracking + Wide View</li>
+              <li>รองรับ 144 FPS</li>
+            </ul>
+            <button class="product-buy-btn btn-primary" onclick="buyProduct('7 วัน', 270)">ซื้อเลย</button>
+          </div>
+        </div>
+
+        <!-- 14 วัน -->
+        <div class="product-card" data-duration="14" data-price="370">
+          <div class="product-card-top" style="background-image: url('images/bg3.jpg')">
+            <div class="product-card-overlay"></div>
+          </div>
+          <div class="product-card-body">
+            <div class="product-duration">14 วัน</div>
+            <div class="product-price"><sup>฿</sup>370</div>
+            <div class="product-stock">กำลังโหลด...</div>
+            <div class="product-per-day">฿26.43 / วัน</div>
+            <ul class="product-features">
+              <li>ESP & Visual + Item ESP</li>
+              <li>ระบบกันแบน Extra Safe Mode</li>
+              <li>Bullet Tracking + Wide View</li>
+              <li>รองรับ 144 FPS + Radar Map</li>
+            </ul>
+            <button class="product-buy-btn btn-outline" onclick="buyProduct('14 วัน', 370)">ซื้อเลย</button>
+          </div>
+        </div>
+
+        <!-- 30 วัน -->
+        <div class="product-card" data-duration="30" data-price="750">
+          <div class="product-card-top" style="background-image: url('images/bg3.jpg')">
+            <div class="product-card-overlay"></div>
+          </div>
+          <div class="product-card-body">
+            <div class="product-duration">30 วัน</div>
+            <div class="product-price"><sup>฿</sup>750</div>
+            <div class="product-stock">กำลังโหลด...</div>
+            <div class="product-per-day">฿25 / วัน</div>
+            <ul class="product-features">
+              <li>ฟีเจอร์ครบทุกอย่าง</li>
+              <li>ระบบกันแบน Protection Logo</li>
+              <li>อัปเดตฟรีตลอดอายุการใช้งาน</li>
+              <li>Priority Support</li>
+            </ul>
+            <button class="product-buy-btn btn-outline" onclick="buyProduct('30 วัน', 750)">ซื้อเลย</button>
+          </div>
+        </div>
+
+        <!-- 60 วัน - คุ้มสุด -->
+        <div class="product-card product-best" data-duration="60" data-price="950">
+          <div class="product-badge badge-green">คุ้มสุด</div>
+          <div class="product-card-top" style="background-image: url('images/bg3.jpg')">
+            <div class="product-card-overlay"></div>
+          </div>
+          <div class="product-card-body">
+            <div class="product-duration">60 วัน</div>
+            <div class="product-price green"><sup>฿</sup>950</div>
+            <div class="product-stock">กำลังโหลด...</div>
+            <div class="product-per-day">฿15.83 / วัน</div>
+            <ul class="product-features">
+              <li>ฟีเจอร์ครบทุกอย่าง</li>
+              <li>ระบบกันแบน Protection Logo</li>
+              <li>อัปเดตฟรีตลอดอายุการใช้งาน</li>
+              <li>Priority Support + ราคาถูกสุด</li>
+            </ul>
+            <button class="product-buy-btn btn-green" onclick="buyProduct('60 วัน', 950)">ซื้อเลย</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PROMO SECTION -->
+      <div id="promoSection" style="display:none;">
+        <div class="empty-promo">
+          <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          <p>ยังไม่มีโปรโมชันในขณะนี้</p>
+          <span>ติดตามข่าวสารจากเราเพื่อรับโปรโมชันพิเศษ</span>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- end shop-main-wrapper -->
+
+  <!-- FEATURES BAR -->
+  <div class="shop-features-bar">
+    <div class="shop-features-inner">
+      <div class="shop-feat-item">ระบบกันแบน</div>
+      <div class="shop-feat-item">ESP & Visual</div>
+      <div class="shop-feat-item">ดูแล 24 ชม.</div>
+      <div class="shop-feat-item">รองรับ 144 FPS</div>
+      <div class="shop-feat-item">Wide View</div>
+      <div class="shop-feat-item">ซัพพอร์ตออนไลน์</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">DG <span>KING</span></div>
+      <div class="footer-links">
+        <a href="index.html">หน้าแรก</a>
+        <a href="login.html">เข้าสู่ระบบ</a>
+        <a href="register.html">สมัครสมาชิก</a>
+      </div>
+      <p class="footer-copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
+    </div>
+  </footer>
+
+  <!-- BUY MODAL -->
+  <div class="buy-modal" id="buyModal">
+    <div class="buy-modal-box">
+      <div class="buy-modal-title">ยืนยันการซื้อ</div>
+      <div class="buy-modal-body">
+        <div class="buy-modal-item">
+          <span>สินค้า:</span>
+          <span id="modalProduct">-</span>
+        </div>
+        <div class="buy-modal-item">
+          <span>ราคา:</span>
+          <span id="modalPrice">-</span>
+        </div>
+      </div>
+      <div class="buy-modal-note">กรุณาติดต่อแอดมินเพื่อชำระเงินและรับคีย์</div>
+      <div class="buy-modal-btns">
+        <button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+        <button class="btn btn-primary" onclick="confirmBuy()">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, onAuthStateChanged, collection, query, where, getDocs } from './js/firebase.js';
+
+    // โหลดสต็อกคีย์และแสดงในการ์ด
+    async function loadStock() {
+      const products = ['1 วัน','3 วัน','7 วัน','14 วัน','30 วัน','60 วัน'];
+      for (const p of products) {
+        const q    = query(collection(db, 'keys'), where('product','==',p), where('used','==',false));
+        const snap = await getDocs(q);
+        const count = snap.size;
+        const cards = document.querySelectorAll(`.product-card[data-duration="${p.replace(' วัน','')}"]`);
+        cards.forEach(card => {
+          const stockEl = card.querySelector('.product-stock');
+          const btn     = card.querySelector('.product-buy-btn');
+          if (stockEl) stockEl.textContent = count > 0 ? `สต็อก ${count} ใบ` : 'หมดสต็อก';
+          if (stockEl) stockEl.className = 'product-stock ' + (count > 0 ? 'stock-ok' : 'stock-empty');
+          if (btn && count === 0) {
+            btn.textContent  = 'ติดต่อแอดมิน';
+            btn.disabled     = false;
+            btn.style.opacity = '1';
+            btn.style.cursor  = 'pointer';
+            btn.classList.remove('btn-outline', 'btn-primary', 'btn-green');
+            btn.classList.add('btn-contact');
+            btn.onclick = () => location.href = 'contact.html';
+          }
+        });
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      const guests = document.querySelectorAll('#navGuest, #navGuest2');
+      const member = document.getElementById('navUser');
+      if (user) {
+        guests.forEach(el => el.style.display = 'none');
+        member.style.display = 'block';
+      }
+      document.getElementById('navbar').style.opacity = '1';
+    });
+
+    loadStock();
+  </script>
+
+  <script>
+    // Marketing bar
+    const mItems = document.querySelectorAll('.marketing-item');
+    const mDotsEl = document.getElementById('marketingDots');
+    let mIdx = 0;
+    mItems.forEach((_, i) => {
+      const d = document.createElement('span');
+      d.className = 'mkt-dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => goMkt(i);
+      mDotsEl.appendChild(d);
+    });
+    function goMkt(n) {
+      mItems[mIdx].classList.remove('active');
+      document.querySelectorAll('.mkt-dot')[mIdx].classList.remove('active');
+      mIdx = (n + mItems.length) % mItems.length;
+      mItems[mIdx].classList.add('active');
+      document.querySelectorAll('.mkt-dot')[mIdx].classList.add('active');
+    }
+    setInterval(() => goMkt(mIdx + 1), 3500);
+
+    // Tabs
+    document.querySelectorAll('.shop-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const isPromo = tab.dataset.tab === 'promo';
+        document.getElementById('keyHeader').style.display = isPromo ? 'none' : '';
+        document.getElementById('productsGrid').style.display = isPromo ? 'none' : '';
+        document.getElementById('promoSection').style.display = isPromo ? 'block' : 'none';
+      });
+    });
+
+    // Duration filter
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        const f = chip.dataset.filter;
+        const cards = document.querySelectorAll('.product-card');
+        let count = 0;
+        cards.forEach(card => {
+          if (f === 'all' || card.dataset.duration === f) {
+            card.style.display = '';
+            count++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        document.getElementById('productCount').textContent = count;
+      });
+    });
+
+    // Price filter
+    function applyFilter() {
+      const min = parseFloat(document.getElementById('priceMin').value) || 0;
+      const max = parseFloat(document.getElementById('priceMax').value) || Infinity;
+      const cards = document.querySelectorAll('.product-card');
+      let count = 0;
+      cards.forEach(card => {
+        const price = parseFloat(card.dataset.price);
+        if (price >= min && price <= max) {
+          card.style.display = '';
+          count++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      document.getElementById('productCount').textContent = count;
+    }
+
+    // Sort
+    function sortProducts() {
+      const val = document.getElementById('sortSelect').value;
+      const grid = document.getElementById('productsGrid');
+      const cards = Array.from(grid.querySelectorAll('.product-card'));
+      cards.sort((a, b) => {
+        if (val === 'price-asc') return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+        if (val === 'price-desc') return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+        return 0;
+      });
+      cards.forEach(c => grid.appendChild(c));
+    }
+
+    // Player ID
+    let currentPlayerId = '';
+    function confirmPlayerId() {
+      const val = document.getElementById('playerIdInput').value.trim();
+      if (val) {
+        currentPlayerId = val;
+        alert('บันทึก Player ID: ' + val + ' แล้ว');
+      }
+    }
+
+    // Buy modal
+    window.buyProduct = function(name, price) {
+      location.href = `checkout.html?product=${encodeURIComponent(name)}&price=${price}`;
+    }
+    function closeModal() {
+      document.getElementById('buyModal').classList.remove('active');
+    }
+    function confirmBuy() {
+      closeModal();
+      alert('กรุณาติดต่อแอดมินเพื่อดำเนินการชำระเงิน');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ชำระเงิน - DG KING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/checkout.css" />
+  <!-- QR libs -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar" style="opacity:0;">
+    <a href="index.html" class="logo">DG <span>KING</span></a>
+    <ul class="nav-links">
+      <li><a href="shop.html">ร้านค้า</a></li>
+      <li><a href="orders.html">ออเดอร์ของฉัน</a></li>
+      <li id="navUser"><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+    </ul>
+  </nav>
+
+  <!-- STEP BAR -->
+  <div class="step-bar">
+    <div class="step-inner">
+      <div class="step active" id="step1el">
+        <div class="step-num">1</div>
+        <div class="step-label">สรุปออเดอร์</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" id="step2el">
+        <div class="step-num">2</div>
+        <div class="step-label">ชำระเงิน</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" id="step3el">
+        <div class="step-num">3</div>
+        <div class="step-label">ยืนยัน</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkout-wrap">
+
+    <!-- STEP 1: ORDER SUMMARY -->
+    <div class="checkout-step" id="step1">
+      <div class="checkout-card">
+        <div class="checkout-card-title">สรุปออเดอร์</div>
+        <div class="order-row">
+          <span>สินค้า</span>
+          <span id="s1Product">-</span>
+        </div>
+        <div class="order-row">
+          <span>ราคา</span>
+          <span id="s1Price" class="price-gold">-</span>
+        </div>
+        <div class="order-row">
+          <span>อีเมลบัญชี</span>
+          <span id="s1Email" class="text-muted">-</span>
+        </div>
+        <hr class="order-divider" />
+        <div class="order-row total-row">
+          <span>ยอดที่ต้องชำระ</span>
+          <span id="s1Total" class="price-gold">-</span>
+        </div>
+        <button class="btn btn-primary btn-full mt-1" onclick="goStep(2)">ดำเนินการชำระเงิน</button>
+        <a href="shop.html" class="btn btn-outline btn-full mt-05">ยกเลิก</a>
+      </div>
+    </div>
+
+    <!-- STEP 2: PAYMENT -->
+    <div class="checkout-step hidden" id="step2">
+      <div class="checkout-card checkout-card-wide">
+        <div class="checkout-card-title">ชำระเงิน</div>
+
+        <div class="payment-layout">
+
+          <!-- LEFT: QR -->
+          <div class="payment-left">
+            <div class="payment-method-label">โอนผ่าน PromptPay</div>
+            <div class="qr-wrap">
+              <canvas id="qrCanvas"></canvas>
+            </div>
+            <div class="qr-label">สแกนด้วย TrueMoney Wallet หรือแอปธนาคาร</div>
+            <div class="payment-amount-label">ยอดที่ต้องโอน</div>
+            <div class="payment-amount" id="s2Amount">-</div>
+            <div class="payment-note">โอนตรงตามยอด เพื่อให้ระบบตรวจสอบอัตโนมัติ</div>
+          </div>
+
+          <!-- RIGHT: UPLOAD -->
+          <div class="payment-right">
+            <div class="upload-label">แนบสลิปการโอนเงิน</div>
+            <div class="upload-box" id="uploadBox" onclick="document.getElementById('slipFile').click()">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span id="uploadText">คลิกเพื่ออัปโหลดสลิป</span>
+              <small>รองรับ JPG, PNG ขนาดไม่เกิน 5MB</small>
+            </div>
+            <input type="file" id="slipFile" accept="image/*" style="display:none" onchange="previewSlip(event)" />
+            <img id="slipPreview" class="slip-preview hidden" alt="slip preview" />
+
+            <div class="alert alert-error hidden" id="payError"></div>
+            <div class="alert alert-success hidden" id="paySuccess"></div>
+
+            <button class="btn btn-primary btn-full mt-1" id="submitBtn" onclick="submitPayment()">ส่งสลิปและยืนยัน</button>
+            <button class="btn btn-outline btn-full mt-05" onclick="goStep(1)">ย้อนกลับ</button>
+
+            <!-- หมายเหตุ -->
+            <div class="terms-box">
+              <div class="terms-title">ข้อตกลงและเงื่อนไข</div>
+              <ul class="terms-list">
+                <li>สินค้าเป็นสินค้าดิจิทัล ไม่รับคืนและไม่คืนเงินทุกกรณี</li>
+                <li>คีย์ที่ได้รับใช้ได้เพียง 1 อุปกรณ์เท่านั้น ห้ามแชร์หรือโอนให้ผู้อื่น</li>
+                <li>กรุณาตรวจสอบยอดเงินให้ถูกต้องก่อนโอน ระบบตรวจสอบอัตโนมัติ</li>
+                <li>ห้ามส่งสลิปปลอมหรือสลิปซ้ำ หากตรวจพบจะถูกระงับบัญชีทันที</li>
+                <li>หากมีปัญหาติดต่อแอดมินภายใน 24 ชั่วโมงหลังซื้อ</li>
+                <li>ทีมงานไม่รับผิดชอบหากถูกแบนจากการใช้งานผิดวิธี</li>
+              </ul>
+              <p class="terms-agree">การกดส่งสลิปถือว่าคุณยอมรับข้อตกลงทั้งหมดข้างต้น</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: CONFIRMED -->
+    <div class="checkout-step hidden" id="step3">
+      <div class="checkout-card text-center">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="checkout-card-title">ชำระเงินสำเร็จ</div>
+        <p class="success-desc">ระบบตรวจสอบสลิปเรียบร้อยแล้ว<br>ออเดอร์ของคุณกำลังดำเนินการ</p>
+        <div class="order-id-box">
+          หมายเลขออเดอร์: <span id="confirmedOrderId">-</span>
+        </div>
+        <div id="keyResultBox"></div>
+        <p class="success-note">เก็บคีย์ไว้ให้ดี หากมีปัญหาติดต่อแอดมินได้เลย</p>
+        <a href="orders.html" class="btn btn-primary btn-full mt-1">ดูออเดอร์ของฉัน</a>
+        <a href="shop.html" class="btn btn-outline btn-full mt-05">กลับร้านค้า</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { auth, db, onAuthStateChanged, addDoc, collection, query, where, getDocs, updateDoc, doc, serverTimestamp, limit } from './js/firebase.js';
+
+    const SLIPOK_API_KEY = 'SLIPOKVKFKKTP';
+    const SLIPOK_BRANCH  = '56967';
+
+    // Parse URL params
+    const params  = new URLSearchParams(location.search);
+    const product = params.get('product') || '-';
+    const price   = parseFloat(params.get('price')) || 0;
+
+    let currentUser = null;
+    let orderId     = null;
+
+    // Auth check
+    onAuthStateChanged(auth, (user) => {
+      if (!user) { location.href = 'login.html?redirect=checkout'; return; }
+      currentUser = user;
+      document.getElementById('navbar').style.opacity = '1';
+      document.getElementById('s1Product').textContent = 'คีย์ ' + product;
+      document.getElementById('s1Price').textContent   = '฿' + price;
+      document.getElementById('s1Total').textContent   = '฿' + price;
+      document.getElementById('s1Email').textContent   = user.email;
+      document.getElementById('s2Amount').textContent  = '฿' + price;
+    });
+
+    // Step navigation
+    window.goStep = function(n) {
+      document.querySelectorAll('.checkout-step').forEach(el => el.classList.add('hidden'));
+      document.getElementById('step' + n).classList.remove('hidden');
+      document.querySelectorAll('.step').forEach((el, i) => {
+        el.classList.toggle('active', i < n);
+        el.classList.toggle('done', i < n - 1);
+      });
+      if (n === 2) generateQR();
+    };
+
+    // Generate PromptPay QR
+    function generateQR() {
+      try {
+        const payload = buildPromptPay('0612373304', price);
+        QRCode.toCanvas(document.getElementById('qrCanvas'), payload, {
+          width: 220,
+          margin: 2,
+          color: { dark: '#000000', light: '#ffffff' }
+        });
+      } catch(e) {
+        console.error('QR error:', e);
+      }
+    }
+
+    // Build PromptPay EMVCo payload
+    function buildPromptPay(phone, amount) {
+      const sanitized = phone.replace(/\D/g, '').replace(/^0/, '66');
+      const target = '0066' + sanitized.slice(2);
+
+      function f(id, val) {
+        const len = val.length.toString().padStart(2, '0');
+        return id + len + val;
+      }
+
+      const merchantInfo = f('00', 'A000000677010111') + f('01', target);
+      let payload = f('00', '01') + f('01', '12') + f('29', merchantInfo) + f('53', '764');
+
+      if (amount > 0) {
+        payload += f('54', amount.toFixed(2));
+      }
+
+      payload += f('58', 'TH') + f('59', 'DG KING') + f('60', 'Bangkok');
+      payload += '6304';
+
+      // CRC16
+      let crc = 0xFFFF;
+      for (let i = 0; i < payload.length; i++) {
+        crc ^= payload.charCodeAt(i) << 8;
+        for (let j = 0; j < 8; j++) {
+          crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+        }
+      }
+      return payload + (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+    }
+
+    // Preview slip
+    window.previewSlip = function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      document.getElementById('uploadText').textContent = file.name;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = document.getElementById('slipPreview');
+        img.src = ev.target.result;
+        img.classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    };
+
+    // Submit payment
+    window.submitPayment = async function() {
+      const file = document.getElementById('slipFile').files[0];
+      const errEl = document.getElementById('payError');
+      const sucEl = document.getElementById('paySuccess');
+      const btn   = document.getElementById('submitBtn');
+
+      errEl.classList.add('hidden');
+      sucEl.classList.add('hidden');
+
+      if (!file) {
+        errEl.textContent = 'กรุณาแนบสลิปการโอนเงิน';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'กำลังตรวจสอบสลิป...';
+
+      try {
+        // ส่ง base64 ไปให้ server proxy ตรวจกับ SlipOK
+        const reader = new FileReader();
+        const imageBase64 = await new Promise(resolve => {
+          reader.onload = e => resolve(e.target.result);
+          reader.readAsDataURL(file);
+        });
+
+        const res  = await fetch('https://dgking-server-production.up.railway.app/api/verify-slip', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageBase64, amount: price })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.message || 'สลิปไม่ถูกต้อง');
+
+        // แสดง success message จริงจาก SlipOK
+        sucEl.textContent = data.message;
+        sucEl.classList.remove('hidden');
+        await new Promise(r => setTimeout(r, 1200));
+
+        // ดึงคีย์จากสต็อก
+        btn.textContent = 'กำลังจัดสรรคีย์...';
+        const keysQ = query(
+          collection(db, 'keys'),
+          where('product', '==', product),
+          where('used', '==', false),
+          limit(1)
+        );
+        const keysSnap = await getDocs(keysQ);
+
+        if (keysSnap.empty) {
+          const orderRef = await addDoc(collection(db, 'orders'), {
+            uid: currentUser.uid, email: currentUser.email,
+            product, price, status: 'pending',
+            slipData: data.data || {}, slipImage: imageBase64,
+            createdAt: serverTimestamp()
+          });
+          orderId = orderRef.id;
+          document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
+          document.getElementById('keyResultBox').innerHTML = '<div class="key-nostock">คีย์หมดสต็อกชั่วคราว แอดมินจะส่งคีย์ให้ทางอีเมลภายใน 15 นาที</div>';
+        } else {
+          const keyDoc  = keysSnap.docs[0];
+          const keyCode = keyDoc.data().code;
+          await updateDoc(doc(db, 'keys', keyDoc.id), { used: true, usedAt: serverTimestamp() });
+          const orderRef = await addDoc(collection(db, 'orders'), {
+            uid: currentUser.uid, email: currentUser.email,
+            product, price, status: 'delivered',
+            keyCode, keyId: keyDoc.id,
+            slipData: data.data || {}, slipImage: imageBase64,
+            createdAt: serverTimestamp()
+          });
+          orderId = orderRef.id;
+          document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
+          document.getElementById('keyResultBox').innerHTML = `
+            <div class="key-display">
+              <div class="key-label">คีย์ของคุณ</div>
+              <div class="key-code">${keyCode}</div>
+              <div class="key-hint">คัดลอกคีย์นี้ไปใช้งานได้เลย</div>
+              <button class="btn btn-outline" onclick="navigator.clipboard.writeText('${keyCode}');this.textContent='คัดลอกแล้ว'">คัดลอกคีย์</button>
+            </div>`;
+        }
+
+        goStep(3);
+
+      } catch (err) {
+        errEl.textContent = err.message;
+        errEl.classList.remove('hidden');
+        errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        btn.disabled = false;
+        btn.textContent = 'ส่งสลิปและยืนยัน';
+      }
+    };
+  </script>
+
+</body>
+</html>

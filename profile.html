@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ข้อมูลส่วนตัว - DG KING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .profile-wrap {
+      max-width: 520px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+    .profile-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .profile-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      color: var(--gold);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--text-muted); }
+    .info-value { color: var(--text); font-weight: 600; }
+    .btn-danger {
+      background: transparent;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">Key<span>Shop</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าแรก</a></li>
+      <li><a href="#" id="logoutBtn" class="btn btn-outline">ออกจากระบบ</a></li>
+    </ul>
+  </nav>
+
+  <div class="profile-wrap">
+
+    <!-- ข้อมูลบัญชี -->
+    <div class="profile-card">
+      <h3>ข้อมูลบัญชี</h3>
+      <div class="info-row">
+        <span class="info-label">ชื่อผู้ใช้</span>
+        <span class="info-value" id="displayUsername">-</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">อีเมล</span>
+        <span class="info-value" id="displayEmail">-</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">วันที่สมัคร</span>
+        <span class="info-value" id="displayCreated">-</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">สถานะ</span>
+        <span class="info-value" style="color: var(--success);">ใช้งานอยู่</span>
+      </div>
+    </div>
+
+    <!-- เปลี่ยนรหัสผ่าน -->
+    <div class="profile-card">
+      <h3>เปลี่ยนรหัสผ่าน</h3>
+      <div id="pwAlert" class="alert"></div>
+      <form id="changePasswordForm">
+        <div class="form-group">
+          <label for="newPassword">รหัสผ่านใหม่</label>
+          <input type="password" id="newPassword" placeholder="อย่างน้อย 6 ตัวอักษร" />
+        </div>
+        <div class="form-group">
+          <label for="confirmNewPassword">ยืนยันรหัสผ่านใหม่</label>
+          <input type="password" id="confirmNewPassword" placeholder="กรอกรหัสผ่านอีกครั้ง" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">บันทึกรหัสผ่านใหม่</button>
+      </form>
+    </div>
+
+    <!-- ออกจากระบบ -->
+    <div style="text-align:center;">
+      <button id="logoutBtn2" class="btn btn-danger" style="width:100%; padding:0.75rem;">ออกจากระบบ</button>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { auth, db, onAuthStateChanged, updatePassword, doc, getDoc } from './js/firebase.js';
+    import { signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    function showAlert(id, msg, type) {
+      const el = document.getElementById(id);
+      el.className = `alert alert-${type}`;
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    // ตรวจสอบ login
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return window.location.href = 'login.html';
+
+      document.getElementById('displayEmail').textContent = user.email;
+
+      // ดึงข้อมูลจาก Firestore
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        document.getElementById('displayUsername').textContent = data.username || '-';
+        if (data.createdAt) {
+          const d = new Date(data.createdAt);
+          document.getElementById('displayCreated').textContent = d.toLocaleDateString('th-TH');
+        }
+      }
+    });
+
+    // เปลี่ยนรหัสผ่าน
+    document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newPw  = document.getElementById('newPassword').value;
+      const confirm = document.getElementById('confirmNewPassword').value;
+
+      if (!newPw || !confirm)
+        return showAlert('pwAlert', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+      if (newPw.length < 6)
+        return showAlert('pwAlert', 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร', 'error');
+      if (newPw !== confirm)
+        return showAlert('pwAlert', 'รหัสผ่านไม่ตรงกัน', 'error');
+
+      try {
+        await updatePassword(auth.currentUser, newPw);
+        showAlert('pwAlert', 'เปลี่ยนรหัสผ่านสำเร็จ', 'success');
+        document.getElementById('changePasswordForm').reset();
+      } catch (err) {
+        const msg = err.code === 'auth/requires-recent-login'
+          ? 'กรุณาออกจากระบบแล้วเข้าสู่ระบบใหม่ก่อนเปลี่ยนรหัสผ่าน'
+          : 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+        showAlert('pwAlert', msg, 'error');
+      }
+    });
+
+    // ออกจากระบบ
+    function logout() {
+      signOut(auth).then(() => window.location.href = 'login.html');
+    }
+    document.getElementById('logoutBtn').addEventListener('click', (e) => { e.preventDefault(); logout(); });
+    document.getElementById('logoutBtn2').addEventListener('click', logout);
+  </script>
+</body>
+</html>

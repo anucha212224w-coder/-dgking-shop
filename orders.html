@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ออเดอร์ของฉัน - DG KING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/checkout.css" />
+</head>
+<body>
+
+  <nav class="navbar" id="navbar" style="opacity:0;">
+    <a href="index.html" class="logo">DG <span>KING</span></a>
+    <ul class="nav-links">
+      <li><a href="shop.html">ร้านค้า</a></li>
+      <li><a href="orders.html">ออเดอร์ของฉัน</a></li>
+      <li><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+    </ul>
+  </nav>
+
+  <div class="orders-wrap">
+    <div class="orders-header">
+      <div class="orders-title">ออเดอร์ของฉัน</div>
+      <a href="shop.html" class="btn btn-primary">ซื้อเพิ่ม</a>
+    </div>
+
+    <div id="ordersList">
+      <div class="orders-loading">กำลังโหลด...</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, onAuthStateChanged, collection, query, where, getDocs } from './js/firebase.js';
+
+    const STATUS_LABEL = {
+      pending:   { text: 'รอแอดมินตรวจสอบ', cls: 'status-pending' },
+      approved:  { text: 'อนุมัติแล้ว',       cls: 'status-approved' },
+      rejected:  { text: 'ถูกปฏิเสธ',         cls: 'status-rejected' },
+      delivered: { text: 'ส่งคีย์แล้ว',        cls: 'status-delivered' }
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { location.href = 'login.html'; return; }
+      document.getElementById('navbar').style.opacity = '1';
+
+      const q    = query(collection(db, 'orders'), where('uid', '==', user.uid));
+      const snap = await getDocs(q);
+      const list = document.getElementById('ordersList');
+
+      if (snap.empty) {
+        list.innerHTML = `<div class="orders-empty">
+          <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <p>ยังไม่มีออเดอร์</p>
+          <a href="shop.html" class="btn btn-primary">ไปซื้อสินค้า</a>
+        </div>`;
+        return;
+      }
+
+      const orders = [];
+      snap.forEach(d => orders.push({ id: d.id, ...d.data() }));
+      orders.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+      list.innerHTML = orders.map(o => {
+        const s   = STATUS_LABEL[o.status] || STATUS_LABEL.pending;
+        const dt  = o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString('th-TH') : '-';
+        const key = o.keyCode ? `<div class="order-key-box">คีย์: <span>${o.keyCode}</span></div>` : '';
+        return `<div class="order-item">
+          <div class="order-item-top">
+            <div>
+              <div class="order-product">คีย์ ${o.product}</div>
+              <div class="order-date">${dt}</div>
+            </div>
+            <div class="order-right">
+              <div class="order-price">฿${o.price}</div>
+              <div class="order-status ${s.cls}">${s.text}</div>
+            </div>
+          </div>
+          <div class="order-id">หมายเลขออเดอร์: ${o.id.slice(0,8).toUpperCase()}</div>
+          ${key}
+        </div>`;
+      }).join('');
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - DG KING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">DG <span>KING</span></a>
+    <ul class="nav-links">
+      <li><span class="admin-badge">ADMIN</span></li>
+      <li id="logoutLi" style="display:none;"><a href="#" id="logoutBtn" class="btn btn-outline">ออกจากระบบ</a></li>
+    </ul>
+  </nav>
+
+  <!-- LOGIN GATE -->
+  <div id="adminLogin" class="admin-login-wrap">
+    <div class="admin-login-bg"></div>
+    <div class="admin-login-card">
+      <div class="admin-login-logo">DG <span>KING</span></div>
+      <div class="admin-login-title">Admin Login</div>
+      <div class="admin-login-sub">เข้าสู่ระบบหลังบ้าน</div>
+      <div class="alert alert-error hidden" id="loginErr"></div>
+      <div class="form-group">
+        <label>อีเมล</label>
+        <input type="email" id="adminEmail" placeholder="อีเมลของคุณ" />
+      </div>
+      <div class="form-group">
+        <label>รหัสผ่าน</label>
+        <div class="pass-wrap">
+          <input type="password" id="adminPass" placeholder="รหัสผ่าน" />
+          <button type="button" onclick="togglePass()" id="togglePassBtn">แสดง</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block-form" id="loginBtn">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel" class="hidden">
+
+    <!-- TABS -->
+    <div class="admin-tabs">
+      <div class="admin-tabs-inner">
+        <button class="admin-tab active" onclick="switchTab('dashboard')">แดชบอร์ด</button>
+        <button class="admin-tab" onclick="switchTab('orders')">ออเดอร์ทั้งหมด</button>
+        <button class="admin-tab" onclick="switchTab('keys')">สต็อกคีย์</button>
+        <button class="admin-tab" onclick="switchTab('addkeys')">เพิ่มคีย์</button>
+        <button class="admin-tab" onclick="switchTab('news')">ข่าวสาร</button>
+        <button class="admin-tab" onclick="switchTab('videos')">วิดีโอ</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD TAB -->
+    <div class="admin-content" id="tabDashboard">
+      <div class="dash-header">
+        <div class="admin-section-title">แดชบอร์ด</div>
+        <button class="btn btn-outline" onclick="loadDashboard()">รีเฟรช</button>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="dash-stats" id="dashStats">
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">รายได้ทั้งหมด</div>
+          <div class="dash-stat-value" id="statRevenue">-</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">ออเดอร์ทั้งหมด</div>
+          <div class="dash-stat-value" id="statOrders">-</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">รอตรวจสอบ</div>
+          <div class="dash-stat-value pending" id="statPending">-</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">สต็อกคีย์รวม</div>
+          <div class="dash-stat-value" id="statStock">-</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">ลูกค้าทั้งหมด</div>
+          <div class="dash-stat-value" id="statCustomers">-</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">รายได้วันนี้</div>
+          <div class="dash-stat-value" id="statToday">-</div>
+        </div>
+      </div>
+
+      <!-- SALES BY PRODUCT -->
+      <div class="dash-section-title">ยอดขายแยกตามประเภท</div>
+      <div class="dash-product-grid" id="dashProducts"></div>
+
+      <!-- CHART 7 DAYS -->
+      <div class="dash-section-title" style="margin-top:2rem;">ยอดขาย 7 วันล่าสุด</div>
+      <div class="dash-chart-wrap">
+        <div class="dash-chart" id="dashChart"></div>
+        <div class="dash-chart-labels" id="dashChartLabels"></div>
+      </div>
+
+      <!-- RECENT ORDERS -->
+      <div class="dash-section-title" style="margin-top:2rem;">ออเดอร์ล่าสุด</div>
+      <div id="dashRecentOrders"></div>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div class="admin-content hidden" id="tabOrders">
+      <div class="admin-section-header">
+        <div class="admin-section-title">ออเดอร์ทั้งหมด</div>
+        <div style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="orderSearch" placeholder="ค้นหาอีเมล / หมายเลขออเดอร์" oninput="filterOrders()" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.4rem 0.8rem;color:var(--text);font-size:0.82rem;outline:none;font-family:inherit;width:240px;" />
+          <select id="orderStatusFilter" onchange="filterOrders()" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.4rem 0.8rem;color:var(--text);font-size:0.82rem;outline:none;font-family:inherit;cursor:pointer;">
+            <option value="all">ทุกสถานะ</option>
+            <option value="pending">รอตรวจสอบ</option>
+            <option value="delivered">ส่งคีย์แล้ว</option>
+            <option value="rejected">ปฏิเสธ</option>
+          </select>
+          <button class="btn btn-outline" onclick="exportCSV()">Export CSV</button>
+          <button class="btn btn-outline" onclick="loadOrders()">รีเฟรช</button>
+        </div>
+      </div>
+      <div id="ordersTable">กำลังโหลด...</div>
+    </div>
+
+    <!-- KEYS STOCK TAB -->
+    <div class="admin-content hidden" id="tabKeys">
+      <div class="admin-section-header">
+        <div class="admin-section-title">สต็อกคีย์</div>
+        <button class="btn btn-outline" onclick="loadKeys()">รีเฟรช</button>
+      </div>
+      <div class="stock-summary" id="stockSummary"></div>
+      <div id="keysTable">กำลังโหลด...</div>
+    </div>
+
+    <!-- ADD KEYS TAB -->
+    <div class="admin-content hidden" id="tabAddkeys">
+      <div class="addkey-wrap">
+        <div class="addkey-header">
+          <div class="addkey-title">เพิ่มคีย์เข้าสต็อก</div>
+          <div class="addkey-subtitle">เพิ่มคีย์ทีละหลายใบได้ โดยใส่ทีละบรรทัด</div>
+        </div>
+
+        <div class="addkey-body">
+          <div class="addkey-left">
+            <div class="form-group">
+              <label>ประเภทสินค้า</label>
+              <div class="product-select-grid">
+                <label class="product-radio active" id="pr_1">
+                  <input type="radio" name="keyProduct" value="1 วัน" checked onchange="selectProduct(this)" />
+                  <span class="pr-day">1</span>
+                  <span class="pr-label">วัน</span>
+                  <span class="pr-price">฿50</span>
+                </label>
+                <label class="product-radio" id="pr_3">
+                  <input type="radio" name="keyProduct" value="3 วัน" onchange="selectProduct(this)" />
+                  <span class="pr-day">3</span>
+                  <span class="pr-label">วัน</span>
+                  <span class="pr-price">฿120</span>
+                </label>
+                <label class="product-radio" id="pr_7">
+                  <input type="radio" name="keyProduct" value="7 วัน" onchange="selectProduct(this)" />
+                  <span class="pr-day">7</span>
+                  <span class="pr-label">วัน</span>
+                  <span class="pr-price">฿270</span>
+                </label>
+                <label class="product-radio" id="pr_14">
+                  <input type="radio" name="keyProduct" value="14 วัน" onchange="selectProduct(this)" />
+                  <span class="pr-day">14</span>
+                  <span class="pr-label">วัน</span>
+                  <span class="pr-price">฿370</span>
+                </label>
+                <label class="product-radio" id="pr_30">
+                  <input type="radio" name="keyProduct" value="30 วัน" onchange="selectProduct(this)" />
+                  <span class="pr-day">30</span>
+                  <span class="pr-label">วัน</span>
+                  <span class="pr-price">฿750</span>
+                </label>
+                <label class="product-radio" id="pr_60">
+                  <input type="radio" name="keyProduct" value="60 วัน" onchange="selectProduct(this)" />
+                  <span class="pr-day">60</span>
+                  <span class="pr-label">วัน</span>
+                  <span class="pr-price">฿950</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="addkey-right">
+            <div class="form-group">
+              <label>คีย์ <span style="color:var(--text-muted);font-weight:400;">(ใส่ทีละบรรทัด)</span></label>
+              <textarea id="keyInput" rows="10" placeholder="KEY-XXXX-XXXX-XXXX&#10;KEY-YYYY-YYYY-YYYY&#10;KEY-ZZZZ-ZZZZ-ZZZZ"></textarea>
+              <div class="key-count-hint" id="keyCountHint">0 คีย์</div>
+            </div>
+            <div class="alert alert-error hidden" id="addKeyErr"></div>
+            <div class="alert alert-success hidden" id="addKeySuccess"></div>
+            <button class="btn btn-primary addkey-btn" onclick="addKeys()">เพิ่มคีย์เข้าสต็อก</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NEWS TAB (outside adminPanel but inside hidden) -->
+  <div class="admin-content hidden" id="tabNews" style="max-width:1200px;margin:2rem auto;padding:0 2rem 4rem;">
+    <div class="admin-section-header">
+      <div class="admin-section-title">จัดการข่าวสาร / โปรโมชัน</div>
+      <button class="btn btn-outline" onclick="loadNews()">รีเฟรช</button>
+    </div>
+
+    <!-- FORM เพิ่มข่าว -->
+    <div class="news-form-wrap">
+      <div class="news-form-title" id="newsFormTitle">เพิ่มข่าวสารใหม่</div>
+      <input type="hidden" id="editNewsId" />
+      <div class="news-form-grid">
+        <div class="form-group">
+          <label>หัวข้อ</label>
+          <input type="text" id="newsTitle" placeholder="หัวข้อข่าวสาร" />
+        </div>
+        <div class="form-group">
+          <label>ประเภท</label>
+          <select id="newsType">
+            <option value="news">ข่าวสาร</option>
+            <option value="promo">โปรโมชัน</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>URL รูปภาพ <span style="color:var(--text-muted);font-weight:400;">(อัปโหลดที่ imgbb.com แล้วเอาลิงก์มาวาง)</span></label>
+          <input type="text" id="newsImage" placeholder="https://i.imgur.com/xxxxx.jpg" />
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>รายละเอียด (ไม่บังคับ)</label>
+          <textarea id="newsDesc" rows="2" placeholder="รายละเอียดเพิ่มเติม..."></textarea>
+        </div>
+      </div>
+      <div class="alert alert-error hidden" id="newsErr"></div>
+      <div class="alert alert-success hidden" id="newsSuccess"></div>
+      <div style="display:flex;gap:0.6rem;">
+        <button class="btn btn-primary" onclick="saveNews()">บันทึก</button>
+        <button class="btn btn-outline" onclick="cancelEditNews()" id="cancelNewsBtn" style="display:none;">ยกเลิก</button>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div id="newsList" style="margin-top:1.5rem;"></div>
+  </div>
+
+  <!-- VIDEOS TAB -->
+  <div class="admin-content hidden" id="tabVideos" style="max-width:700px;margin:2rem auto;padding:0 2rem 4rem;">
+    <div class="admin-section-title" style="margin-bottom:1.5rem;">จัดการวิดีโอ YouTube</div>
+
+    <div class="video-config-card">
+      <div class="video-config-title">ลิงก์ดาวน์โหลด APK</div>
+      <div class="video-config-desc">ใส่ลิงก์ดาวน์โหลดไฟล์ APK เช่น Google Drive, MediaFire</div>
+      <input type="text" id="vid_apk_url" placeholder="https://drive.google.com/uc?export=download&id=..." style="font-family:inherit;" />
+      <input type="text" id="vid_apk_version" placeholder="เวอร์ชัน เช่น 4.3" style="font-family:inherit;" />
+      <input type="text" id="vid_apk_size" placeholder="ขนาดไฟล์ เช่น 25 MB" style="font-family:inherit;" />
+    </div>
+
+    <div class="video-config-card">
+      <div class="video-config-title">วิดีโอหน้าแรก #1</div>
+      <div class="video-config-desc">ใส่ YouTube Video ID เช่น <code>dQw4w9WgXcQ</code> จาก youtube.com/watch?v=<strong>dQw4w9WgXcQ</strong></div>
+      <input type="text" id="vid_home1" placeholder="YouTube Video ID" />
+      <input type="text" id="vid_home1_caption" placeholder="คำบรรยาย เช่น วิดีโอสาธิตการใช้งาน #1" />
+    </div>
+
+    <div class="video-config-card">
+      <div class="video-config-title">วิดีโอหน้าแรก #2</div>
+      <div class="video-config-desc">ใส่ YouTube Video ID</div>
+      <input type="text" id="vid_home2" placeholder="YouTube Video ID" />
+      <input type="text" id="vid_home2_caption" placeholder="คำบรรยาย เช่น วิดีโอสาธิตการใช้งาน #2" />
+    </div>
+
+    <div class="video-config-card">
+      <div class="video-config-title">วิดีโอสอนการติดตั้ง (หน้าดาวน์โหลด)</div>
+      <div class="video-config-desc">ใส่ YouTube Video ID</div>
+      <input type="text" id="vid_install" placeholder="YouTube Video ID" />
+    </div>
+
+    <div class="alert alert-error hidden" id="videoErr"></div>
+    <div class="alert alert-success hidden" id="videoSuccess"></div>
+    <button class="btn btn-primary" style="width:100%;padding:0.8rem;" onclick="saveVideos()">บันทึกวิดีโอทั้งหมด</button>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- ORDER DETAIL MODAL -->
+  <div class="order-modal hidden" id="orderModal">
+    <div class="order-modal-box">
+      <div class="order-modal-header">
+        <div class="order-modal-title">รายละเอียดออเดอร์</div>
+        <button class="order-modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="order-modal-body">
+        <div class="order-modal-grid">
+          <div class="order-modal-info">
+            <div class="om-row"><span>ออเดอร์</span><span id="modalOrderId" class="mono"></span></div>
+            <div class="om-row"><span>อีเมล</span><span id="modalEmail"></span></div>
+            <div class="om-row"><span>สินค้า</span><span id="modalProduct"></span></div>
+            <div class="om-row"><span>ราคา</span><span id="modalPrice" class="price-gold"></span></div>
+            <div class="om-row"><span>สถานะ</span><span id="modalStatus"></span></div>
+            <div class="om-row"><span>วันที่</span><span id="modalDate"></span></div>
+            <div class="om-row"><span>คีย์</span><span id="modalKey" class="mono key-cell"></span></div>
+          </div>
+          <div class="order-modal-slip">
+            <div class="slip-label">สลิปการโอนเงิน</div>
+            <img id="modalSlip" src="" alt="slip" style="width:100%;border-radius:8px;border:1px solid #333;" />
+          </div>
+        </div>
+        <div id="approveSection">
+          <div class="alert alert-error hidden" id="approveErr"></div>
+          <input type="hidden" id="modalCurrentOrderId" />
+          <input type="hidden" id="modalProduct2" />
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:1rem;">
+            <button class="btn btn-primary" id="approveBtn" onclick="approveOrder()">อนุมัติและส่งคีย์</button>
+            <button class="btn" style="background:rgba(255,77,77,0.15);border:1px solid rgba(255,77,77,0.4);color:#ff4d4d;" onclick="showRejectForm()">ปฏิเสธออเดอร์</button>
+          </div>
+          <div id="rejectForm" style="display:none;margin-top:0.8rem;">
+            <input type="text" id="rejectReason" placeholder="เหตุผลที่ปฏิเสธ เช่น สลิปปลอม / ยอดไม่ตรง" style="width:100%;background:var(--bg3);border:1px solid #ff4d4d;border-radius:6px;padding:0.6rem 0.8rem;color:var(--text);font-size:0.85rem;outline:none;font-family:inherit;margin-bottom:0.5rem;" />
+            <button class="btn" style="width:100%;background:#ff4d4d;color:#fff;border:none;padding:0.6rem;" onclick="rejectOrder()">ยืนยันการปฏิเสธ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, collection, query, orderBy, getDocs, addDoc, serverTimestamp, where, updateDoc, doc, limit, getDoc, setDoc } from './js/firebase.js';
+
+    const ADMIN_EMAIL = 'anucha212224w@gmail.com';
+
+    const STATUS_LABEL = {
+      pending:   { text: 'รอตรวจสอบ',  cls: 'status-pending' },
+      approved:  { text: 'อนุมัติแล้ว', cls: 'status-approved' },
+      delivered: { text: 'ส่งคีย์แล้ว', cls: 'status-delivered' },
+      rejected:  { text: 'ปฏิเสธ',      cls: 'status-rejected' }
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      console.log('auth user:', user?.email);
+      if (user && user.email === ADMIN_EMAIL) {
+        console.log('admin detected, showing panel');
+        document.getElementById('adminLogin').classList.add('hidden');
+        document.getElementById('adminPanel').classList.remove('hidden');
+        document.getElementById('logoutLi').style.display = 'block';
+        loadDashboard();
+      } else if (!user) {
+        document.getElementById('adminLogin').classList.remove('hidden');
+        document.getElementById('adminPanel').classList.add('hidden');
+        document.getElementById('logoutLi').style.display = 'none';
+      }
+    });
+
+    document.getElementById('logoutBtn').onclick = () => auth.signOut().then(() => location.reload());
+    document.getElementById('loginBtn').onclick = adminLogin;
+
+    // Toast notification
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast ' + type;
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.add('hidden'), 3000);
+    }
+
+    // นับคีย์ realtime
+    document.addEventListener('input', e => {
+      if (e.target.id === 'keyInput') {
+        const count = e.target.value.split('\n').filter(l => l.trim()).length;
+        const hint  = document.getElementById('keyCountHint');
+        if (hint) hint.textContent = count + ' คีย์';
+      }
+    });
+
+    async function adminLogin() {
+      const email = document.getElementById('adminEmail').value.trim();
+      const pass  = document.getElementById('adminPass').value;
+      const err   = document.getElementById('loginErr');
+      err.classList.add('hidden');
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch(e) {
+        err.textContent = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
+        err.classList.remove('hidden');
+      }
+    };
+
+    window.switchTab = switchTab;
+    window.loadOrders = loadOrders;
+    window.loadKeys = loadKeys;
+    window.addKeys = addKeys;
+
+    function switchTab(tab) {
+      const tabs = ['dashboard','orders','keys','addkeys','news','videos'];
+      document.querySelectorAll('.admin-tab').forEach((t,i) => {
+        t.classList.toggle('active', tabs[i] === tab);
+      });
+      document.querySelectorAll('.admin-content').forEach(el => el.classList.add('hidden'));
+      const id = 'tab' + tab.charAt(0).toUpperCase() + tab.slice(1);
+      document.getElementById(id).classList.remove('hidden');
+      if (tab === 'dashboard') loadDashboard();
+      if (tab === 'orders') loadOrders();
+      if (tab === 'keys') loadKeys();
+      if (tab === 'news') loadNews();
+      if (tab === 'videos') loadVideos();
+    };
+
+    async function loadDashboard() {
+      const [ordersSnap, keysSnap, usersSnap] = await Promise.all([
+        getDocs(query(collection(db, 'orders'), orderBy('createdAt', 'desc'))),
+        getDocs(collection(db, 'keys')),
+        getDocs(collection(db, 'users'))
+      ]);
+
+      const orders   = ordersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const keys     = keysSnap.docs.map(d => d.data());
+      const products = ['1 วัน','3 วัน','7 วัน','14 วัน','30 วัน','60 วัน'];
+
+      const delivered  = orders.filter(o => o.status === 'delivered');
+      const pending    = orders.filter(o => o.status === 'pending');
+      const revenue    = delivered.reduce((s, o) => s + (o.price || 0), 0);
+      const stockAvail = keys.filter(k => !k.used).length;
+      const customers  = new Set(orders.map(o => o.uid)).size;
+
+      // รายได้วันนี้
+      const today    = new Date(); today.setHours(0,0,0,0);
+      const todayRev = delivered.filter(o => o.createdAt && new Date(o.createdAt.seconds*1000) >= today)
+                                .reduce((s,o) => s + (o.price||0), 0);
+
+      document.getElementById('statRevenue').textContent   = '฿' + revenue.toLocaleString();
+      document.getElementById('statOrders').textContent    = orders.length;
+      document.getElementById('statPending').textContent   = pending.length;
+      document.getElementById('statStock').textContent     = stockAvail + ' ใบ';
+      document.getElementById('statCustomers').textContent = customers + ' คน';
+      document.getElementById('statToday').textContent     = '฿' + todayRev.toLocaleString();
+
+      // Sales by product
+      const prodEl = document.getElementById('dashProducts');
+      prodEl.innerHTML = products.map(p => {
+        const sold  = delivered.filter(o => o.product === p).length;
+        const rev   = delivered.filter(o => o.product === p).reduce((s,o) => s + (o.price||0), 0);
+        const avail = keys.filter(k => k.product === p && !k.used).length;
+        return `<div class="dash-prod-card">
+          <div class="dash-prod-name">${p}</div>
+          <div class="dash-prod-stats">
+            <div><span>ขายแล้ว</span><strong>${sold} ใบ</strong></div>
+            <div><span>รายได้</span><strong class="price-gold">฿${rev.toLocaleString()}</strong></div>
+            <div><span>สต็อก</span><strong class="${avail === 0 ? 'text-danger' : ''}">${avail} ใบ</strong></div>
+          </div>
+        </div>`;
+      }).join('');
+
+      // กราฟ 7 วัน
+      const days = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
+        const next = new Date(d); next.setDate(next.getDate() + 1);
+        const dayRev = delivered.filter(o => {
+          if (!o.createdAt) return false;
+          const t = new Date(o.createdAt.seconds * 1000);
+          return t >= d && t < next;
+        }).reduce((s,o) => s + (o.price||0), 0);
+        days.push({ label: `${d.getDate()}/${d.getMonth()+1}`, rev: dayRev });
+      }
+      const maxRev = Math.max(...days.map(d => d.rev), 1);
+      document.getElementById('dashChart').innerHTML = days.map(d => `
+        <div class="chart-bar-wrap">
+          <div class="chart-bar-val">฿${d.rev > 0 ? d.rev.toLocaleString() : ''}</div>
+          <div class="chart-bar" style="height:${Math.max((d.rev/maxRev)*100, 2)}%"></div>
+        </div>`).join('');
+      document.getElementById('dashChartLabels').innerHTML = days.map(d =>
+        `<div class="chart-label">${d.label}</div>`).join('');
+
+      // Recent orders
+      const recentEl = document.getElementById('dashRecentOrders');
+      const recent   = orders.slice(0, 8);
+      if (!recent.length) { recentEl.innerHTML = '<p class="no-data">ยังไม่มีออเดอร์</p>'; return; }
+      const rows = recent.map(o => {
+        const s  = STATUS_LABEL[o.status] || STATUS_LABEL.pending;
+        const dt = o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString('th-TH') : '-';
+        return `<tr>
+          <td class="mono">${o.id.slice(0,8).toUpperCase()}</td>
+          <td>${o.email}</td>
+          <td>คีย์ ${o.product}</td>
+          <td class="price-gold">฿${o.price}</td>
+          <td><span class="order-status ${s.cls}">${s.text}</span></td>
+          <td>${dt}</td>
+        </tr>`;
+      }).join('');
+      recentEl.innerHTML = `<table class="admin-table">
+        <thead><tr><th>ออเดอร์</th><th>อีเมล</th><th>สินค้า</th><th>ราคา</th><th>สถานะ</th><th>วันที่</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    }
+
+    async function loadOrders() {
+      const el = document.getElementById('ordersTable');
+      el.innerHTML = 'กำลังโหลด...';
+      const snap = await getDocs(query(collection(db, 'orders'), orderBy('createdAt', 'desc')));
+      allOrders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderOrders(allOrders);
+    }
+
+    function renderOrders(orders) {
+      const el = document.getElementById('ordersTable');
+      if (!orders.length) { el.innerHTML = '<p class="no-data">ไม่พบออเดอร์</p>'; return; }
+
+      // จัดกลุ่มตามประเภทสินค้า
+      const products = ['1 วัน','3 วัน','7 วัน','14 วัน','30 วัน','60 วัน'];
+      const grouped  = {};
+      products.forEach(p => grouped[p] = []);
+      orders.forEach(o => {
+        const p = o.product;
+        if (!grouped[p]) grouped[p] = [];
+        grouped[p].push(o);
+      });
+
+      const makeRows = (list) => list.map(o => {
+        const s   = STATUS_LABEL[o.status] || STATUS_LABEL.pending;
+        const dt  = o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString('th-TH') : '-';
+        const actionBtn = o.status === 'pending'
+          ? `<button class="btn-admin-action" onclick="openOrderDetail('${o.id}')">ดูสลิป / อนุมัติ</button>`
+          : `<button class="btn-admin-view" onclick="openOrderDetail('${o.id}')">ดูรายละเอียด</button>
+             <button class="btn-admin-delete" onclick="deleteOrder('${o.id}')">ลบ</button>`;
+        return `<tr>
+          <td class="mono">${o.id.slice(0,8).toUpperCase()}</td>
+          <td>${o.email}</td>
+          <td class="price-gold">฿${o.price}</td>
+          <td><span class="order-status ${s.cls}">${s.text}</span></td>
+          <td class="mono key-cell">${o.keyCode || '-'}</td>
+          <td>${dt}</td>
+          <td>${actionBtn}</td>
+        </tr>`;
+      }).join('');
+
+      const html = products.map(p => {
+        const list = grouped[p];
+        if (!list || list.length === 0) return '';
+        const pending   = list.filter(o => o.status === 'pending').length;
+        const delivered = list.filter(o => o.status === 'delivered').length;
+        return `<div class="keys-group" style="margin-bottom:1.5rem;">
+          <div class="keys-group-header">
+            <span class="keys-group-title">คีย์ ${p}</span>
+            <div style="display:flex;gap:0.5rem;">
+              ${pending > 0 ? `<span class="order-status status-pending">รอตรวจสอบ ${pending}</span>` : ''}
+              <span class="order-status status-delivered">ส่งแล้ว ${delivered}</span>
+              <span style="font-size:0.75rem;color:var(--text-muted);">รวม ${list.length}</span>
+            </div>
+          </div>
+          <table class="admin-table">
+            <thead><tr><th>ออเดอร์</th><th>อีเมล</th><th>ราคา</th><th>สถานะ</th><th>คีย์</th><th>วันที่</th><th>จัดการ</th></tr></thead>
+            <tbody>${makeRows(list)}</tbody>
+          </table>
+        </div>`;
+      }).join('');
+
+      el.innerHTML = (html || '<p class="no-data">ยังไม่มีออเดอร์</p>') +
+        `<div style="margin-top:1rem;text-align:right;">
+          <button class="btn-admin-delete" onclick="deleteAllDelivered()">ลบออเดอร์ที่ส่งคีย์แล้วทั้งหมด</button>
+        </div>`;
+    }
+
+    // เปิด modal ดูรายละเอียดออเดอร์
+    window.openOrderDetail = async function(orderId) {
+      const snap = await getDocs(query(collection(db, 'orders'), where('__name__', '==', orderId)));
+      if (snap.empty) return;
+      const o = snap.docs[0].data();
+      const modal = document.getElementById('orderModal');
+      const dt = o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString('th-TH') : '-';
+
+      document.getElementById('modalOrderId').textContent   = orderId.slice(0,8).toUpperCase();
+      document.getElementById('modalEmail').textContent     = o.email;
+      document.getElementById('modalProduct').textContent   = 'คีย์ ' + o.product;
+      document.getElementById('modalPrice').textContent     = '฿' + o.price;
+      document.getElementById('modalStatus').textContent    = STATUS_LABEL[o.status]?.text || o.status;
+      document.getElementById('modalDate').textContent      = dt;
+      document.getElementById('modalKey').textContent       = o.keyCode || 'ยังไม่มีคีย์';
+      document.getElementById('modalCurrentOrderId').value  = orderId;
+      document.getElementById('modalProduct2').value        = o.product;
+
+      // แสดงสลิป
+      const slipEl = document.getElementById('modalSlip');
+      if (o.slipImage) {
+        slipEl.src = o.slipImage;
+        slipEl.style.display = 'block';
+      } else {
+        slipEl.style.display = 'none';
+      }
+
+      // แสดงปุ่มอนุมัติเฉพาะ pending
+      document.getElementById('approveSection').style.display = o.status === 'pending' ? 'block' : 'none';
+      modal.classList.remove('hidden');
+    };
+
+    window.closeModal = function() {
+      document.getElementById('orderModal').classList.add('hidden');
+    };
+
+    window.approveOrder = async function() {
+      const orderId  = document.getElementById('modalCurrentOrderId').value;
+      const product  = document.getElementById('modalProduct2').value;
+      const errEl    = document.getElementById('approveErr');
+      const btn      = document.getElementById('approveBtn');
+      errEl.classList.add('hidden');
+      btn.disabled = true;
+      btn.textContent = 'กำลังดำเนินการ...';
+
+      try {
+        // ดึงคีย์จากสต็อก
+        const keysQ    = query(collection(db, 'keys'), where('product','==',product), where('used','==',false), limit(1));
+        const keysSnap = await getDocs(keysQ);
+
+        if (keysSnap.empty) {
+          throw new Error('ไม่มีคีย์ในสต็อกสำหรับ ' + product);
+        }
+
+        const keyDoc  = keysSnap.docs[0];
+        const keyCode = keyDoc.data().code;
+
+        await updateDoc(doc(db, 'keys', keyDoc.id), { used: true, usedAt: serverTimestamp() });
+        await updateDoc(doc(db, 'orders', orderId), { status: 'delivered', keyCode, keyId: keyDoc.id });
+        showToast('อนุมัติและส่งคีย์สำเร็จ');
+        closeModal();
+        loadOrders();
+      } catch(e) {
+        showToast(e.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'อนุมัติและส่งคีย์';
+      }
+    };
+
+    window.deleteOrder = async function(orderId) {
+      if (!confirm('ลบออเดอร์นี้?')) return;
+      const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      await deleteDoc(doc(db, 'orders', orderId));
+      loadOrders();
+    };
+
+    // เก็บ orders ทั้งหมดไว้ filter
+    let allOrders = [];
+
+    window.filterOrders = function() {
+      const search = document.getElementById('orderSearch').value.toLowerCase();
+      const status = document.getElementById('orderStatusFilter').value;
+      const filtered = allOrders.filter(o => {
+        const matchSearch = !search ||
+          o.email?.toLowerCase().includes(search) ||
+          o.id.slice(0,8).toLowerCase().includes(search);
+        const matchStatus = status === 'all' || o.status === status;
+        return matchSearch && matchStatus;
+      });
+      renderOrders(filtered);
+    };
+
+    window.showRejectForm = function() {
+      const f = document.getElementById('rejectForm');
+      f.style.display = f.style.display === 'none' ? 'block' : 'none';
+    };
+
+    window.rejectOrder = async function() {
+      const orderId = document.getElementById('modalCurrentOrderId').value;
+      const reason  = document.getElementById('rejectReason').value.trim() || 'ไม่ระบุเหตุผล';
+      await updateDoc(doc(db, 'orders', orderId), { status: 'rejected', rejectReason: reason });
+      closeModal();
+      loadOrders();
+    };
+
+    window.exportCSV = function() {
+      if (!allOrders.length) return;
+      const headers = ['ออเดอร์','อีเมล','สินค้า','ราคา','สถานะ','คีย์','วันที่'];
+      const rows = allOrders.map(o => {
+        const dt = o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString('th-TH') : '-';
+        return [o.id.slice(0,8), o.email, 'คีย์ '+o.product, o.price, o.status, o.keyCode||'-', dt].join(',');
+      });
+      const csv  = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8;' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = 'orders.csv'; a.click();
+    };
+
+    // ===== VIDEOS =====
+    async function loadVideos() {
+      const snap = await getDoc(doc(db, 'config', 'videos'));
+      if (snap.exists()) {
+        const v = snap.data();
+        document.getElementById('vid_home1').value         = v.home1 || '';
+        document.getElementById('vid_home1_caption').value = v.home1_caption || '';
+        document.getElementById('vid_home2').value         = v.home2 || '';
+        document.getElementById('vid_home2_caption').value = v.home2_caption || '';
+        document.getElementById('vid_install').value       = v.install || '';
+        document.getElementById('vid_apk_url').value       = v.apk_url || '';
+        document.getElementById('vid_apk_version').value   = v.apk_version || '';
+        document.getElementById('vid_apk_size').value      = v.apk_size || '';
+      }
+    }
+
+    window.saveVideos = async function() {
+      const errEl = document.getElementById('videoErr');
+      const sucEl = document.getElementById('videoSuccess');
+      errEl.classList.add('hidden'); sucEl.classList.add('hidden');
+      try {
+        await setDoc(doc(db, 'config', 'videos'), {
+          home1:         document.getElementById('vid_home1').value.trim(),
+          home1_caption: document.getElementById('vid_home1_caption').value.trim(),
+          home2:         document.getElementById('vid_home2').value.trim(),
+          home2_caption: document.getElementById('vid_home2_caption').value.trim(),
+          install:       document.getElementById('vid_install').value.trim(),
+          apk_url:       document.getElementById('vid_apk_url').value.trim(),
+          apk_version:   document.getElementById('vid_apk_version').value.trim(),
+          apk_size:      document.getElementById('vid_apk_size').value.trim(),
+        });
+        showToast('บันทึกสำเร็จ');
+      } catch(e) {
+        showToast(e.message, 'error');
+      }
+    };
+
+    // ===== NEWS =====
+    async function loadNews() {
+      const el   = document.getElementById('newsList');
+      el.innerHTML = 'กำลังโหลด...';
+      const snap = await getDocs(query(collection(db, 'news'), orderBy('createdAt', 'desc')));
+      if (snap.empty) { el.innerHTML = '<p class="no-data">ยังไม่มีข่าวสาร</p>'; return; }
+
+      el.innerHTML = snap.docs.map(d => {
+        const n  = d.data();
+        const dt = n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString('th-TH') : '-';
+        const typeBadge = n.type === 'promo'
+          ? '<span class="order-status status-delivered">โปรโมชัน</span>'
+          : '<span class="order-status status-approved">ข่าวสาร</span>';
+        return `<div class="news-item">
+          ${n.image ? `<img src="${n.image}" class="news-item-img" onerror="this.style.display='none'" />` : '<div class="news-item-img-placeholder"></div>'}
+          <div class="news-item-body">
+            <div class="news-item-top">
+              ${typeBadge}
+              <span class="news-item-date">${dt}</span>
+            </div>
+            <div class="news-item-title">${n.title}</div>
+            ${n.desc ? `<div class="news-item-desc">${n.desc}</div>` : ''}
+          </div>
+          <div class="news-item-actions">
+            <button class="btn-admin-view" onclick="editNews('${d.id}','${encodeURIComponent(n.title)}','${n.type}','${encodeURIComponent(n.image||'')}','${encodeURIComponent(n.desc||'')}')">แก้ไข</button>
+            <button class="btn-admin-delete" onclick="deleteNews('${d.id}')">ลบ</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    window.saveNews = async function() {
+      const title = document.getElementById('newsTitle').value.trim();
+      const type  = document.getElementById('newsType').value;
+      const image = document.getElementById('newsImage').value.trim();
+      const desc  = document.getElementById('newsDesc').value.trim();
+      const editId = document.getElementById('editNewsId').value;
+      const errEl  = document.getElementById('newsErr');
+      const sucEl  = document.getElementById('newsSuccess');
+      errEl.classList.add('hidden'); sucEl.classList.add('hidden');
+
+      if (!title) { showToast('กรุณาใส่หัวข้อ', 'error'); return; }
+
+      const data = { title, type, image, desc, updatedAt: serverTimestamp() };
+      if (editId) {
+        await updateDoc(doc(db, 'news', editId), data);
+        showToast('แก้ไขข่าวสารสำเร็จ');
+      } else {
+        data.createdAt = serverTimestamp();
+        await addDoc(collection(db, 'news'), data);
+        showToast('เพิ่มข่าวสารสำเร็จ');
+      }
+      cancelEditNews();
+      loadNews();
+    };
+
+    window.editNews = function(id, title, type, image, desc) {
+      document.getElementById('editNewsId').value  = id;
+      document.getElementById('newsTitle').value   = decodeURIComponent(title);
+      document.getElementById('newsType').value    = type;
+      document.getElementById('newsImage').value   = decodeURIComponent(image);
+      document.getElementById('newsDesc').value    = decodeURIComponent(desc);
+      document.getElementById('newsFormTitle').textContent = 'แก้ไขข่าวสาร';
+      document.getElementById('cancelNewsBtn').style.display = 'inline-block';
+      document.getElementById('newsTitle').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    window.cancelEditNews = function() {
+      document.getElementById('editNewsId').value  = '';
+      document.getElementById('newsTitle').value   = '';
+      document.getElementById('newsImage').value   = '';
+      document.getElementById('newsDesc').value    = '';
+      document.getElementById('newsType').value    = 'news';
+      document.getElementById('newsFormTitle').textContent = 'เพิ่มข่าวสารใหม่';
+      document.getElementById('cancelNewsBtn').style.display = 'none';
+    };
+
+    window.deleteNews = async function(id) {
+      if (!confirm('ลบข่าวสารนี้?')) return;
+      const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      await deleteDoc(doc(db, 'news', id));
+      loadNews();
+    };
+
+    window.deleteKey = async function(keyId) {
+      if (!confirm('ลบคีย์นี้?')) return;
+      const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      await deleteDoc(doc(db, 'keys', keyId));
+      loadKeys();
+    };
+
+    window.deleteUsedKeys = async function() {
+      if (!confirm('ลบคีย์ที่ใช้แล้วทั้งหมด? ไม่สามารถกู้คืนได้')) return;
+      const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      const snap = await getDocs(query(collection(db, 'keys'), where('used', '==', true)));
+      await Promise.all(snap.docs.map(d => deleteDoc(doc(db, 'keys', d.id))));
+      loadKeys();
+    };
+
+    window.deleteAllDelivered = async function() {
+      if (!confirm('ลบออเดอร์ที่ส่งคีย์แล้วทั้งหมด? ไม่สามารถกู้คืนได้')) return;
+      const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      const snap = await getDocs(query(collection(db, 'orders'), where('status', '==', 'delivered')));
+      const promises = snap.docs.map(d => deleteDoc(doc(db, 'orders', d.id)));
+      await Promise.all(promises);
+      loadOrders();
+    };
+
+    async function loadKeys() {
+      const el      = document.getElementById('keysTable');
+      const summary = document.getElementById('stockSummary');
+      el.innerHTML  = 'กำลังโหลด...';
+
+      const snap = await getDocs(collection(db, 'keys'));
+      const all  = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      // Summary by product
+      const products = ['1 วัน','3 วัน','7 วัน','14 วัน','30 วัน','60 วัน'];
+      summary.innerHTML = products.map(p => {
+        const total = all.filter(k => k.product === p).length;
+        const avail = all.filter(k => k.product === p && !k.used).length;
+        return `<div class="stock-chip ${avail === 0 ? 'stock-empty' : ''}">
+          <div class="stock-chip-name">${p}</div>
+          <div class="stock-chip-count">${avail}/${total}</div>
+        </div>`;
+      }).join('');
+
+      if (all.length === 0) { el.innerHTML = '<p class="no-data">ยังไม่มีคีย์ในสต็อก</p>'; return; }
+
+      const rows = products.map(p => {
+        const pKeys = all.filter(k => k.product === p);
+        if (pKeys.length === 0) return '';
+
+        const available = pKeys.filter(k => !k.used);
+        const used      = pKeys.filter(k => k.used);
+
+        const makeRows = (keys) => keys.map(k => `<tr>
+          <td class="mono">${k.code}</td>
+          <td style="text-align:right;width:60px;"><button class="btn-admin-delete" style="font-size:0.72rem;padding:0.2rem 0.6rem;" onclick="deleteKey('${k.id}')">ลบ</button></td>
+        </tr>`).join('');
+
+        return `<div class="keys-group">
+          <div class="keys-group-header">
+            <span class="keys-group-title">${p}</span>
+            <div style="display:flex;gap:0.5rem;">
+              <span class="order-status status-approved">พร้อมใช้ ${available.length}</span>
+              <span class="order-status status-delivered">ใช้แล้ว ${used.length}</span>
+            </div>
+          </div>
+
+          ${available.length > 0 ? `
+          <div class="keys-zone-label zone-available">พร้อมใช้งาน (${available.length})</div>
+          <table class="admin-table">
+            <thead><tr><th>คีย์</th><th style="text-align:right;width:60px;"></th></tr></thead>
+            <tbody>${makeRows(available)}</tbody>
+          </table>` : ''}
+
+          ${used.length > 0 ? `
+          <div class="keys-zone-label zone-used">ใช้แล้ว (${used.length})</div>
+          <table class="admin-table">
+            <thead><tr><th>คีย์</th><th style="text-align:right;width:60px;"></th></tr></thead>
+            <tbody class="used-rows">${makeRows(used)}</tbody>
+          </table>` : ''}
+        </div>`;
+      }).join('');
+
+      el.innerHTML = (rows || '<p class="no-data">ยังไม่มีคีย์ในสต็อก</p>') +
+        `<div style="margin-top:1.5rem;text-align:right;">
+          <button class="btn-admin-delete" onclick="deleteUsedKeys()">ลบคีย์ที่ใช้แล้วทั้งหมด</button>
+        </div>`;
+    };
+
+    window.togglePass = function() {
+      const input = document.getElementById('adminPass');
+      const btn   = document.getElementById('togglePassBtn');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'ซ่อน';
+      } else {
+        input.type = 'password';
+        btn.textContent = 'แสดง';
+      }
+    };
+
+    window.selectProduct = function(el) {
+      document.querySelectorAll('.product-radio').forEach(l => l.classList.remove('active'));
+      el.closest('.product-radio').classList.add('active');
+    };
+
+    async function addKeys() {
+      const product = document.querySelector('input[name="keyProduct"]:checked')?.value;
+      const raw     = document.getElementById('keyInput').value.trim();
+      const errEl   = document.getElementById('addKeyErr');
+      const sucEl   = document.getElementById('addKeySuccess');
+      errEl.classList.add('hidden');
+      sucEl.classList.add('hidden');
+
+      if (!raw) { showToast('กรุณาใส่คีย์', 'error'); return; }
+
+      const keys = raw.split('\n').map(k => k.trim()).filter(k => k.length > 0);
+      if (keys.length === 0) { showToast('ไม่พบคีย์ที่ถูกต้อง', 'error'); return; }
+
+      try {
+        for (const code of keys) {
+          await addDoc(collection(db, 'keys'), {
+            code, product, used: false, createdAt: serverTimestamp()
+          });
+        }
+        showToast(`เพิ่มคีย์สำเร็จ ${keys.length} ใบ (${product})`);
+        document.getElementById('keyInput').value = '';
+        document.getElementById('keyCountHint').textContent = '0 คีย์';
+      } catch(e) {
+        showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+      }
+    };
+  </script>
+
+</body>
+</html>

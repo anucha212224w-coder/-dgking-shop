@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DG KING - บริการแฮก PUBG Mobile มีระบบกันแบน</title>
+  <meta name="description" content="DG KING บริการแฮก PUBG Mobile ราคาถูก มีระบบกันแบน ESP มองทะลุ Bullet Tracking ดูแล 24 ชั่วโมง รองรับ Android เวอร์ชัน 4.3" />
+  <meta name="keywords" content="โปรพับจี, แฮกพับจี, เช่าโปรพับจี, โปร PUBG Mobile, แฮก PUBG Mobile, ESP พับจี, กันแบนพับจี, โปรพับจีราคาถูก, DG KING, DG SHOP" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.dgkingshop.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="DG KING - บริการแฮก PUBG Mobile มีระบบกันแบน" />
+  <meta property="og:description" content="บริการแฮก PUBG Mobile ราคาถูก มีระบบกันแบน ESP มองทะลุ Bullet Tracking ดูแล 24 ชั่วโมง" />
+  <meta property="og:url" content="https://www.dgkingshop.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://www.dgkingshop.com/images/bg.jpg" />
+  <meta property="og:locale" content="th_TH" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/home.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar" style="opacity:0;">
+    <a href="index.html" class="logo">DG <span>KING</span></a>
+    <ul class="nav-links">
+      <li><a href="shop.html">ร้านค้า</a></li>
+      <li><a href="download.html">ดาวน์โหลด</a></li>
+      <li><a href="orders.html">ออเดอร์</a></li>
+      <li><a href="contact.html">ติดต่อ</a></li>
+      <li><a href="news.html">ข่าวสาร</a></li>
+      <li><a href="#features">ฟีเจอร์</a></li>
+      <li><a href="#videos">วิดีโอ</a></li>
+      <li id="navGuest"><a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a></li>
+      <li id="navGuest2"><a href="register.html" class="btn btn-primary">สมัครสมาชิก</a></li>
+      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+    </ul>
+  </nav>
+
+  <script type="module">
+    import { auth, db, onAuthStateChanged, collection, query, where, orderBy, getDocs, doc, getDoc } from './js/firebase.js';
+
+    onAuthStateChanged(auth, (user) => {
+      const guests = document.querySelectorAll('#navGuest, #navGuest2');
+      const member = document.getElementById('navUser');
+      if (user) { guests.forEach(el => el.style.display = 'none'); member.style.display = 'block'; }
+      document.getElementById('navbar').style.opacity = '1';
+    });
+
+    // โหลดข่าวสารจาก Firestore
+    async function loadNews() {
+      const snap = await getDocs(query(collection(db, 'news'), orderBy('createdAt', 'desc')));
+      const newsEl  = document.getElementById('tab-news');
+      const promoEl = document.getElementById('tab-promo');
+      const newsList  = snap.docs.filter(d => d.data().type === 'news');
+      const promoList = snap.docs.filter(d => d.data().type === 'promo');
+
+      const makeItem = (d) => {
+        const n  = d.data();
+        const dt = n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString('th-TH') : '';
+        return `<a href="news.html?id=${d.id}" class="kv-thumb-item">
+          <div class="kv-thumb-img" style="background-image:url('${n.image || 'images/bg3.jpg'}')"></div>
+          <div class="kv-thumb-info">
+            <p class="kv-thumb-title">${n.title}</p>
+            <p class="kv-thumb-date">${dt}</p>
+          </div>
+        </a>`;
+      };
+
+      newsEl.innerHTML  = newsList.length  ? newsList.map(makeItem).join('')  : '<p style="padding:1rem;color:#666;font-size:0.82rem;">ยังไม่มีข่าวสาร</p>';
+      promoEl.innerHTML = promoList.length ? promoList.map(makeItem).join('') : '<p style="padding:1rem;color:#666;font-size:0.82rem;">ยังไม่มีโปรโมชัน</p>';
+    }
+
+    loadNews();
+
+    // โหลดวิดีโอจาก Firestore
+    async function loadVideos() {
+      const snap = await getDoc(doc(db, 'config', 'videos'));
+      const v    = snap.exists() ? snap.data() : {};
+      const grid = document.getElementById('homeVideoGrid');
+
+      const makeBox = (id, caption) => id
+        ? `<div class="video-box">
+            <iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>
+            ${caption ? `<div class="video-caption">${caption}</div>` : ''}
+           </div>`
+        : `<div class="video-box">
+            <div class="video-placeholder">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              ${caption || 'รอใส่ลิงก์วิดีโอ'}
+            </div>
+           </div>`;
+
+      grid.innerHTML = makeBox(v.home1, v.home1_caption || 'วิดีโอสาธิตการใช้งาน #1')
+                     + makeBox(v.home2, v.home2_caption || 'วิดีโอสาธิตการใช้งาน #2');
+    }
+
+    loadVideos();
+    onAuthStateChanged(auth, (user) => {
+      const guests = document.querySelectorAll('#navGuest, #navGuest2');
+      const member = document.getElementById('navUser');
+      if (user) {
+        guests.forEach(el => el.style.display = 'none');
+        member.style.display = 'block';
+      }
+      document.getElementById('navbar').style.opacity = '1';
+    });
+  </script>
+
+  <!-- KV HERO SECTION -->
+  <section class="kv-section">
+    <div class="kv-slider" id="kvSlider">
+      <div class="kv-slide active" style="background-image:url('images/bg.jpg')"></div>
+      <div class="kv-slide" style="background-image:url('images/bg3.jpg')"></div>
+    </div>
+    <div class="kv-overlay"></div>
+
+    <div class="kv-content">
+      <div class="kv-left">
+        <div class="kv-tag">PUBG MOBILE HACK SERVICE</div>
+        <h1 class="kv-title">บริการแฮก<br><span>PUBG Mobile</span></h1>
+        <p class="kv-desc">มีระบบกันแบน ดูแลตลอด 24 ชั่วโมง<br>ใช้งานง่าย รองรับโหลดเดอร์ส่วนตัว</p>
+        <div class="kv-badges">
+          <span class="kv-badge">ระบบกันแบน</span>
+          <span class="kv-badge">ดูแล 24 ชม.</span>
+          <span class="kv-badge">ใช้งานทันที</span>
+        </div>
+        <a href="shop.html" class="btn-kv">ซื้อเลย</a>
+      </div>
+
+      <div class="kv-right">
+        <div class="kv-panel">
+          <div class="kv-panel-tabs">
+            <button class="kv-tab active" data-tab="news">ข่าวสาร</button>
+            <button class="kv-tab" data-tab="promo">โปรโมชัน</button>
+          </div>
+          <div class="kv-panel-slides">
+            <div class="kv-thumb-list active" id="tab-news">
+              <div class="kv-loading">กำลังโหลด...</div>
+            </div>
+            <div class="kv-thumb-list" id="tab-promo">
+              <div class="kv-loading">กำลังโหลด...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kv-dots" id="kvDots"></div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section class="home-section features-section" id="features">
+    <div class="section-inner">
+      <p class="section-label">ความสามารถ</p>
+      <p class="section-title">ฟีเจอร์โหลดเดอร์</p>
+      <div class="features-grid">
+        <div class="feat-card">
+          <h3>ESP & Visual</h3>
+          <p>Line, Box, Skeleton, Health, Name, Head Dots, Distance, Radar Map</p>
+        </div>
+        <div class="feat-card">
+          <h3>Bullet Tracking</h3>
+          <p>ระบบติดตามกระสุน ปรับ Aiming Range, Distance และ Target Priority</p>
+        </div>
+        <div class="feat-card">
+          <h3>Wide View</h3>
+          <p>ขยายมุมมองกล้องได้กว้างขึ้น เห็นศัตรูรอบด้านมากกว่าปกติ</p>
+        </div>
+        <div class="feat-card">
+          <h3>Item ESP</h3>
+          <p>Crate, AirDrop, Scopes ทุกขนาด และอาวุธ AR ครบทุกชนิด</p>
+        </div>
+        <div class="feat-card">
+          <h3>Protection System</h3>
+          <p>ระบบกันแบนในตัว Protection Logo พร้อม Extra Safe Mode</p>
+        </div>
+        <div class="feat-card">
+          <h3>High FPS Support</h3>
+          <p>รองรับ Render Framerate สูงสุด 144 FPS เล่นลื่น ไม่กระตุก</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING PREVIEW -->
+  <section class="home-section pricing-preview-section">
+    <div class="section-inner">
+      <p class="section-label">เลือกแพ็กเกจ</p>
+      <p class="section-title">ราคาคีย์</p>
+      <div class="pricing-preview-grid">
+        <div class="pp-card">
+          <div class="pp-duration">1 วัน</div>
+          <div class="pp-price"><sup>฿</sup>50</div>
+          <div class="pp-per">฿50 / วัน</div>
+          <a href="shop.html" class="btn btn-outline" style="width:100%;text-align:center;display:block;margin-top:1rem;">ซื้อเลย</a>
+        </div>
+        <div class="pp-card popular">
+          <div class="pp-badge">แนะนำ</div>
+          <div class="pp-duration">7 วัน</div>
+          <div class="pp-price"><sup>฿</sup>270</div>
+          <div class="pp-per">฿38.57 / วัน</div>
+          <a href="shop.html" class="btn btn-primary" style="width:100%;text-align:center;display:block;margin-top:1rem;">ซื้อเลย</a>
+        </div>
+        <div class="pp-card best">
+          <div class="pp-badge best-badge">คุ้มสุด</div>
+          <div class="pp-duration">60 วัน</div>
+          <div class="pp-price green"><sup>฿</sup>950</div>
+          <div class="pp-per">฿15.83 / วัน</div>
+          <a href="shop.html" class="btn btn-green" style="width:100%;text-align:center;display:block;margin-top:1rem;">ซื้อเลย</a>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:2rem;">
+        <a href="shop.html" class="btn btn-outline">ดูทุกแพ็กเกจ</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO SECTION -->
+  <section class="home-section video-section" id="videos">
+    <div class="section-inner">
+      <p class="section-label">รีวิวและสาธิต</p>
+      <p class="section-title">วิดีโอตัวอย่าง</p>
+      <p class="section-sub">ดูการใช้งานจริงก่อนตัดสินใจซื้อ</p>
+      <div class="video-grid" id="homeVideoGrid">
+        <div class="video-box">
+          <div class="video-placeholder">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            กำลังโหลด...
+          </div>
+        </div>
+        <div class="video-box">
+          <div class="video-placeholder">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            กำลังโหลด...
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">DG <span>KING</span></div>
+      <div class="footer-links">
+        <a href="shop.html">ร้านค้า</a>
+        <a href="login.html">เข้าสู่ระบบ</a>
+        <a href="register.html">สมัครสมาชิก</a>
+      </div>
+      <p class="footer-copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // KV Slider
+    const kvSlides = document.querySelectorAll('.kv-slide');
+    const kvDotsEl = document.getElementById('kvDots');
+    let kvIdx = 0;
+    kvSlides.forEach((_, i) => {
+      const d = document.createElement('span');
+      d.className = 'kv-dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => goKv(i);
+      kvDotsEl.appendChild(d);
+    });
+    function goKv(n) {
+      kvSlides[kvIdx].classList.remove('active');
+      document.querySelectorAll('.kv-dot')[kvIdx].classList.remove('active');
+      kvIdx = (n + kvSlides.length) % kvSlides.length;
+      kvSlides[kvIdx].classList.add('active');
+      document.querySelectorAll('.kv-dot')[kvIdx].classList.add('active');
+    }
+    setInterval(() => goKv(kvIdx + 1), 5000);
+
+    // Panel tabs
+    document.querySelectorAll('.kv-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.kv-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.kv-thumb-list').forEach(l => l.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+
+  <!-- COOKIE BANNER -->
+  <div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-text">
+      เว็บไซต์นี้ใช้คุกกี้เพื่อการทำงานของระบบ เช่น การเข้าสู่ระบบและการชำระเงิน
+      การใช้งานเว็บไซต์ต่อไปถือว่าคุณยอมรับ <a href="#">นโยบายความเป็นส่วนตัว</a>
+    </div>
+    <div class="cookie-btns">
+      <button class="cookie-accept" onclick="acceptCookie()">ยอมรับ</button>
+      <button class="cookie-decline" onclick="declineCookie()">ปิด</button>
+    </div>
+  </div>
+
+  <script>
+    if (!localStorage.getItem('cookieAccepted')) {
+      document.getElementById('cookieBanner').classList.remove('hidden');
+    } else {
+      document.getElementById('cookieBanner').classList.add('hidden');
+    }
+    function acceptCookie() {
+      localStorage.setItem('cookieAccepted', '1');
+      document.getElementById('cookieBanner').classList.add('hidden');
+    }
+    function declineCookie() {
+      document.getElementById('cookieBanner').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

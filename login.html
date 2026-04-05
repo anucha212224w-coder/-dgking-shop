@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เข้าสู่ระบบ - DG KING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">Key<span>Shop</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าแรก</a></li>
+      <li><a href="register.html" class="btn btn-primary">สมัครสมาชิก</a></li>
+    </ul>
+  </nav>
+
+  <div class="form-page">
+    <div class="form-box">
+      <h2>เข้าสู่ระบบ</h2>
+      <p class="form-sub">ยินดีต้อนรับกลับ กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+
+      <div id="formAlert" class="alert"></div>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="email">อีเมล</label>
+          <input type="email" id="email" placeholder="example@email.com" autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="password">รหัสผ่าน</label>
+          <input type="password" id="password" placeholder="กรอกรหัสผ่าน" autocomplete="current-password" />
+        </div>
+        <div style="text-align:right; margin-top:-0.6rem; margin-bottom:1.2rem;">
+          <a href="#" id="forgotBtn" style="font-size:0.85rem;">ลืมรหัสผ่าน?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">เข้าสู่ระบบ</button>
+      </form>
+
+      <hr class="divider" />
+      <p class="form-footer">ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิกฟรี</a></p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, signInWithEmailAndPassword, sendPasswordResetEmail } from './js/firebase.js';
+
+    function showAlert(msg, type) {
+      const el = document.getElementById('formAlert');
+      el.className = `alert alert-${type}`;
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password)
+        return showAlert('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showAlert('เข้าสู่ระบบสำเร็จ กำลังเปลี่ยนหน้า...', 'success');
+        setTimeout(() => window.location.href = 'index.html', 1200);
+      } catch (err) {
+        const msg = err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password'
+          ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง'
+          : err.code === 'auth/user-not-found'
+          ? 'ไม่พบบัญชีนี้ในระบบ'
+          : err.code === 'auth/too-many-requests'
+          ? 'ลองใหม่อีกครั้งในภายหลัง'
+          : 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+        showAlert(msg, 'error');
+      }
+    });
+
+    // ลืมรหัสผ่าน
+    document.getElementById('forgotBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      if (!email) return showAlert('กรุณากรอกอีเมลก่อนกดลืมรหัสผ่าน', 'error');
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showAlert('ส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมลแล้ว กรุณาตรวจสอบกล่องจดหมาย', 'success');
+      } catch {
+        showAlert('ไม่พบอีเมลนี้ในระบบ', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

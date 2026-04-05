@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ข่าวสาร - DG KING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/news.css" />
+</head>
+<body>
+
+  <nav class="navbar" id="navbar" style="opacity:0;">
+    <a href="index.html" class="logo">DG <span>KING</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าแรก</a></li>
+      <li><a href="shop.html">ร้านค้า</a></li>
+      <li id="navGuest"><a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a></li>
+      <li id="navGuest2"><a href="register.html" class="btn btn-primary">สมัครสมาชิก</a></li>
+      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+    </ul>
+  </nav>
+
+  <!-- SINGLE NEWS VIEW -->
+  <div id="singleNews" class="news-single hidden">
+    <div class="news-single-inner">
+      <a href="news.html" class="news-back">← กลับ</a>
+      <img id="singleImg" src="" alt="" class="news-single-img" />
+      <div class="news-single-meta">
+        <span id="singleType" class="news-type-badge"></span>
+        <span id="singleDate" class="news-single-date"></span>
+      </div>
+      <h1 id="singleTitle" class="news-single-title"></h1>
+      <p id="singleDesc" class="news-single-desc"></p>
+      <a href="shop.html" class="btn btn-primary" style="margin-top:1.5rem;display:inline-block;">ไปที่ร้านค้า</a>
+    </div>
+  </div>
+
+  <!-- NEWS LIST VIEW -->
+  <div id="newsList" class="news-list-wrap">
+    <div class="news-list-header">
+      <div class="news-tabs">
+        <button class="news-tab active" data-type="all" onclick="filterType('all',this)">ทั้งหมด</button>
+        <button class="news-tab" data-type="news" onclick="filterType('news',this)">ข่าวสาร</button>
+        <button class="news-tab" data-type="promo" onclick="filterType('promo',this)">โปรโมชัน</button>
+      </div>
+    </div>
+    <div class="news-grid" id="newsGrid">
+      <div style="color:var(--text-muted);padding:3rem;text-align:center;">กำลังโหลด...</div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">DG <span>KING</span></div>
+      <div class="footer-links">
+        <a href="index.html">หน้าแรก</a>
+        <a href="shop.html">ร้านค้า</a>
+      </div>
+      <p class="footer-copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { auth, db, onAuthStateChanged, collection, query, orderBy, getDocs, doc, getDoc } from './js/firebase.js';
+
+    onAuthStateChanged(auth, (user) => {
+      const guests = document.querySelectorAll('#navGuest, #navGuest2');
+      const member = document.getElementById('navUser');
+      if (user) { guests.forEach(el => el.style.display = 'none'); member.style.display = 'block'; }
+      document.getElementById('navbar').style.opacity = '1';
+    });
+
+    let allNews = [];
+
+    // เช็ค URL param ว่าดูข่าวเดี่ยวหรือรายการ
+    const params = new URLSearchParams(location.search);
+    const newsId = params.get('id');
+
+    if (newsId) {
+      // แสดงข่าวเดี่ยว
+      document.getElementById('newsList').style.display = 'none';
+      document.getElementById('singleNews').classList.remove('hidden');
+      const snap = await getDoc(doc(db, 'news', newsId));
+      if (snap.exists()) {
+        const n  = snap.data();
+        const dt = n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString('th-TH') : '';
+        document.title = n.title + ' - DG KING';
+        document.getElementById('singleImg').src   = n.image || '';
+        document.getElementById('singleImg').style.display = n.image ? 'block' : 'none';
+        document.getElementById('singleTitle').textContent = n.title;
+        document.getElementById('singleDesc').textContent  = n.desc || '';
+        document.getElementById('singleDate').textContent  = dt;
+        document.getElementById('singleType').textContent  = n.type === 'promo' ? 'โปรโมชัน' : 'ข่าวสาร';
+        document.getElementById('singleType').className    = 'news-type-badge ' + (n.type === 'promo' ? 'badge-promo' : 'badge-news');
+      }
+    } else {
+      // แสดงรายการ
+      const snap = await getDocs(query(collection(db, 'news'), orderBy('createdAt', 'desc')));
+      allNews = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderNews(allNews);
+    }
+
+    function renderNews(list) {
+      const grid = document.getElementById('newsGrid');
+      if (!list.length) { grid.innerHTML = '<p style="color:var(--text-muted);padding:3rem;text-align:center;">ยังไม่มีข่าวสาร</p>'; return; }
+      grid.innerHTML = list.map(n => {
+        const dt = n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString('th-TH') : '';
+        return `<a href="news.html?id=${n.id}" class="news-card">
+          <div class="news-card-img" style="background-image:url('${n.image || 'images/bg3.jpg'}')"></div>
+          <div class="news-card-body">
+            <div class="news-card-meta">
+              <span class="news-type-badge ${n.type === 'promo' ? 'badge-promo' : 'badge-news'}">${n.type === 'promo' ? 'โปรโมชัน' : 'ข่าวสาร'}</span>
+              <span class="news-card-date">${dt}</span>
+            </div>
+            <div class="news-card-title">${n.title}</div>
+            ${n.desc ? `<div class="news-card-desc">${n.desc}</div>` : ''}
+          </div>
+        </a>`;
+      }).join('');
+    }
+
+    window.filterType = function(type, btn) {
+      document.querySelectorAll('.news-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      renderNews(type === 'all' ? allNews : allNews.filter(n => n.type === type));
+    };
+  </script>
+
+</body>
+</html>
