@@ -235,3 +235,10 @@ function initI18n() {
 
 export { initI18n, getLang, setLang, translations };
 window.initI18n = initI18n;
+
+// Auto-init when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initI18n);
+} else {
+  initI18n();
+}
