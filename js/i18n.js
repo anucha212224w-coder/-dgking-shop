@@ -233,7 +233,6 @@ function initI18n() {
   }
 }
 
-export { initI18n, getLang, setLang, translations };
 window.initI18n = initI18n;
 
 // Auto-init when DOM is ready
