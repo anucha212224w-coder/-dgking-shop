@@ -705,13 +705,19 @@
       const errEl = document.getElementById('videoErr');
       const sucEl = document.getElementById('videoSuccess');
       errEl.classList.add('hidden'); sucEl.classList.add('hidden');
+      const parseYTId = (val) => {
+        val = val.trim();
+        // youtu.be/ID or youtube.com/watch?v=ID or youtube.com/embed/ID or raw ID
+        const m = val.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+        return m ? m[1] : val;
+      };
       try {
         await setDoc(doc(db, 'config', 'videos'), {
-          home1:         document.getElementById('vid_home1').value.trim(),
+          home1:         parseYTId(document.getElementById('vid_home1').value),
           home1_caption: document.getElementById('vid_home1_caption').value.trim(),
-          home2:         document.getElementById('vid_home2').value.trim(),
+          home2:         parseYTId(document.getElementById('vid_home2').value),
           home2_caption: document.getElementById('vid_home2_caption').value.trim(),
-          install:       document.getElementById('vid_install').value.trim(),
+          install:       parseYTId(document.getElementById('vid_install').value),
           apk_url:       document.getElementById('vid_apk_url').value.trim(),
           apk_version:   document.getElementById('vid_apk_version').value.trim(),
           apk_size:      document.getElementById('vid_apk_size').value.trim(),
