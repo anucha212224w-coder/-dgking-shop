@@ -311,20 +311,61 @@
       if (!el) return;
 
       const text = lang === 'en' ? cfg.banner_en : cfg.banner_th;
-      if (!text) {
-        el.innerHTML = `<p style="color:var(--text-muted);text-align:center;padding:2rem;">
-          ${lang === 'en' ? 'No promotions at this time. Follow our channels for updates.' : 'ยังไม่มีโปรโมชันในขณะนี้ ติดตามช่องทางของเราเพื่อรับข่าวสาร'}
-        </p>`;
-        return;
+      const redeem = cfg.pts_redeem || 50;
+      const ptsMap = [
+        { label: lang === 'en' ? '1 Day' : '1 วัน',  pts: cfg.pts_1  ?? 5  },
+        { label: lang === 'en' ? '3 Days' : '3 วัน', pts: cfg.pts_3  ?? 12 },
+        { label: lang === 'en' ? '7 Days' : '7 วัน', pts: cfg.pts_7  ?? 25 },
+        { label: lang === 'en' ? '14 Days' : '14 วัน', pts: cfg.pts_14 ?? 45 },
+        { label: lang === 'en' ? '30 Days' : '30 วัน', pts: cfg.pts_30 ?? 80 },
+        { label: lang === 'en' ? '60 Days' : '60 วัน', pts: cfg.pts_60 ?? 120 },
+      ];
+
+      let html = '';
+
+      // Points table (show if points system is active)
+      if (cfg.points_active !== false) {
+        const title = lang === 'en' ? 'Points Reward System' : 'ระบบสะสมแต้ม';
+        const sub   = lang === 'en'
+          ? `Earn points every purchase. Collect <strong>${redeem} points</strong> to redeem a free 1-day key!`
+          : `ซื้อทุกครั้งได้รับแต้ม สะสมครบ <strong>${redeem} แต้ม</strong> แลกคีย์ 1 วันฟรี!`;
+        html += `<div class="promo-pts-section">
+          <div class="promo-pts-title">${title}</div>
+          <p class="promo-pts-sub">${sub}</p>
+          <div class="promo-pts-grid">
+            ${ptsMap.map(p => `
+              <div class="promo-pts-card">
+                <div class="promo-pts-label">${p.label}</div>
+                <div class="promo-pts-value">+${p.pts}</div>
+                <div class="promo-pts-unit">${lang === 'en' ? 'pts' : 'แต้ม'}</div>
+              </div>`).join('')}
+          </div>
+          <div class="promo-pts-redeem">
+            ${lang === 'en' ? `Redeem at` : `แลกได้ที่`} <a href="profile.html">${lang === 'en' ? 'My Account' : 'บัญชีของฉัน'}</a>
+          </div>
+        </div>`;
       }
 
-      el.innerHTML = `
-        <p class="promo-info-text">${text}</p>
-        <div class="promo-channels">
-          <a href="https://t.me/dgshopth" target="_blank" class="promo-channel-btn">Telegram กลุ่มหลัก</a>
-          <a href="https://t.me/BACKADAM01" target="_blank" class="promo-channel-btn">Telegram ส่วนตัว</a>
-          <a href="https://web.facebook.com/share/g/1HfK8V3BRV/" target="_blank" class="promo-channel-btn">Facebook กลุ่ม</a>
+      // Channel links
+      if (text) {
+        html += `<div class="promo-info-card" style="margin-top:1rem;">
+          <div class="promo-info-title">${lang === 'en' ? 'Special Promotions' : 'โปรโมชันพิเศษ'}</div>
+          <p class="promo-info-text">${text}</p>
+          <div class="promo-channels">
+            <a href="https://t.me/dgshopth" target="_blank" class="promo-channel-btn">Telegram ${lang === 'en' ? 'Main Group' : 'กลุ่มหลัก'}</a>
+            <a href="https://t.me/BACKADAM01" target="_blank" class="promo-channel-btn">Telegram ${lang === 'en' ? 'Direct' : 'ส่วนตัว'}</a>
+            <a href="https://web.facebook.com/share/g/1HfK8V3BRV/" target="_blank" class="promo-channel-btn">Facebook ${lang === 'en' ? 'Group' : 'กลุ่ม'}</a>
+          </div>
         </div>`;
+      }
+
+      if (!html) {
+        html = `<p style="color:var(--text-muted);text-align:center;padding:2rem;">
+          ${lang === 'en' ? 'No promotions at this time.' : 'ยังไม่มีโปรโมชันในขณะนี้'}
+        </p>`;
+      }
+
+      el.innerHTML = html;
     }
 
     loadPromoInfo();
