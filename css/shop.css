@@ -747,10 +747,20 @@
 
 /* Points section in promo tab */
 .promo-section-wrap {
+  display: block;
+  position: relative;
   max-width: 1400px;
   margin: 0 auto;
   padding: 1.5rem 2rem 3rem;
   width: 100%;
+  min-height: 200px;
+  background: var(--bg1);
+}
+
+#promoContent {
+  display: block;
+  width: 100%;
+  min-height: 100px;
 }
 
 .promo-layout {
