@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/checkout.css" />
   <!-- QR libs -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="js/i18n.js"></script>
 </head>
 <body>
 
@@ -22,13 +23,13 @@
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">หน้าแรก</a></li>
-      <li><a href="shop.html">ร้านค้า</a></li>
-      <li><a href="download.html">ดาวน์โหลด</a></li>
-      <li><a href="orders.html">ออเดอร์</a></li>
-      <li><a href="contact.html">ติดต่อ</a></li>
-      <li><a href="news.html">ข่าวสาร</a></li>
-      <li id="navUser"><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+      <li><a href="index.html" data-i18n="nav_home">หน้าแรก</a></li>
+      <li><a href="shop.html" data-i18n="nav_shop">ร้านค้า</a></li>
+      <li><a href="download.html" data-i18n="nav_download">ดาวน์โหลด</a></li>
+      <li><a href="orders.html" data-i18n="nav_orders">ออเดอร์</a></li>
+      <li><a href="contact.html" data-i18n="nav_contact">ติดต่อ</a></li>
+      <li><a href="news.html" data-i18n="nav_news">ข่าวสาร</a></li>
+      <li id="navUser"><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
     </ul>
   </nav>
 
@@ -37,17 +38,17 @@
     <div class="step-inner">
       <div class="step active" id="step1el">
         <div class="step-num">1</div>
-        <div class="step-label">สรุปออเดอร์</div>
+        <div class="step-label" data-i18n="checkout_step1">สรุปออเดอร์</div>
       </div>
       <div class="step-line"></div>
       <div class="step" id="step2el">
         <div class="step-num">2</div>
-        <div class="step-label">ชำระเงิน</div>
+        <div class="step-label" data-i18n="checkout_step2">ชำระเงิน</div>
       </div>
       <div class="step-line"></div>
       <div class="step" id="step3el">
         <div class="step-num">3</div>
-        <div class="step-label">ยืนยัน</div>
+        <div class="step-label" data-i18n="checkout_step3">ยืนยัน</div>
       </div>
     </div>
   </div>
@@ -57,55 +58,55 @@
     <!-- STEP 1: ORDER SUMMARY -->
     <div class="checkout-step" id="step1">
       <div class="checkout-card">
-        <div class="checkout-card-title">สรุปออเดอร์</div>
+        <div class="checkout-card-title" data-i18n="checkout_step1">สรุปออเดอร์</div>
         <div class="order-row">
-          <span>สินค้า</span>
+          <span data-i18n="checkout_product">สินค้า</span>
           <span id="s1Product">-</span>
         </div>
         <div class="order-row">
-          <span>ราคา</span>
+          <span data-i18n="checkout_price">ราคา</span>
           <span id="s1Price" class="price-gold">-</span>
         </div>
         <div class="order-row">
-          <span>อีเมลบัญชี</span>
+          <span data-i18n="checkout_email">อีเมลบัญชี</span>
           <span id="s1Email" class="text-muted">-</span>
         </div>
         <hr class="order-divider" />
         <div class="order-row total-row">
-          <span>ยอดที่ต้องชำระ</span>
+          <span data-i18n="checkout_total">ยอดที่ต้องชำระ</span>
           <span id="s1Total" class="price-gold">-</span>
         </div>
-        <button class="btn btn-primary btn-full mt-1" onclick="goStep(2)">ดำเนินการชำระเงิน</button>
-        <a href="shop.html" class="btn btn-outline btn-full mt-05">ยกเลิก</a>
+        <button class="btn btn-primary btn-full mt-1" onclick="goStep(2)" data-i18n="checkout_proceed">ดำเนินการชำระเงิน</button>
+        <a href="shop.html" class="btn btn-outline btn-full mt-05" data-i18n="checkout_cancel">ยกเลิก</a>
       </div>
     </div>
 
     <!-- STEP 2: PAYMENT -->
     <div class="checkout-step hidden" id="step2">
       <div class="checkout-card checkout-card-wide">
-        <div class="checkout-card-title">ชำระเงิน</div>
+        <div class="checkout-card-title" data-i18n="checkout_step2">ชำระเงิน</div>
 
         <div class="payment-layout">
 
           <!-- LEFT: QR -->
           <div class="payment-left">
-            <div class="payment-method-label">โอนผ่าน PromptPay</div>
+            <div class="payment-method-label" data-i18n="checkout_pay_method">โอนผ่าน PromptPay</div>
             <div class="qr-wrap">
               <canvas id="qrCanvas"></canvas>
             </div>
-            <div class="qr-label">สแกนด้วย TrueMoney Wallet หรือแอปธนาคาร</div>
-            <div class="payment-amount-label">ยอดที่ต้องโอน</div>
+            <div class="qr-label" data-i18n="checkout_scan">สแกนด้วย TrueMoney Wallet หรือแอปธนาคาร</div>
+            <div class="payment-amount-label" data-i18n="checkout_amount_label">ยอดที่ต้องโอน</div>
             <div class="payment-amount" id="s2Amount">-</div>
-            <div class="payment-note">โอนตรงตามยอด เพื่อให้ระบบตรวจสอบอัตโนมัติ</div>
+            <div class="payment-note" data-i18n="checkout_note">โอนตรงตามยอด เพื่อให้ระบบตรวจสอบอัตโนมัติ</div>
           </div>
 
           <!-- RIGHT: UPLOAD -->
           <div class="payment-right">
-            <div class="upload-label">แนบสลิปการโอนเงิน</div>
+            <div class="upload-label" data-i18n="checkout_upload">แนบสลิปการโอนเงิน</div>
             <div class="upload-box" id="uploadBox" onclick="document.getElementById('slipFile').click()">
               <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <span id="uploadText">คลิกเพื่ออัปโหลดสลิป</span>
-              <small>รองรับ JPG, PNG ขนาดไม่เกิน 5MB</small>
+              <span id="uploadText" data-i18n="checkout_upload_click">คลิกเพื่ออัปโหลดสลิป</span>
+              <small data-i18n="checkout_upload_hint">รองรับ JPG, PNG ขนาดไม่เกิน 5MB</small>
             </div>
             <input type="file" id="slipFile" accept="image/*" style="display:none" onchange="previewSlip(event)" />
             <img id="slipPreview" class="slip-preview hidden" alt="slip preview" />
@@ -113,21 +114,21 @@
             <div class="alert alert-error hidden" id="payError"></div>
             <div class="alert alert-success hidden" id="paySuccess"></div>
 
-            <button class="btn btn-primary btn-full mt-1" id="submitBtn" onclick="submitPayment()">ส่งสลิปและยืนยัน</button>
-            <button class="btn btn-outline btn-full mt-05" onclick="goStep(1)">ย้อนกลับ</button>
+            <button class="btn btn-primary btn-full mt-1" id="submitBtn" onclick="submitPayment()" data-i18n="checkout_submit">ส่งสลิปและยืนยัน</button>
+            <button class="btn btn-outline btn-full mt-05" onclick="goStep(1)" data-i18n="checkout_back">ย้อนกลับ</button>
 
             <!-- หมายเหตุ -->
             <div class="terms-box">
-              <div class="terms-title">ข้อตกลงและเงื่อนไข</div>
+              <div class="terms-title" data-i18n="checkout_terms_title">ข้อตกลงและเงื่อนไข</div>
               <ul class="terms-list">
-                <li>สินค้าเป็นสินค้าดิจิทัล ไม่รับคืนและไม่คืนเงินทุกกรณี</li>
-                <li>คีย์ที่ได้รับใช้ได้เพียง 1 อุปกรณ์เท่านั้น ห้ามแชร์หรือโอนให้ผู้อื่น</li>
-                <li>กรุณาตรวจสอบยอดเงินให้ถูกต้องก่อนโอน ระบบตรวจสอบอัตโนมัติ</li>
-                <li>ห้ามส่งสลิปปลอมหรือสลิปซ้ำ หากตรวจพบจะถูกระงับบัญชีทันที</li>
-                <li>หากมีปัญหาติดต่อแอดมินภายใน 24 ชั่วโมงหลังซื้อ</li>
-                <li>ทีมงานไม่รับผิดชอบหากถูกแบนจากการใช้งานผิดวิธี</li>
+                <li data-i18n="checkout_terms1">สินค้าเป็นสินค้าดิจิทัล ไม่รับคืนและไม่คืนเงินทุกกรณี</li>
+                <li data-i18n="checkout_terms2">คีย์ที่ได้รับใช้ได้เพียง 1 อุปกรณ์เท่านั้น ห้ามแชร์หรือโอนให้ผู้อื่น</li>
+                <li data-i18n="checkout_terms3">กรุณาตรวจสอบยอดเงินให้ถูกต้องก่อนโอน ระบบตรวจสอบอัตโนมัติ</li>
+                <li data-i18n="checkout_terms4">ห้ามส่งสลิปปลอมหรือสลิปซ้ำ หากตรวจพบจะถูกระงับบัญชีทันที</li>
+                <li data-i18n="checkout_terms5">หากมีปัญหาติดต่อแอดมินภายใน 24 ชั่วโมงหลังซื้อ</li>
+                <li data-i18n="checkout_terms6">ทีมงานไม่รับผิดชอบหากถูกแบนจากการใช้งานผิดวิธี</li>
               </ul>
-              <p class="terms-agree">การกดส่งสลิปถือว่าคุณยอมรับข้อตกลงทั้งหมดข้างต้น</p>
+              <p class="terms-agree" data-i18n="checkout_terms_agree">การกดส่งสลิปถือว่าคุณยอมรับข้อตกลงทั้งหมดข้างต้น</p>
             </div>
           </div>
 
@@ -141,15 +142,15 @@
         <div class="success-icon">
           <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
-        <div class="checkout-card-title">ชำระเงินสำเร็จ</div>
-        <p class="success-desc">ระบบตรวจสอบสลิปเรียบร้อยแล้ว<br>ออเดอร์ของคุณกำลังดำเนินการ</p>
+        <div class="checkout-card-title" data-i18n="checkout_success_title">ชำระเงินสำเร็จ</div>
+        <p class="success-desc" data-i18n="checkout_success_desc">ระบบตรวจสอบสลิปเรียบร้อยแล้ว<br>ออเดอร์ของคุณกำลังดำเนินการ</p>
         <div class="order-id-box">
-          หมายเลขออเดอร์: <span id="confirmedOrderId">-</span>
+          <span data-i18n="checkout_order_id">หมายเลขออเดอร์:</span> <span id="confirmedOrderId">-</span>
         </div>
         <div id="keyResultBox"></div>
-        <p class="success-note">เก็บคีย์ไว้ให้ดี หากมีปัญหาติดต่อแอดมินได้เลย</p>
-        <a href="orders.html" class="btn btn-primary btn-full mt-1">ดูออเดอร์ของฉัน</a>
-        <a href="shop.html" class="btn btn-outline btn-full mt-05">กลับร้านค้า</a>
+        <p class="success-note" data-i18n="checkout_key_note">เก็บคีย์ไว้ให้ดี หากมีปัญหาติดต่อแอดมินได้เลย</p>
+        <a href="orders.html" class="btn btn-primary btn-full mt-1" data-i18n="checkout_view_orders">ดูออเดอร์ของฉัน</a>
+        <a href="shop.html" class="btn btn-outline btn-full mt-05" data-i18n="checkout_back_shop">กลับร้านค้า</a>
       </div>
     </div>
 

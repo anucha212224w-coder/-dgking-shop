@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" href="favicon_io/apple-touch-icon.png" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/checkout.css" />
+  <script src="js/i18n.js"></script>
 </head>
 <body>
 
@@ -20,20 +21,20 @@
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">หน้าแรก</a></li>
-      <li><a href="shop.html">ร้านค้า</a></li>
-      <li><a href="download.html">ดาวน์โหลด</a></li>
-      <li><a href="orders.html">ออเดอร์</a></li>
-      <li><a href="contact.html">ติดต่อ</a></li>
-      <li><a href="news.html">ข่าวสาร</a></li>
-      <li><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+      <li><a href="index.html" data-i18n="nav_home">หน้าแรก</a></li>
+      <li><a href="shop.html" data-i18n="nav_shop">ร้านค้า</a></li>
+      <li><a href="download.html" data-i18n="nav_download">ดาวน์โหลด</a></li>
+      <li><a href="orders.html" data-i18n="nav_orders">ออเดอร์</a></li>
+      <li><a href="contact.html" data-i18n="nav_contact">ติดต่อ</a></li>
+      <li><a href="news.html" data-i18n="nav_news">ข่าวสาร</a></li>
+      <li><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
     </ul>
   </nav>
 
   <div class="orders-wrap">
     <div class="orders-header">
-      <div class="orders-title">ออเดอร์ของฉัน</div>
-      <a href="shop.html" class="btn btn-primary">ซื้อเพิ่ม</a>
+      <div class="orders-title" data-i18n="orders_title">ออเดอร์ของฉัน</div>
+      <a href="shop.html" class="btn btn-primary" data-i18n="orders_buy_more">ซื้อเพิ่ม</a>
     </div>
 
     <div id="ordersList">

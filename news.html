@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" href="favicon_io/apple-touch-icon.png" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/news.css" />
+  <script src="js/i18n.js"></script>
 </head>
 <body>
 
@@ -20,15 +21,15 @@
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">หน้าแรก</a></li>
-      <li><a href="shop.html">ร้านค้า</a></li>
-      <li><a href="download.html">ดาวน์โหลด</a></li>
-      <li><a href="orders.html">ออเดอร์</a></li>
-      <li><a href="contact.html">ติดต่อ</a></li>
-      <li><a href="news.html">ข่าวสาร</a></li>
-      <li id="navGuest"><a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a></li>
-      <li id="navGuest2"><a href="register.html" class="btn btn-primary">สมัครสมาชิก</a></li>
-      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+      <li><a href="index.html" data-i18n="nav_home">หน้าแรก</a></li>
+      <li><a href="shop.html" data-i18n="nav_shop">ร้านค้า</a></li>
+      <li><a href="download.html" data-i18n="nav_download">ดาวน์โหลด</a></li>
+      <li><a href="orders.html" data-i18n="nav_orders">ออเดอร์</a></li>
+      <li><a href="contact.html" data-i18n="nav_contact">ติดต่อ</a></li>
+      <li><a href="news.html" data-i18n="nav_news">ข่าวสาร</a></li>
+      <li id="navGuest"><a href="login.html" class="btn btn-outline" data-i18n="nav_login">เข้าสู่ระบบ</a></li>
+      <li id="navGuest2"><a href="register.html" class="btn btn-primary" data-i18n="nav_register">สมัครสมาชิก</a></li>
+      <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
       <li>
         <div class="lang-switcher">
           <button class="lang-btn" data-lang="th">TH</button>
@@ -41,7 +42,7 @@
   <!-- SINGLE NEWS VIEW -->
   <div id="singleNews" class="news-single hidden">
     <div class="news-single-inner">
-      <a href="news.html" class="news-back">← กลับ</a>
+    <a href="news.html" class="news-back" data-i18n="news_back">← กลับ</a>
       <img id="singleImg" src="" alt="" class="news-single-img" />
       <div class="news-single-meta">
         <span id="singleType" class="news-type-badge"></span>
@@ -49,7 +50,7 @@
       </div>
       <h1 id="singleTitle" class="news-single-title"></h1>
       <p id="singleDesc" class="news-single-desc"></p>
-      <a href="shop.html" class="btn btn-primary" style="margin-top:1.5rem;display:inline-block;">ไปที่ร้านค้า</a>
+      <a href="shop.html" class="btn btn-primary" style="margin-top:1.5rem;display:inline-block;" data-i18n="news_go_shop">ไปที่ร้านค้า</a>
     </div>
   </div>
 
@@ -57,9 +58,9 @@
   <div id="newsList" class="news-list-wrap">
     <div class="news-list-header">
       <div class="news-tabs">
-        <button class="news-tab active" data-type="all" onclick="filterType('all',this)">ทั้งหมด</button>
-        <button class="news-tab" data-type="news" onclick="filterType('news',this)">ข่าวสาร</button>
-        <button class="news-tab" data-type="promo" onclick="filterType('promo',this)">โปรโมชัน</button>
+        <button class="news-tab active" data-type="all" onclick="filterType('all',this)" data-i18n="news_all">ทั้งหมด</button>
+        <button class="news-tab" data-type="news" onclick="filterType('news',this)" data-i18n="news_tab_news">ข่าวสาร</button>
+        <button class="news-tab" data-type="promo" onclick="filterType('promo',this)" data-i18n="news_tab_promo">โปรโมชัน</button>
       </div>
     </div>
     <div class="news-grid" id="newsGrid">
@@ -71,10 +72,10 @@
     <div class="footer-inner">
       <div class="footer-logo">DG <span>KING</span></div>
       <div class="footer-links">
-        <a href="index.html">หน้าแรก</a>
-        <a href="shop.html">ร้านค้า</a>
+        <a href="index.html" data-i18n="footer_home">หน้าแรก</a>
+        <a href="shop.html" data-i18n="footer_shop">ร้านค้า</a>
       </div>
-      <p class="footer-copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
+      <p class="footer-copy" data-i18n="footer_copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
     </div>
   </footer>
 

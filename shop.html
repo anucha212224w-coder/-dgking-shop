@@ -22,12 +22,12 @@
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">หน้าแรก</a></li>
-      <li><a href="shop.html">ร้านค้า</a></li>
-      <li><a href="download.html">ดาวน์โหลด</a></li>
-      <li><a href="orders.html">ออเดอร์</a></li>
-      <li><a href="contact.html">ติดต่อ</a></li>
-      <li><a href="news.html">ข่าวสาร</a></li>
+      <li><a href="index.html" data-i18n="nav_home">หน้าแรก</a></li>
+      <li><a href="shop.html" data-i18n="nav_shop">ร้านค้า</a></li>
+      <li><a href="download.html" data-i18n="nav_download">ดาวน์โหลด</a></li>
+      <li><a href="orders.html" data-i18n="nav_orders">ออเดอร์</a></li>
+      <li><a href="contact.html" data-i18n="nav_contact">ติดต่อ</a></li>
+      <li><a href="news.html" data-i18n="nav_news">ข่าวสาร</a></li>
       <li id="navGuest"><a href="login.html" class="btn btn-outline" data-i18n="nav_login">เข้าสู่ระบบ</a></li>
       <li id="navGuest2"><a href="register.html" class="btn btn-primary" data-i18n="nav_register">สมัครสมาชิก</a></li>
       <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
@@ -47,8 +47,8 @@
       <div class="shop-banner-left">
         <div class="shop-game-info">
           <div class="shop-game-title">DG KING</div>
-          <div class="shop-official-tag">บริการแฮก PUBG Mobile</div>
-          <div class="shop-banner-desc">มีระบบกันแบน ดูแลตลอด 24 ชั่วโมง ใช้งานง่าย</div>
+          <div class="shop-official-tag" data-i18n="shop_official">บริการแฮก PUBG Mobile</div>
+          <div class="shop-banner-desc" data-i18n="shop_desc">มีระบบกันแบน ดูแลตลอด 24 ชั่วโมง ใช้งานง่าย</div>
         </div>
       </div>
     </div>
@@ -57,17 +57,17 @@
   <!-- TAB BAR -->
   <div class="shop-tabs">
     <div class="shop-tabs-inner">
-      <button class="shop-tab active" data-tab="key">คีย์โหลดเดอร์</button>
-      <button class="shop-tab" data-tab="promo">โปรโมชัน</button>
+      <button class="shop-tab active" data-tab="key" data-i18n="tab_key">คีย์โหลดเดอร์</button>
+      <button class="shop-tab" data-tab="promo" data-i18n="tab_promo2">โปรโมชัน</button>
     </div>
   </div>
 
   <!-- MARKETING BAR -->
   <div class="marketing-bar">
     <div class="marketing-bar-inner" id="marketingBar">
-      <div class="marketing-item active">ระบบกันแบนอัปเกรดแล้ว รองรับ PUBG Mobile 4.3</div>
-      <div class="marketing-item">สมัครใหม่วันนี้ รับส่วนลดพิเศษ ติดต่อแอดมิน</div>
-      <div class="marketing-item">ดูแลตลอด 24 ชั่วโมง ทีมงานพร้อมช่วยเหลือ</div>
+      <div class="marketing-item active" data-i18n="mkt1">ระบบกันแบนอัปเกรดแล้ว รองรับ PUBG Mobile 4.3</div>
+      <div class="marketing-item" data-i18n="mkt2">สมัครใหม่วันนี้ รับส่วนลดพิเศษ ติดต่อแอดมิน</div>
+      <div class="marketing-item" data-i18n="mkt3">ดูแลตลอด 24 ชั่วโมง ทีมงานพร้อมช่วยเหลือ</div>
     </div>
     <div class="marketing-dots" id="marketingDots"></div>
   </div>
@@ -90,23 +90,22 @@
 
       <div class="products-grid" id="productsGrid">
 
-        <!-- 1 วัน -->
         <div class="product-card" data-duration="1" data-price="50">
           <div class="product-card-top" style="background-image: url('images/bg3.jpg')">
             <div class="product-card-overlay"></div>
           </div>
           <div class="product-card-body">
-            <div class="product-duration">1 วัน</div>
+            <div class="product-duration">1 <span data-i18n="price_day">วัน</span></div>
             <div class="product-price"><sup>฿</sup>50</div>
-            <div class="product-stock">กำลังโหลด...</div>
-            <div class="product-per-day">฿50 / วัน</div>
+            <div class="product-stock" data-i18n="loading">กำลังโหลด...</div>
+            <div class="product-per-day">฿50 / <span data-i18n="price_per_day">วัน</span></div>
             <ul class="product-features">
-              <li>ESP & Visual เต็มรูปแบบ</li>
-              <li>ระบบกันแบนในตัว</li>
-              <li>รองรับ PUBG Mobile 4.3</li>
-              <li>ซัพพอร์ตตลอด 24 ชม.</li>
+              <li data-i18n="prod_feat_esp">ESP & Visual เต็มรูปแบบ</li>
+              <li data-i18n="prod_feat_antiban">ระบบกันแบนในตัว</li>
+              <li data-i18n="prod_feat_support">รองรับ PUBG Mobile 4.3</li>
+              <li data-i18n="prod_feat_24h">ซัพพอร์ตตลอด 24 ชม.</li>
             </ul>
-            <button class="product-buy-btn btn-outline" onclick="buyProduct('1 วัน', 50)">ซื้อเลย</button>
+            <button class="product-buy-btn btn-outline" onclick="buyProduct('1 วัน', 50)" data-i18n="buy_btn">ซื้อเลย</button>
           </div>
         </div>
 
@@ -116,38 +115,38 @@
             <div class="product-card-overlay"></div>
           </div>
           <div class="product-card-body">
-            <div class="product-duration">3 วัน</div>
+            <div class="product-duration">3 <span data-i18n="price_day">วัน</span></div>
             <div class="product-price"><sup>฿</sup>120</div>
-            <div class="product-stock">กำลังโหลด...</div>
-            <div class="product-per-day">฿40 / วัน</div>
+            <div class="product-stock" data-i18n="loading">กำลังโหลด...</div>
+            <div class="product-per-day">฿40 / <span data-i18n="price_per_day">วัน</span></div>
             <ul class="product-features">
-              <li>ESP & Visual เต็มรูปแบบ</li>
-              <li>ระบบกันแบนในตัว</li>
-              <li>Bullet Tracking</li>
-              <li>ซัพพอร์ตตลอด 24 ชม.</li>
+              <li data-i18n="prod_feat_esp">ESP & Visual เต็มรูปแบบ</li>
+              <li data-i18n="prod_feat_antiban">ระบบกันแบนในตัว</li>
+              <li data-i18n="prod_feat_bullet">Bullet Tracking</li>
+              <li data-i18n="prod_feat_24h">ซัพพอร์ตตลอด 24 ชม.</li>
             </ul>
-            <button class="product-buy-btn btn-outline" onclick="buyProduct('3 วัน', 120)">ซื้อเลย</button>
+            <button class="product-buy-btn btn-outline" onclick="buyProduct('3 วัน', 120)" data-i18n="buy_btn">ซื้อเลย</button>
           </div>
         </div>
 
         <!-- 7 วัน - แนะนำ -->
         <div class="product-card product-popular" data-duration="7" data-price="270">
-          <div class="product-badge badge-red">แนะนำ</div>
+          <div class="product-badge badge-red" data-i18n="badge_recommended">แนะนำ</div>
           <div class="product-card-top" style="background-image: url('images/bg3.jpg')">
             <div class="product-card-overlay"></div>
           </div>
           <div class="product-card-body">
-            <div class="product-duration">7 วัน</div>
+            <div class="product-duration">7 <span data-i18n="price_day">วัน</span></div>
             <div class="product-price gold"><sup>฿</sup>270</div>
-            <div class="product-stock">กำลังโหลด...</div>
-            <div class="product-per-day">฿38.57 / วัน</div>
+            <div class="product-stock" data-i18n="loading">กำลังโหลด...</div>
+            <div class="product-per-day">฿38.57 / <span data-i18n="price_per_day">วัน</span></div>
             <ul class="product-features">
-              <li>ESP & Visual + Item ESP</li>
-              <li>ระบบกันแบน Extra Safe Mode</li>
-              <li>Bullet Tracking + Wide View</li>
-              <li>รองรับ 144 FPS</li>
+              <li data-i18n="prod_feat_item">ESP & Visual + Item ESP</li>
+              <li data-i18n="prod_feat_extra">ระบบกันแบน Extra Safe Mode</li>
+              <li data-i18n="prod_feat_wide">Bullet Tracking + Wide View</li>
+              <li data-i18n="prod_feat_144">รองรับ 144 FPS</li>
             </ul>
-            <button class="product-buy-btn btn-primary" onclick="buyProduct('7 วัน', 270)">ซื้อเลย</button>
+            <button class="product-buy-btn btn-primary" onclick="buyProduct('7 วัน', 270)" data-i18n="buy_btn">ซื้อเลย</button>
           </div>
         </div>
 
@@ -157,17 +156,17 @@
             <div class="product-card-overlay"></div>
           </div>
           <div class="product-card-body">
-            <div class="product-duration">14 วัน</div>
+            <div class="product-duration">14 <span data-i18n="price_day">วัน</span></div>
             <div class="product-price"><sup>฿</sup>370</div>
-            <div class="product-stock">กำลังโหลด...</div>
-            <div class="product-per-day">฿26.43 / วัน</div>
+            <div class="product-stock" data-i18n="loading">กำลังโหลด...</div>
+            <div class="product-per-day">฿26.43 / <span data-i18n="price_per_day">วัน</span></div>
             <ul class="product-features">
-              <li>ESP & Visual + Item ESP</li>
-              <li>ระบบกันแบน Extra Safe Mode</li>
-              <li>Bullet Tracking + Wide View</li>
-              <li>รองรับ 144 FPS + Radar Map</li>
+              <li data-i18n="prod_feat_item">ESP & Visual + Item ESP</li>
+              <li data-i18n="prod_feat_extra">ระบบกันแบน Extra Safe Mode</li>
+              <li data-i18n="prod_feat_wide">Bullet Tracking + Wide View</li>
+              <li data-i18n="prod_feat_radar">รองรับ 144 FPS + Radar Map</li>
             </ul>
-            <button class="product-buy-btn btn-outline" onclick="buyProduct('14 วัน', 370)">ซื้อเลย</button>
+            <button class="product-buy-btn btn-outline" onclick="buyProduct('14 วัน', 370)" data-i18n="buy_btn">ซื้อเลย</button>
           </div>
         </div>
 
@@ -177,38 +176,38 @@
             <div class="product-card-overlay"></div>
           </div>
           <div class="product-card-body">
-            <div class="product-duration">30 วัน</div>
+            <div class="product-duration">30 <span data-i18n="price_day">วัน</span></div>
             <div class="product-price"><sup>฿</sup>750</div>
-            <div class="product-stock">กำลังโหลด...</div>
-            <div class="product-per-day">฿25 / วัน</div>
+            <div class="product-stock" data-i18n="loading">กำลังโหลด...</div>
+            <div class="product-per-day">฿25 / <span data-i18n="price_per_day">วัน</span></div>
             <ul class="product-features">
-              <li>ฟีเจอร์ครบทุกอย่าง</li>
-              <li>ระบบกันแบน Protection Logo</li>
-              <li>อัปเดตฟรีตลอดอายุการใช้งาน</li>
-              <li>Priority Support</li>
+              <li data-i18n="prod_feat_all">ฟีเจอร์ครบทุกอย่าง</li>
+              <li data-i18n="prod_feat_logo">ระบบกันแบน Protection Logo</li>
+              <li data-i18n="prod_feat_update">อัปเดตฟรีตลอดอายุการใช้งาน</li>
+              <li data-i18n="prod_feat_priority">Priority Support</li>
             </ul>
-            <button class="product-buy-btn btn-outline" onclick="buyProduct('30 วัน', 750)">ซื้อเลย</button>
+            <button class="product-buy-btn btn-outline" onclick="buyProduct('30 วัน', 750)" data-i18n="buy_btn">ซื้อเลย</button>
           </div>
         </div>
 
         <!-- 60 วัน - คุ้มสุด -->
         <div class="product-card product-best" data-duration="60" data-price="950">
-          <div class="product-badge badge-green">คุ้มสุด</div>
+          <div class="product-badge badge-green" data-i18n="badge_best">คุ้มสุด</div>
           <div class="product-card-top" style="background-image: url('images/bg3.jpg')">
             <div class="product-card-overlay"></div>
           </div>
           <div class="product-card-body">
-            <div class="product-duration">60 วัน</div>
+            <div class="product-duration">60 <span data-i18n="price_day">วัน</span></div>
             <div class="product-price green"><sup>฿</sup>950</div>
-            <div class="product-stock">กำลังโหลด...</div>
-            <div class="product-per-day">฿15.83 / วัน</div>
+            <div class="product-stock" data-i18n="loading">กำลังโหลด...</div>
+            <div class="product-per-day">฿15.83 / <span data-i18n="price_per_day">วัน</span></div>
             <ul class="product-features">
-              <li>ฟีเจอร์ครบทุกอย่าง</li>
-              <li>ระบบกันแบน Protection Logo</li>
-              <li>อัปเดตฟรีตลอดอายุการใช้งาน</li>
-              <li>Priority Support + ราคาถูกสุด</li>
+              <li data-i18n="prod_feat_all">ฟีเจอร์ครบทุกอย่าง</li>
+              <li data-i18n="prod_feat_logo">ระบบกันแบน Protection Logo</li>
+              <li data-i18n="prod_feat_update">อัปเดตฟรีตลอดอายุการใช้งาน</li>
+              <li data-i18n="prod_feat_cheapest">Priority Support + ราคาถูกสุด</li>
             </ul>
-            <button class="product-buy-btn btn-green" onclick="buyProduct('60 วัน', 950)">ซื้อเลย</button>
+            <button class="product-buy-btn btn-green" onclick="buyProduct('60 วัน', 950)" data-i18n="buy_btn">ซื้อเลย</button>
           </div>
         </div>
 
@@ -229,25 +228,24 @@
   <!-- FEATURES BAR -->
   <div class="shop-features-bar">
     <div class="shop-features-inner">
-      <div class="shop-feat-item">ระบบกันแบน</div>
+      <div class="shop-feat-item" data-i18n="shop_feat1">ระบบกันแบน</div>
       <div class="shop-feat-item">ESP & Visual</div>
-      <div class="shop-feat-item">ดูแล 24 ชม.</div>
-      <div class="shop-feat-item">รองรับ 144 FPS</div>
+      <div class="shop-feat-item" data-i18n="shop_feat3">ดูแล 24 ชม.</div>
+      <div class="shop-feat-item" data-i18n="shop_feat4">รองรับ 144 FPS</div>
       <div class="shop-feat-item">Wide View</div>
-      <div class="shop-feat-item">ซัพพอร์ตออนไลน์</div>
+      <div class="shop-feat-item" data-i18n="shop_feat6">ซัพพอร์ตออนไลน์</div>
     </div>
   </div>
 
-  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-logo">DG <span>KING</span></div>
       <div class="footer-links">
-        <a href="index.html">หน้าแรก</a>
-        <a href="login.html">เข้าสู่ระบบ</a>
-        <a href="register.html">สมัครสมาชิก</a>
+        <a href="index.html" data-i18n="footer_home">หน้าแรก</a>
+        <a href="login.html" data-i18n="footer_login">เข้าสู่ระบบ</a>
+        <a href="register.html" data-i18n="footer_register">สมัครสมาชิก</a>
       </div>
-      <p class="footer-copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
+      <p class="footer-copy" data-i18n="footer_copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
     </div>
   </footer>
 

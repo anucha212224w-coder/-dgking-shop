@@ -34,13 +34,13 @@
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="shop.html">ร้านค้า</a></li>
-      <li><a href="download.html">ดาวน์โหลด</a></li>
-      <li><a href="orders.html">ออเดอร์</a></li>
-      <li><a href="contact.html">ติดต่อ</a></li>
-      <li><a href="news.html">ข่าวสาร</a></li>
-      <li><a href="#features">ฟีเจอร์</a></li>
-      <li><a href="#videos">วิดีโอ</a></li>
+      <li><a href="shop.html" data-i18n="nav_shop">ร้านค้า</a></li>
+      <li><a href="download.html" data-i18n="nav_download">ดาวน์โหลด</a></li>
+      <li><a href="orders.html" data-i18n="nav_orders">ออเดอร์</a></li>
+      <li><a href="contact.html" data-i18n="nav_contact">ติดต่อ</a></li>
+      <li><a href="news.html" data-i18n="nav_news">ข่าวสาร</a></li>
+      <li><a href="#features" data-i18n="nav_features">ฟีเจอร์</a></li>
+      <li><a href="#videos" data-i18n="nav_videos">วิดีโอ</a></li>
       <li id="navGuest"><a href="login.html" class="btn btn-outline" data-i18n="nav_login">เข้าสู่ระบบ</a></li>
       <li id="navGuest2"><a href="register.html" class="btn btn-primary" data-i18n="nav_register">สมัครสมาชิก</a></li>
       <li id="navUser" style="display:none;"><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
@@ -173,27 +173,27 @@
       <div class="features-grid">
         <div class="feat-card">
           <h3>ESP & Visual</h3>
-          <p>Line, Box, Skeleton, Health, Name, Head Dots, Distance, Radar Map</p>
+          <p data-i18n="feat_esp_desc">Line, Box, Skeleton, Health, Name, Head Dots, Distance, Radar Map</p>
         </div>
         <div class="feat-card">
           <h3>Bullet Tracking</h3>
-          <p>ระบบติดตามกระสุน ปรับ Aiming Range, Distance และ Target Priority</p>
+          <p data-i18n="feat_bullet_desc">ระบบติดตามกระสุน ปรับ Aiming Range, Distance และ Target Priority</p>
         </div>
         <div class="feat-card">
           <h3>Wide View</h3>
-          <p>ขยายมุมมองกล้องได้กว้างขึ้น เห็นศัตรูรอบด้านมากกว่าปกติ</p>
+          <p data-i18n="feat_wide_desc">ขยายมุมมองกล้องได้กว้างขึ้น เห็นศัตรูรอบด้านมากกว่าปกติ</p>
         </div>
         <div class="feat-card">
           <h3>Item ESP</h3>
-          <p>Crate, AirDrop, Scopes ทุกขนาด และอาวุธ AR ครบทุกชนิด</p>
+          <p data-i18n="feat_item_desc">Crate, AirDrop, Scopes ทุกขนาด และอาวุธ AR ครบทุกชนิด</p>
         </div>
         <div class="feat-card">
           <h3>Protection System</h3>
-          <p>ระบบกันแบนในตัว Protection Logo พร้อม Extra Safe Mode</p>
+          <p data-i18n="feat_protect_desc">ระบบกันแบนในตัว Protection Logo พร้อม Extra Safe Mode</p>
         </div>
         <div class="feat-card">
           <h3>High FPS Support</h3>
-          <p>รองรับ Render Framerate สูงสุด 144 FPS เล่นลื่น ไม่กระตุก</p>
+          <p data-i18n="feat_fps_desc">รองรับ Render Framerate สูงสุด 144 FPS เล่นลื่น ไม่กระตุก</p>
         </div>
       </div>
     </div>
@@ -206,28 +206,28 @@
       <p class="section-title" data-i18n="price_title">ราคาคีย์</p>
       <div class="pricing-preview-grid">
         <div class="pp-card">
-          <div class="pp-duration">1 วัน</div>
+          <div class="pp-duration" data-i18n-prefix="1 " data-i18n-suffix-th="วัน" data-i18n-suffix-en="Day">1 วัน</div>
           <div class="pp-price"><sup>฿</sup>50</div>
-          <div class="pp-per">฿50 / วัน</div>
-          <a href="shop.html" class="btn btn-outline" style="width:100%;text-align:center;display:block;margin-top:1rem;">ซื้อเลย</a>
+          <div class="pp-per">฿50 / <span data-i18n="price_per_day">วัน</span></div>
+          <a href="shop.html" class="btn btn-outline" style="width:100%;text-align:center;display:block;margin-top:1rem;" data-i18n="price_buy">ซื้อเลย</a>
         </div>
         <div class="pp-card popular">
-          <div class="pp-badge">แนะนำ</div>
-          <div class="pp-duration">7 วัน</div>
+          <div class="pp-badge" data-i18n="price_recommended">แนะนำ</div>
+          <div class="pp-duration">7 <span data-i18n="price_day">วัน</span></div>
           <div class="pp-price"><sup>฿</sup>270</div>
-          <div class="pp-per">฿38.57 / วัน</div>
-          <a href="shop.html" class="btn btn-primary" style="width:100%;text-align:center;display:block;margin-top:1rem;">ซื้อเลย</a>
+          <div class="pp-per">฿38.57 / <span data-i18n="price_per_day">วัน</span></div>
+          <a href="shop.html" class="btn btn-primary" style="width:100%;text-align:center;display:block;margin-top:1rem;" data-i18n="price_buy">ซื้อเลย</a>
         </div>
         <div class="pp-card best">
-          <div class="pp-badge best-badge">คุ้มสุด</div>
-          <div class="pp-duration">60 วัน</div>
+          <div class="pp-badge best-badge" data-i18n="price_best">คุ้มสุด</div>
+          <div class="pp-duration">60 <span data-i18n="price_day">วัน</span></div>
           <div class="pp-price green"><sup>฿</sup>950</div>
-          <div class="pp-per">฿15.83 / วัน</div>
-          <a href="shop.html" class="btn btn-green" style="width:100%;text-align:center;display:block;margin-top:1rem;">ซื้อเลย</a>
+          <div class="pp-per">฿15.83 / <span data-i18n="price_per_day">วัน</span></div>
+          <a href="shop.html" class="btn btn-green" style="width:100%;text-align:center;display:block;margin-top:1rem;" data-i18n="price_buy">ซื้อเลย</a>
         </div>
       </div>
       <div style="text-align:center;margin-top:2rem;">
-        <a href="shop.html" class="btn btn-outline">ดูทุกแพ็กเกจ</a>
+        <a href="shop.html" class="btn btn-outline" data-i18n="price_view_all_btn">ดูทุกแพ็กเกจ</a>
       </div>
     </div>
   </section>
@@ -255,16 +255,15 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-logo">DG <span>KING</span></div>
       <div class="footer-links">
-        <a href="shop.html">ร้านค้า</a>
-        <a href="login.html">เข้าสู่ระบบ</a>
-        <a href="register.html">สมัครสมาชิก</a>
+        <a href="shop.html" data-i18n="footer_shop">ร้านค้า</a>
+        <a href="login.html" data-i18n="footer_login">เข้าสู่ระบบ</a>
+        <a href="register.html" data-i18n="footer_register">สมัครสมาชิก</a>
       </div>
-      <p class="footer-copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
+      <p class="footer-copy" data-i18n="footer_copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
     </div>
   </footer>
 
@@ -303,8 +302,8 @@
   <!-- COOKIE BANNER -->
   <div class="cookie-banner" id="cookieBanner">
     <div class="cookie-text">
-      เว็บไซต์นี้ใช้คุกกี้เพื่อการทำงานของระบบ เช่น การเข้าสู่ระบบและการชำระเงิน
-      การใช้งานเว็บไซต์ต่อไปถือว่าคุณยอมรับ <a href="#">นโยบายความเป็นส่วนตัว</a>
+      <span data-i18n="cookie_text">เว็บไซต์นี้ใช้คุกกี้เพื่อการทำงานของระบบ เช่น การเข้าสู่ระบบและการชำระเงิน
+      การใช้งานเว็บไซต์ต่อไปถือว่าคุณยอมรับ</span> <a href="#">นโยบายความเป็นส่วนตัว</a>
     </div>
     <div class="cookie-btns">
       <button class="cookie-accept" onclick="acceptCookie()" data-i18n="cookie_accept">ยอมรับ</button>

@@ -10,46 +10,53 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png" />
   <link rel="apple-touch-icon" href="favicon_io/apple-touch-icon.png" />
   <link rel="stylesheet" href="css/style.css" />
+  <script src="js/i18n.js"></script>
 </head>
 <body>
 
   <nav class="navbar">
-    <a href="index.html" class="logo">Key<span>Shop</span></a>
+    <a href="index.html" class="logo">DG <span>KING</span></a>
     <ul class="nav-links">
-      <li><a href="index.html">หน้าแรก</a></li>
-      <li><a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a></li>
+      <li><a href="index.html" data-i18n="nav_home">หน้าแรก</a></li>
+      <li><a href="login.html" class="btn btn-outline" data-i18n="nav_login">เข้าสู่ระบบ</a></li>
+      <li>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="th">TH</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </li>
     </ul>
   </nav>
 
   <div class="form-page">
     <div class="form-box">
-      <h2>สมัครสมาชิก</h2>
-      <p class="form-sub">สร้างบัญชีใหม่เพื่อเริ่มต้นใช้งาน</p>
+      <h2 data-i18n="register_title">สมัครสมาชิก</h2>
+      <p class="form-sub" data-i18n="register_sub">สร้างบัญชีใหม่เพื่อเริ่มต้นใช้งาน</p>
 
       <div id="formAlert" class="alert"></div>
 
       <form id="registerForm" novalidate>
         <div class="form-group">
-          <label for="username">ชื่อผู้ใช้</label>
+          <label for="username" data-i18n="register_username">ชื่อผู้ใช้</label>
           <input type="text" id="username" placeholder="ตัวอักษรและตัวเลข 4-20 ตัว" autocomplete="username" />
         </div>
         <div class="form-group">
-          <label for="email">อีเมล</label>
+          <label for="email" data-i18n="register_email">อีเมล</label>
           <input type="email" id="email" placeholder="example@email.com" autocomplete="email" />
         </div>
         <div class="form-group">
-          <label for="password">รหัสผ่าน</label>
+          <label for="password" data-i18n="register_pass">รหัสผ่าน</label>
           <input type="password" id="password" placeholder="อย่างน้อย 6 ตัวอักษร" autocomplete="new-password" />
         </div>
         <div class="form-group">
-          <label for="confirmPassword">ยืนยันรหัสผ่าน</label>
+          <label for="confirmPassword" data-i18n="register_confirm_pass">ยืนยันรหัสผ่าน</label>
           <input type="password" id="confirmPassword" placeholder="กรอกรหัสผ่านอีกครั้ง" autocomplete="new-password" />
         </div>
-        <button type="submit" class="btn btn-primary btn-block">สมัครสมาชิก</button>
+        <button type="submit" class="btn btn-primary btn-block" data-i18n="register_btn">สมัครสมาชิก</button>
       </form>
 
       <hr class="divider" />
-      <p class="form-footer">มีบัญชีอยู่แล้ว? <a href="login.html">เข้าสู่ระบบ</a></p>
+      <p class="form-footer"><span data-i18n="register_have_account">มีบัญชีอยู่แล้ว?</span> <a href="login.html" data-i18n="register_login_link">เข้าสู่ระบบ</a></p>
     </div>
   </div>
 

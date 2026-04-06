@@ -10,8 +10,8 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png" />
   <link rel="apple-touch-icon" href="favicon_io/apple-touch-icon.png" />
   <link rel="stylesheet" href="css/style.css" />
+  <script src="js/i18n.js"></script>
   <style>
-    .profile-wrap {
       max-width: 520px;
       margin: 3rem auto;
       padding: 0 1.5rem;
@@ -61,21 +61,21 @@
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">หน้าแรก</a></li>
-      <li><a href="shop.html">ร้านค้า</a></li>
-      <li><a href="download.html">ดาวน์โหลด</a></li>
-      <li><a href="orders.html">ออเดอร์</a></li>
-      <li><a href="contact.html">ติดต่อ</a></li>
-      <li><a href="news.html">ข่าวสาร</a></li>
-      <li><a href="profile.html" class="btn btn-outline">บัญชีของฉัน</a></li>
+      <li><a href="index.html" data-i18n="nav_home">หน้าแรก</a></li>
+      <li><a href="shop.html" data-i18n="nav_shop">ร้านค้า</a></li>
+      <li><a href="download.html" data-i18n="nav_download">ดาวน์โหลด</a></li>
+      <li><a href="orders.html" data-i18n="nav_orders">ออเดอร์</a></li>
+      <li><a href="contact.html" data-i18n="nav_contact">ติดต่อ</a></li>
+      <li><a href="news.html" data-i18n="nav_news">ข่าวสาร</a></li>
+      <li><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
     </ul>
   </nav>
 
   <nav class="navbar">
-    <a href="index.html" class="logo">Key<span>Shop</span></a>
+    <a href="index.html" class="logo">DG <span>KING</span></a>
     <ul class="nav-links">
-      <li><a href="index.html">หน้าแรก</a></li>
-      <li><a href="#" id="logoutBtn" class="btn btn-outline">ออกจากระบบ</a></li>
+      <li><a href="index.html" data-i18n="nav_home">หน้าแรก</a></li>
+      <li><a href="#" id="logoutBtn" class="btn btn-outline" data-i18n="nav_logout">ออกจากระบบ</a></li>
     </ul>
   </nav>
 
@@ -83,45 +83,45 @@
 
     <!-- ข้อมูลบัญชี -->
     <div class="profile-card">
-      <h3>ข้อมูลบัญชี</h3>
+      <h3 data-i18n="profile_title">ข้อมูลบัญชี</h3>
       <div class="info-row">
-        <span class="info-label">ชื่อผู้ใช้</span>
+        <span class="info-label" data-i18n="profile_username">ชื่อผู้ใช้</span>
         <span class="info-value" id="displayUsername">-</span>
       </div>
       <div class="info-row">
-        <span class="info-label">อีเมล</span>
+        <span class="info-label" data-i18n="profile_email">อีเมล</span>
         <span class="info-value" id="displayEmail">-</span>
       </div>
       <div class="info-row">
-        <span class="info-label">วันที่สมัคร</span>
+        <span class="info-label" data-i18n="profile_created">วันที่สมัคร</span>
         <span class="info-value" id="displayCreated">-</span>
       </div>
       <div class="info-row">
-        <span class="info-label">สถานะ</span>
-        <span class="info-value" style="color: var(--success);">ใช้งานอยู่</span>
+        <span class="info-label" data-i18n="profile_status">สถานะ</span>
+        <span class="info-value" style="color: var(--success);" data-i18n="profile_active">ใช้งานอยู่</span>
       </div>
     </div>
 
     <!-- เปลี่ยนรหัสผ่าน -->
     <div class="profile-card">
-      <h3>เปลี่ยนรหัสผ่าน</h3>
+      <h3 data-i18n="profile_change_pass">เปลี่ยนรหัสผ่าน</h3>
       <div id="pwAlert" class="alert"></div>
       <form id="changePasswordForm">
         <div class="form-group">
-          <label for="newPassword">รหัสผ่านใหม่</label>
+          <label for="newPassword" data-i18n="profile_new_pass">รหัสผ่านใหม่</label>
           <input type="password" id="newPassword" placeholder="อย่างน้อย 6 ตัวอักษร" />
         </div>
         <div class="form-group">
-          <label for="confirmNewPassword">ยืนยันรหัสผ่านใหม่</label>
+          <label for="confirmNewPassword" data-i18n="profile_confirm_pass">ยืนยันรหัสผ่านใหม่</label>
           <input type="password" id="confirmNewPassword" placeholder="กรอกรหัสผ่านอีกครั้ง" />
         </div>
-        <button type="submit" class="btn btn-primary btn-block">บันทึกรหัสผ่านใหม่</button>
+        <button type="submit" class="btn btn-primary btn-block" data-i18n="profile_save_pass">บันทึกรหัสผ่านใหม่</button>
       </form>
     </div>
 
     <!-- ออกจากระบบ -->
     <div style="text-align:center;">
-      <button id="logoutBtn2" class="btn btn-danger" style="width:100%; padding:0.75rem;">ออกจากระบบ</button>
+      <button id="logoutBtn2" class="btn btn-danger" style="width:100%; padding:0.75rem;" data-i18n="profile_logout">ออกจากระบบ</button>
     </div>
 
   </div>
