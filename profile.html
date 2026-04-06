@@ -185,7 +185,7 @@
             document.getElementById('redeemSection').innerHTML = `
               <div id="redeemAlert" class="alert" style="display:none;margin-bottom:0.5rem;"></div>
               <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="redeemPoints(${redeem})">
-                🎁 แลกคีย์ 1 วันฟรี (ใช้ ${redeem} แต้ม)
+                แลกคีย์ 1 วันฟรี (ใช้ ${redeem} แต้ม)
               </button>`;
           } else {
             document.getElementById('redeemSection').innerHTML = `<p style="font-size:0.8rem;color:var(--text-muted);">อีก ${redeem - points} แต้มจะได้คีย์ฟรี</p>`;
@@ -228,7 +228,7 @@
         createdAt: serverTimestamp()
       });
 
-      alertEl.innerHTML = `🎉 แลกสำเร็จ! คีย์ของคุณ: <strong style="color:var(--gold);font-family:monospace;">${keyCode}</strong>`;
+      alertEl.innerHTML = `แลกสำเร็จ! คีย์ของคุณ: <strong style="color:var(--gold);font-family:monospace;">${keyCode}</strong>`;
       alertEl.className = 'alert alert-success';
       alertEl.style.display = 'block';
       document.getElementById('displayPoints').textContent = points - redeem;

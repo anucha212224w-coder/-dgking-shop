@@ -192,21 +192,21 @@
 
       const snap = await getDoc(doc(db, 'coupons', code));
       if (!snap.exists() || snap.data().active === false) {
-        msgEl.textContent = '❌ โค้ดไม่ถูกต้องหรือหมดอายุแล้ว';
+        msgEl.textContent = 'โค้ดไม่ถูกต้องหรือหมดอายุแล้ว';
         msgEl.style.color = '#ff4d4d';
         msgEl.style.display = 'block';
         return;
       }
       const c = snap.data();
       if (c.maxUse > 0 && (c.usedCount || 0) >= c.maxUse) {
-        msgEl.textContent = '❌ โค้ดนี้ถูกใช้ครบจำนวนแล้ว';
+        msgEl.textContent = 'โค้ดนี้ถูกใช้ครบจำนวนแล้ว';
         msgEl.style.color = '#ff4d4d';
         msgEl.style.display = 'block';
         return;
       }
       finalPrice = Math.max(price - c.discount, 0);
       appliedCoupon = { code, discount: c.discount };
-      msgEl.textContent = `✅ ใช้โค้ด ${code} ลด ฿${c.discount} แล้ว`;
+      msgEl.textContent = `ใช้โค้ด ${code} ลด ฿${c.discount} แล้ว`;
       msgEl.style.color = 'var(--gold)';
       msgEl.style.display = 'block';
       document.getElementById('s1Total').textContent   = '฿' + finalPrice;
@@ -449,7 +449,7 @@
         // Show points earned on step 3
         const ptsEl = document.createElement('div');
         ptsEl.className = 'points-earned-box';
-        ptsEl.innerHTML = `🎯 ได้รับ <strong>${earned} แต้ม</strong> รวมทั้งหมด <strong>${current + earned} แต้ม</strong>`;
+        ptsEl.innerHTML = `ได้รับ <strong>${earned} แต้ม</strong> รวมทั้งหมด <strong>${current + earned} แต้ม</strong>`;
         document.getElementById('keyResultBox').appendChild(ptsEl);
       } catch(e) { console.error('points error:', e); }
     }
