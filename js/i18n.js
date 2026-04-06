@@ -510,6 +510,8 @@ function setLang(lang) {
   localStorage.setItem('lang', lang);
   applyLang(lang);
   updateLangBtn(lang);
+  // Fire custom event so pages can re-render dynamic content
+  document.dispatchEvent(new CustomEvent('langchange', { detail: lang }));
 }
 
 function applyLang(lang) {

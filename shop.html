@@ -285,7 +285,9 @@
         cards.forEach(card => {
           const stockEl = card.querySelector('.product-stock');
           const btn     = card.querySelector('.product-buy-btn');
-          if (stockEl) stockEl.textContent = count > 0 ? `สต็อก ${count} ใบ` : 'หมดสต็อก';
+          if (stockEl) stockEl.textContent = count > 0
+            ? `${window.i18nGet ? window.i18nGet('stock_label') : 'สต็อก'} ${count} ${window.i18nGet ? window.i18nGet('stock_unit') : 'ใบ'}`
+            : (window.i18nGet ? window.i18nGet('out_of_stock') : 'หมดสต็อก');
           if (stockEl) stockEl.className = 'product-stock ' + (count > 0 ? 'stock-ok' : 'stock-empty');
           if (btn && count === 0) {
             btn.textContent  = window.i18nGet ? window.i18nGet('contact_admin') : 'ติดต่อแอดมิน';
@@ -312,6 +314,23 @@
     });
 
     loadStock();
+
+    document.addEventListener('langchange', () => {
+      document.querySelectorAll('.product-stock').forEach(el => {
+        if (el.classList.contains('stock-ok')) {
+          const match = el.textContent.match(/\d+/);
+          if (match) {
+            const count = parseInt(match[0]);
+            el.textContent = `${window.i18nGet('stock_label')} ${count} ${window.i18nGet('stock_unit')}`;
+          }
+        } else if (el.classList.contains('stock-empty')) {
+          el.textContent = window.i18nGet('out_of_stock');
+        }
+      });
+      document.querySelectorAll('.btn-contact').forEach(btn => {
+        btn.textContent = window.i18nGet('contact_admin');
+      });
+    });
   </script>
 
   <script>
