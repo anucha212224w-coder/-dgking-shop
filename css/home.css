@@ -379,7 +379,7 @@
 
 @media (max-width: 768px) {
   .kv-slide {
-    background-position: center center;
+    background-position: center 60%;
   }
 
   .kv-section {
