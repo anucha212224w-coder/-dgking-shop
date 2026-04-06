@@ -746,11 +746,19 @@
 }
 
 /* Points section in promo tab */
+.promo-section-wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 3rem;
+  width: 100%;
+}
+
 .promo-layout {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1rem;
   align-items: start;
+  width: 100%;
 }
 
 .promo-col {
