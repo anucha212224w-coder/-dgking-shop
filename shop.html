@@ -506,7 +506,7 @@
         const isPromo = tab.dataset.tab === 'promo';
         document.getElementById('keyHeader').style.display = isPromo ? 'none' : '';
         document.getElementById('productsGrid').style.display = isPromo ? 'none' : '';
-        document.querySelector('.shop-main-wrapper').style.display = isPromo ? 'none' : '';
+        // Don't hide shop-main-wrapper, just toggle content inside
         const promoEl = document.getElementById('promoSection');
         console.log('Tab clicked, isPromo:', isPromo, 'promoEl:', promoEl);
         promoEl.style.display = isPromo ? 'block' : 'none';
