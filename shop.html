@@ -65,9 +65,7 @@
   <!-- MARKETING BAR -->
   <div class="marketing-bar" id="marketingBarWrap">
     <div class="marketing-bar-inner" id="marketingBar">
-      <div class="marketing-item active" data-i18n="mkt1">ระบบกันแบนอัปเกรดแล้ว รองรับ PUBG Mobile 4.3</div>
-      <div class="marketing-item" data-i18n="mkt2">สมัครใหม่วันนี้ รับส่วนลดพิเศษ ติดต่อแอดมิน</div>
-      <div class="marketing-item" data-i18n="mkt3">ดูแลตลอด 24 ชั่วโมง ทีมงานพร้อมช่วยเหลือ</div>
+      <!-- Messages will be loaded from Firestore -->
     </div>
     <div class="marketing-dots" id="marketingDots"></div>
   </div>
@@ -286,9 +284,15 @@
       }
 
       const msgSnap = await getDocs(collection(db, 'marketing_messages'));
-      if (msgSnap.empty) return;
-
       const bar = document.getElementById('marketingBar');
+      
+      if (msgSnap.empty) {
+        bar.innerHTML = '<div class="marketing-item active">ยังไม่มีข้อความประกาศ</div>';
+        const dotsEl = document.getElementById('marketingDots');
+        dotsEl.innerHTML = '<span class="mkt-dot active"></span>';
+        return;
+      }
+
       bar.innerHTML = ''; // Clear existing
       msgSnap.docs.forEach(d => {
         const item = document.createElement('div');
