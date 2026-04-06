@@ -790,6 +790,13 @@
 /* Announce items */
 .promo-announce-list { display: flex; flex-direction: column; gap: 0.6rem; }
 
+.promo-desc-text {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
 .promo-announce-item {
   display: flex;
   gap: 0.7rem;

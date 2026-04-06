@@ -320,29 +320,12 @@
 
       let html = `<div class="promo-layout">`;
 
-      // LEFT: Announcement from news collection
-      const newsSnap = await getDocs(query(collection(db, 'news'), where('type', '==', 'promo')));
+      // LEFT: Promo description from config
       const announceTitle = lang === 'en' ? 'Announcements' : 'ประกาศ';
-      let announceBody = '';
-      if (!newsSnap.empty) {
-        const sorted = newsSnap.docs.sort((a, b) => (b.data().createdAt?.seconds || 0) - (a.data().createdAt?.seconds || 0));
-        announceBody = sorted.map(d => {
-          const n  = d.data();
-          const dt = n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString(lang === 'en' ? 'en-US' : 'th-TH') : '';
-          return `<a href="news.html?id=${d.id}" class="promo-announce-item">
-            ${n.image ? `<div class="promo-announce-img" style="background-image:url('${n.image}')"></div>` : ''}
-            <div>
-              <div class="promo-announce-title">${n.title}</div>
-              <div class="promo-announce-date">${dt}</div>
-            </div>
-          </a>`;
-        }).join('');
-      } else {
-        announceBody = `<p class="promo-empty">${lang === 'en' ? 'No announcements yet' : 'ยังไม่มีประกาศ'}</p>`;
-      }
+      const announceBody = (lang === 'en' ? cfg.desc_en : cfg.desc_th) || (lang === 'en' ? 'No announcements yet' : 'ยังไม่มีประกาศ');
       html += `<div class="promo-col">
         <div class="promo-col-title">${announceTitle}</div>
-        <div class="promo-announce-list">${announceBody}</div>
+        <div class="promo-desc-text">${announceBody.replace(/\n/g, '<br>')}</div>
       </div>`;
 
       // MIDDLE: Points table

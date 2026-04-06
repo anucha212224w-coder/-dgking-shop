@@ -298,7 +298,7 @@
     <!-- PROMO BANNER SETTINGS -->
     <div class="promo-config-card">
       <div class="promo-config-title">แถบโปรโมชัน (Marketing Bar)</div>
-      <div class="promo-config-desc">ข้อความที่แสดงในแถบเลื่อนบนหน้าร้านค้า และในแท็บ "โปรโมชัน" เพื่อชวนลูกค้าติดตามช่องทางรับโค้ด</div>
+      <div class="promo-config-desc">ข้อความสั้นๆ ที่แสดงในแถบเลื่อนบนหน้าร้านค้า</div>
       <div class="promo-toggle-row">
         <span>เปิด/ปิดแถบโปรโมชัน</span>
         <label class="toggle-switch">
@@ -317,6 +317,23 @@
       <div class="alert alert-error hidden" id="bannerErr"></div>
       <div class="alert alert-success hidden" id="bannerSuccess"></div>
       <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="saveBanner()">บันทึกแถบโปรโมชัน</button>
+    </div>
+
+    <!-- PROMO DESCRIPTION -->
+    <div class="promo-config-card" style="margin-top:1.5rem;">
+      <div class="promo-config-title">คำอธิบายโปรโมชัน</div>
+      <div class="promo-config-desc">ข้อความอธิบายโปรโมชันที่แสดงในคอลัมน์ "ประกาศ" ของแท็บโปรโมชัน เช่น รายละเอียดการสะสมแต้ม วิธีรับโค้ด เงื่อนไขต่างๆ</div>
+      <div class="form-group" style="margin-top:0.8rem;">
+        <label>คำอธิบาย (ภาษาไทย)</label>
+        <textarea id="promoDescTh" rows="6" placeholder="เช่น ตรงนี้ผมจะทำโปรโมชันอะไรดี ต้องทำที่หลังบ้านที่ใส่โปรโมชั่นสินค้า..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>คำอธิบาย (English)</label>
+        <textarea id="promoDescEn" rows="6" placeholder="e.g. Promotion details, how to collect points, how to get discount codes..."></textarea>
+      </div>
+      <div class="alert alert-error hidden" id="descErr"></div>
+      <div class="alert alert-success hidden" id="descSuccess"></div>
+      <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="savePromoDesc()">บันทึกคำอธิบาย</button>
     </div>
 
     <!-- COUPON CODES -->
@@ -1043,6 +1060,8 @@
       document.getElementById('promoBarActive').checked = cfg.bar_active !== false;
       document.getElementById('promoBannerTh').value    = cfg.banner_th || '';
       document.getElementById('promoBannerEn').value    = cfg.banner_en || '';
+      document.getElementById('promoDescTh').value      = cfg.desc_th || '';
+      document.getElementById('promoDescEn').value      = cfg.desc_en || '';
       document.getElementById('pointsActive').checked   = cfg.points_active !== false;
       document.getElementById('pts_1').value   = cfg.pts_1   ?? 5;
       document.getElementById('pts_3').value   = cfg.pts_3   ?? 12;
@@ -1067,6 +1086,23 @@
         sucEl.textContent = 'บันทึกแถบโปรโมชันสำเร็จ';
         sucEl.classList.remove('hidden');
         showToast('บันทึกแถบโปรโมชันสำเร็จ');
+      } catch(e) {
+        errEl.textContent = e.message; errEl.classList.remove('hidden');
+      }
+    };
+
+    window.savePromoDesc = async function() {
+      const errEl = document.getElementById('descErr');
+      const sucEl = document.getElementById('descSuccess');
+      errEl.classList.add('hidden'); sucEl.classList.add('hidden');
+      try {
+        await setDoc(doc(db, 'config', 'promotions'), {
+          desc_th: document.getElementById('promoDescTh').value.trim(),
+          desc_en: document.getElementById('promoDescEn').value.trim(),
+        }, { merge: true });
+        sucEl.textContent = 'บันทึกคำอธิบายโปรโมชันสำเร็จ';
+        sucEl.classList.remove('hidden');
+        showToast('บันทึกคำอธิบายโปรโมชันสำเร็จ');
       } catch(e) {
         errEl.textContent = e.message; errEl.classList.remove('hidden');
       }
