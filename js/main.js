@@ -107,3 +107,25 @@ if (registerForm) {
     }
   });
 }
+
+// Hamburger menu
+function toggleMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  if (!nav) return;
+  nav.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+
+// Close menu when clicking a link
+document.addEventListener('click', function(e) {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  if (!nav || !btn) return;
+  if (!nav.contains(e.target) && !btn.contains(e.target)) {
+    nav.classList.remove('open');
+    btn.classList.remove('open');
+  }
+});
+
+window.toggleMenu = toggleMenu;
