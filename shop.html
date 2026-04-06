@@ -216,10 +216,9 @@
       <!-- PROMO SECTION -->
       <div id="promoSection" style="display:none;">
         <div id="promoContent">
-          <div class="empty-promo">
-            <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            <p data-i18n="no_promo">ยังไม่มีโปรโมชันในขณะนี้</p>
-            <span data-i18n="no_promo_sub">ติดตามข่าวสารจากเราเพื่อรับโปรโมชันพิเศษ</span>
+          <div class="promo-info-card">
+            <div class="promo-info-title">โปรโมชันพิเศษ</div>
+            <div class="promo-info-body" id="promoInfoBody">กำลังโหลด...</div>
           </div>
         </div>
       </div>
@@ -303,28 +302,33 @@
 
     loadPromoBanner();
 
-    // Load promo news from Firestore
-    async function loadPromoNews() {
-      const { collection, query, where, orderBy, getDocs: gd } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      const snap = await gd(query(collection(db, 'news'), where('type', '==', 'promo'), orderBy('createdAt', 'desc')));
-      const el   = document.getElementById('promoContent');
-      if (snap.empty) return; // keep default empty state
+    // Load promo info from config
+    async function loadPromoInfo() {
+      const snap = await getDoc(doc(db, 'config', 'promotions'));
+      const cfg  = snap.exists() ? snap.data() : {};
       const lang = localStorage.getItem('lang') || 'th';
-      el.innerHTML = snap.docs.map(d => {
-        const n  = d.data();
-        const dt = n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString(lang === 'en' ? 'en-US' : 'th-TH') : '';
-        return `<a href="news.html?id=${d.id}" class="promo-card">
-          ${n.image ? `<div class="promo-card-img" style="background-image:url('${n.image}')"></div>` : ''}
-          <div class="promo-card-body">
-            <div class="promo-card-title">${n.title}</div>
-            ${n.desc ? `<div class="promo-card-desc">${n.desc}</div>` : ''}
-            <div class="promo-card-date">${dt}</div>
-          </div>
-        </a>`;
-      }).join('');
+      const el   = document.getElementById('promoInfoBody');
+      if (!el) return;
+
+      const text = lang === 'en' ? cfg.banner_en : cfg.banner_th;
+      if (!text) {
+        el.innerHTML = `<p style="color:var(--text-muted);text-align:center;padding:2rem;">
+          ${lang === 'en' ? 'No promotions at this time. Follow our channels for updates.' : 'ยังไม่มีโปรโมชันในขณะนี้ ติดตามช่องทางของเราเพื่อรับข่าวสาร'}
+        </p>`;
+        return;
+      }
+
+      el.innerHTML = `
+        <p class="promo-info-text">${text}</p>
+        <div class="promo-channels">
+          <a href="https://t.me/dgshopth" target="_blank" class="promo-channel-btn">Telegram กลุ่มหลัก</a>
+          <a href="https://t.me/BACKADAM01" target="_blank" class="promo-channel-btn">Telegram ส่วนตัว</a>
+          <a href="https://web.facebook.com/share/g/1HfK8V3BRV/" target="_blank" class="promo-channel-btn">Facebook กลุ่ม</a>
+        </div>`;
     }
 
-    loadPromoNews();
+    loadPromoInfo();
+    document.addEventListener('langchange', loadPromoInfo);
 
     // โหลดสต็อกคีย์และแสดงในการ์ด
     async function loadStock() {
