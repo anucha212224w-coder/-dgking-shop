@@ -321,15 +321,15 @@
         { label: lang === 'en' ? '60 Days' : '60 วัน', pts: cfg.pts_60 ?? 120 },
       ];
 
-      let html = '';
+      let html = `<div class="promo-layout">`;
 
-      // Points table (show if points system is active)
+      // LEFT: Points table
       if (cfg.points_active !== false) {
-        const title = lang === 'en' ? 'Points Reward System' : 'ระบบสะสมแต้ม';
+        const title = lang === 'en' ? 'Points Reward' : 'ระบบสะสมแต้ม';
         const sub   = lang === 'en'
-          ? `Earn points every purchase. Collect <strong>${redeem} points</strong> to redeem a free 1-day key!`
-          : `ซื้อทุกครั้งได้รับแต้ม สะสมครบ <strong>${redeem} แต้ม</strong> แลกคีย์ 1 วันฟรี!`;
-        html += `<div class="promo-pts-section">
+          ? `Collect <strong>${redeem} points</strong> → free 1-day key`
+          : `สะสมครบ <strong>${redeem} แต้ม</strong> → แลกคีย์ 1 วันฟรี`;
+        html += `<div class="promo-left">
           <div class="promo-pts-title">${title}</div>
           <p class="promo-pts-sub">${sub}</p>
           <div class="promo-pts-grid">
@@ -341,29 +341,36 @@
               </div>`).join('')}
           </div>
           <div class="promo-pts-redeem">
-            ${lang === 'en' ? `Redeem at` : `แลกได้ที่`} <a href="profile.html">${lang === 'en' ? 'My Account' : 'บัญชีของฉัน'}</a>
+            ${lang === 'en' ? 'Redeem at' : 'แลกได้ที่'} <a href="profile.html">${lang === 'en' ? 'My Account' : 'บัญชีของฉัน'}</a>
           </div>
         </div>`;
       }
 
-      // Channel links
-      if (text) {
-        html += `<div class="promo-info-card" style="margin-top:1rem;">
-          <div class="promo-info-title">${lang === 'en' ? 'Special Promotions' : 'โปรโมชันพิเศษ'}</div>
-          <p class="promo-info-text">${text}</p>
-          <div class="promo-channels">
-            <a href="https://t.me/dgshopth" target="_blank" class="promo-channel-btn">Telegram ${lang === 'en' ? 'Main Group' : 'กลุ่มหลัก'}</a>
-            <a href="https://t.me/BACKADAM01" target="_blank" class="promo-channel-btn">Telegram ${lang === 'en' ? 'Direct' : 'ส่วนตัว'}</a>
-            <a href="https://web.facebook.com/share/g/1HfK8V3BRV/" target="_blank" class="promo-channel-btn">Facebook ${lang === 'en' ? 'Group' : 'กลุ่ม'}</a>
-          </div>
-        </div>`;
-      }
+      // RIGHT: Channel links
+      const channelTitle = lang === 'en' ? 'Get Discount Codes' : 'รับโค้ดส่วนลด';
+      const channelSub   = text || (lang === 'en'
+        ? 'Follow our channels to receive exclusive discount codes and promotions'
+        : 'ติดตามช่องทางของเราเพื่อรับโค้ดส่วนลดและโปรโมชันพิเศษ');
+      html += `<div class="promo-right">
+        <div class="promo-pts-title">${channelTitle}</div>
+        <p class="promo-pts-sub">${channelSub}</p>
+        <div class="promo-channels">
+          <a href="https://t.me/dgshopth" target="_blank" class="promo-channel-btn">
+            <span class="promo-ch-icon">TG</span>
+            <span>${lang === 'en' ? 'Telegram Main Group' : 'Telegram กลุ่มหลัก'}</span>
+          </a>
+          <a href="https://t.me/BACKADAM01" target="_blank" class="promo-channel-btn">
+            <span class="promo-ch-icon">TG</span>
+            <span>${lang === 'en' ? 'Telegram Direct' : 'Telegram ส่วนตัว'}</span>
+          </a>
+          <a href="https://web.facebook.com/share/g/1HfK8V3BRV/" target="_blank" class="promo-channel-btn">
+            <span class="promo-ch-icon">FB</span>
+            <span>${lang === 'en' ? 'Facebook Group' : 'Facebook กลุ่ม'}</span>
+          </a>
+        </div>
+      </div>`;
 
-      if (!html) {
-        html = `<p style="color:var(--text-muted);text-align:center;padding:2rem;">
-          ${lang === 'en' ? 'No promotions at this time.' : 'ยังไม่มีโปรโมชันในขณะนี้'}
-        </p>`;
-      }
+      html += `</div>`;
 
       el.innerHTML = html;
     }

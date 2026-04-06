@@ -746,19 +746,26 @@
 }
 
 /* Points section in promo tab */
-.promo-pts-section {
+.promo-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.promo-left,
+.promo-right {
   background: var(--bg2);
   border: 1px solid rgba(245,166,35,0.2);
   border-radius: 12px;
-  padding: 1.5rem 2rem;
-  margin-bottom: 1rem;
+  padding: 1.5rem;
 }
 
 .promo-pts-title {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 800;
   color: var(--gold);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -771,39 +778,31 @@
 }
 
 .promo-pts-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   margin-bottom: 1rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding-bottom: 0.2rem;
 }
-
-.promo-pts-grid::-webkit-scrollbar { display: none; }
 
 .promo-pts-card {
   background: var(--bg3);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  padding: 0.7rem 0.4rem;
   text-align: center;
-  flex: 1;
-  min-width: 90px;
   transition: border-color 0.2s;
 }
 
 .promo-pts-card:hover { border-color: rgba(245,166,35,0.4); }
 
 .promo-pts-label {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
-  margin-bottom: 0.4rem;
-  white-space: nowrap;
+  margin-bottom: 0.3rem;
 }
 
 .promo-pts-value {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: var(--gold);
   font-family: 'Roboto Condensed', sans-serif;
@@ -811,7 +810,7 @@
 }
 
 .promo-pts-unit {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: var(--text-muted);
   margin-top: 0.2rem;
   text-transform: uppercase;
@@ -819,10 +818,10 @@
 }
 
 .promo-pts-redeem {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
   text-align: center;
-  padding-top: 0.5rem;
+  padding-top: 0.6rem;
   border-top: 1px solid var(--border);
 }
 
@@ -832,17 +831,56 @@
   font-weight: 600;
 }
 
-/* Channel links - horizontal */
+/* Channel links */
+.promo-channels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.promo-channel-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.75rem 1rem;
+  background: rgba(245,166,35,0.06);
+  border: 1px solid rgba(245,166,35,0.25);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.promo-channel-btn:hover {
+  background: rgba(245,166,35,0.14);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.promo-ch-icon {
+  background: rgba(245,166,35,0.15);
+  border: 1px solid rgba(245,166,35,0.3);
+  color: var(--gold);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+/* Promo info card (legacy) */
 .promo-info-card {
   background: var(--bg2);
   border: 1px solid rgba(245,166,35,0.2);
   border-radius: 12px;
-  padding: 1.5rem 2rem;
-  margin-bottom: 1rem;
+  padding: 1.5rem;
 }
 
 .promo-info-title {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 800;
   color: var(--gold);
   margin-bottom: 0.5rem;
@@ -851,41 +889,13 @@
 }
 
 .promo-info-text {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
   line-height: 1.6;
 }
 
-.promo-channels {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.promo-channel-btn {
-  flex: 1;
-  min-width: 140px;
-  padding: 0.65rem 1rem;
-  background: rgba(245,166,35,0.08);
-  border: 1px solid rgba(245,166,35,0.3);
-  border-radius: 8px;
-  color: var(--gold);
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-decoration: none;
-  text-align: center;
-  transition: background 0.2s, border-color 0.2s;
-  white-space: nowrap;
-}
-
-.promo-channel-btn:hover {
-  background: rgba(245,166,35,0.18);
-  border-color: var(--gold);
-}
-
-@media (max-width: 600px) {
-  .promo-pts-card { min-width: 72px; padding: 0.7rem 0.5rem; }
-  .promo-pts-value { font-size: 1.3rem; }
-  .promo-channel-btn { min-width: 100%; }
+@media (max-width: 700px) {
+  .promo-layout { grid-template-columns: 1fr; }
+  .promo-pts-grid { grid-template-columns: repeat(3, 1fr); }
 }
