@@ -163,8 +163,26 @@
     const v    = snap.exists() ? snap.data() : {};
 
     if (v.apk_url)     document.getElementById('dlBtn').href = v.apk_url;
-    if (v.apk_version) document.getElementById('dlVersion').innerHTML = `เวอร์ชัน ${v.apk_version} &nbsp;|&nbsp; รองรับ Android 8.0 ขึ้นไป`;
-    if (v.apk_size)    document.getElementById('dlSize').textContent = `ขนาดไฟล์: ~${v.apk_size}`;
+
+    // Store version/size for re-use on lang change
+    const apkVersion = v.apk_version || '';
+    const apkSize    = v.apk_size    || '';
+
+    function updateDlTexts() {
+      const lang = localStorage.getItem('lang') || 'th';
+      if (apkVersion) {
+        const support = lang === 'en' ? 'Supports Android 8.0+' : 'รองรับ Android 8.0 ขึ้นไป';
+        const ver     = lang === 'en' ? 'Version' : 'เวอร์ชัน';
+        document.getElementById('dlVersion').innerHTML = `${ver} ${apkVersion} &nbsp;|&nbsp; ${support}`;
+      }
+      if (apkSize) {
+        const label = lang === 'en' ? 'File size:' : 'ขนาดไฟล์:';
+        document.getElementById('dlSize').textContent = `${label} ~${apkSize}`;
+      }
+    }
+
+    updateDlTexts();
+    document.addEventListener('langchange', updateDlTexts);
 
     const box = document.getElementById('installVideoBox');
     box.innerHTML = v.install
