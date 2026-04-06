@@ -442,7 +442,7 @@
     }
     function confirmBuy() {
       closeModal();
-      alert('กรุณาติดต่อแอดมินเพื่อดำเนินการชำระเงิน');
+      alert(window.i18nGet ? window.i18nGet('contact_admin_msg') : 'กรุณาติดต่อแอดมินเพื่อดำเนินการชำระเงิน');
     }
   </script>  <script src="js/main.js"></script>
 </body>

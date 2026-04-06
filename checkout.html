@@ -175,7 +175,7 @@
       if (!user) { location.href = 'login.html?redirect=checkout'; return; }
       currentUser = user;
       document.getElementById('navbar').style.opacity = '1';
-      document.getElementById('s1Product').textContent = 'คีย์ ' + product;
+      document.getElementById('s1Product').textContent = (window.i18nGet ? window.i18nGet('orders_key') : 'คีย์') + ' ' + product;
       document.getElementById('s1Price').textContent   = '฿' + price;
       document.getElementById('s1Total').textContent   = '฿' + price;
       document.getElementById('s1Email').textContent   = user.email;
@@ -238,6 +238,8 @@
       return payload + (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
     }
 
+    function g(key) { return window.i18nGet ? window.i18nGet(key) : key; }
+
     // Preview slip
     window.previewSlip = function(e) {
       const file = e.target.files[0];
@@ -263,13 +265,13 @@
       sucEl.classList.add('hidden');
 
       if (!file) {
-        errEl.textContent = 'กรุณาแนบสลิปการโอนเงิน';
+        errEl.textContent = g('err_attach_slip');
         errEl.classList.remove('hidden');
         return;
       }
 
       btn.disabled = true;
-      btn.textContent = 'กำลังตรวจสอบสลิป...';
+      btn.textContent = g('checking_slip');
 
       try {
         // ส่ง base64 ไปให้ server proxy ตรวจกับ SlipOK
@@ -295,7 +297,7 @@
         await new Promise(r => setTimeout(r, 1200));
 
         // ดึงคีย์จากสต็อก
-        btn.textContent = 'กำลังจัดสรรคีย์...';
+        btn.textContent = g('allocating_key');
         const keysQ = query(
           collection(db, 'keys'),
           where('product', '==', product),
@@ -313,7 +315,7 @@
           });
           orderId = orderRef.id;
           document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
-          document.getElementById('keyResultBox').innerHTML = '<div class="key-nostock">คีย์หมดสต็อกชั่วคราว แอดมินจะส่งคีย์ให้ทางอีเมลภายใน 15 นาที</div>';
+          document.getElementById('keyResultBox').innerHTML = `<div class="key-nostock">${g('key_nostock_msg')}</div>`;
         } else {
           const keyDoc  = keysSnap.docs[0];
           const keyCode = keyDoc.data().code;
@@ -329,10 +331,12 @@
           document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
           document.getElementById('keyResultBox').innerHTML = `
             <div class="key-display">
-              <div class="key-label">คีย์ของคุณ</div>
+              <div class="key-label">${g('your_key')}</div>
               <div class="key-code">${keyCode}</div>
-              <div class="key-hint">คัดลอกคีย์นี้ไปใช้งานได้เลย</div>
-              <button class="btn btn-outline" onclick="navigator.clipboard.writeText('${keyCode}');this.textContent='คัดลอกแล้ว'">คัดลอกคีย์</button>
+              <div class="key-hint">${g('key_copy_hint')}</div>
+              <button class="btn btn-outline" onclick="navigator.clipboard.writeText('${keyCode}');this.textContent='${g('copied')}'">
+                ${g('copy_key')}
+              </button>
             </div>`;
         }
 
@@ -343,7 +347,7 @@
         errEl.classList.remove('hidden');
         errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         btn.disabled = false;
-        btn.textContent = 'ส่งสลิปและยืนยัน';
+        btn.textContent = g('checkout_submit');
       }
     };
   </script>

@@ -139,6 +139,17 @@ const translations = {
     profile_new_pass_ph: 'อย่างน้อย 6 ตัวอักษร',
     profile_confirm_pass_ph: 'กรอกรหัสผ่านอีกครั้ง',
 
+    // Checkout dynamic messages
+    err_attach_slip: 'กรุณาแนบสลิปการโอนเงิน',
+    checking_slip: 'กำลังตรวจสอบสลิป...',
+    allocating_key: 'กำลังจัดสรรคีย์...',
+    key_nostock_msg: 'คีย์หมดสต็อกชั่วคราว แอดมินจะส่งคีย์ให้ทางอีเมลภายใน 15 นาที',
+    your_key: 'คีย์ของคุณ',
+    key_copy_hint: 'คัดลอกคีย์นี้ไปใช้งานได้เลย',
+    copy_key: 'คัดลอกคีย์',
+    copied: 'คัดลอกแล้ว',
+    contact_admin_msg: 'กรุณาติดต่อแอดมินเพื่อดำเนินการชำระเงิน',
+
     // Orders
     orders_title: 'ออเดอร์ของฉัน',
     orders_buy_more: 'ซื้อเพิ่ม',
@@ -414,6 +425,17 @@ const translations = {
     success_pass_changed: 'Password changed successfully',
     profile_new_pass_ph: 'At least 6 characters',
     profile_confirm_pass_ph: 'Enter password again',
+
+    // Checkout dynamic messages
+    err_attach_slip: 'Please attach your transfer slip',
+    checking_slip: 'Verifying slip...',
+    allocating_key: 'Allocating key...',
+    key_nostock_msg: 'Key temporarily out of stock. Admin will send key via email within 15 minutes',
+    your_key: 'Your Key',
+    key_copy_hint: 'Copy this key to use it',
+    copy_key: 'Copy Key',
+    copied: 'Copied!',
+    contact_admin_msg: 'Please contact admin to proceed with payment',
 
     // Orders
     orders_title: 'My Orders',
