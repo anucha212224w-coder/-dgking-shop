@@ -96,8 +96,8 @@
 
 .contact-icon svg { width: 26px; height: 26px; }
 
-.telegram-icon { background: rgba(40,168,234,0.15); color: #29a8ea; }
-.facebook-icon { background: rgba(24,119,242,0.15); color: #1877f2; }
+.telegram-icon { background: #2AABEE; color: #fff; }
+.facebook-icon { background: #1877F2; color: #fff; }
 
 .contact-info { flex: 1; }
 
