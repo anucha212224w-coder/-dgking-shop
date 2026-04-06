@@ -30,6 +30,12 @@
       <li><a href="contact.html" data-i18n="nav_contact">ติดต่อ</a></li>
       <li><a href="news.html" data-i18n="nav_news">ข่าวสาร</a></li>
       <li id="navUser"><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
+      <li>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="th">TH</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </li>
     </ul>
   </nav>
 
@@ -173,13 +179,22 @@
     // Auth check
     onAuthStateChanged(auth, (user) => {
       if (!user) { location.href = 'login.html?redirect=checkout'; return; }
+      const lang = localStorage.getItem('lang') || 'th';
+      const productDisplay = lang === 'en' ? product.replace('วัน', 'Day') : product;
       currentUser = user;
       document.getElementById('navbar').style.opacity = '1';
-      document.getElementById('s1Product').textContent = (window.i18nGet ? window.i18nGet('orders_key') : 'คีย์') + ' ' + product;
+      document.getElementById('s1Product').textContent = (window.i18nGet ? window.i18nGet('orders_key') : 'คีย์') + ' ' + productDisplay;
       document.getElementById('s1Price').textContent   = '฿' + price;
       document.getElementById('s1Total').textContent   = '฿' + price;
       document.getElementById('s1Email').textContent   = user.email;
       document.getElementById('s2Amount').textContent  = '฿' + price;
+
+      // Re-render product name on lang change
+      document.addEventListener('langchange', (e) => {
+        const l = e.detail || 'th';
+        const pd = l === 'en' ? product.replace('วัน', 'Day') : product;
+        document.getElementById('s1Product').textContent = (window.i18nGet ? window.i18nGet('orders_key') : 'คีย์') + ' ' + pd;
+      });
     });
 
     // Step navigation
