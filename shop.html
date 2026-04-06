@@ -81,9 +81,9 @@
         <div class="products-count">สินค้าทั้งหมด <span id="productCount">6</span> รายการ</div>
         <div class="products-sort">
           <select id="sortSelect" onchange="sortProducts()">
-            <option value="default">เรียงตามค่าเริ่มต้น</option>
-            <option value="price-asc">ราคา: ต่ำ - สูง</option>
-            <option value="price-desc">ราคา: สูง - ต่ำ</option>
+            <option value="default" data-i18n="sort_default">เรียงตามค่าเริ่มต้น</option>
+            <option value="price-asc" data-i18n="sort_price_asc">ราคา: ต่ำ - สูง</option>
+            <option value="price-desc" data-i18n="sort_price_desc">ราคา: สูง - ต่ำ</option>
           </select>
         </div>
       </div>
@@ -288,7 +288,8 @@
           if (stockEl) stockEl.textContent = count > 0 ? `สต็อก ${count} ใบ` : 'หมดสต็อก';
           if (stockEl) stockEl.className = 'product-stock ' + (count > 0 ? 'stock-ok' : 'stock-empty');
           if (btn && count === 0) {
-            btn.textContent  = 'ติดต่อแอดมิน';
+            btn.textContent  = window.i18nGet ? window.i18nGet('contact_admin') : 'ติดต่อแอดมิน';
+            btn.setAttribute('data-i18n', 'contact_admin');
             btn.disabled     = false;
             btn.style.opacity = '1';
             btn.style.cursor  = 'pointer';

@@ -519,6 +519,8 @@ function applyLang(lang) {
     if (t[key] !== undefined) {
       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
         el.placeholder = t[key];
+      } else if (el.tagName === 'OPTION') {
+        el.textContent = t[key];
       } else {
         el.innerHTML = t[key];
       }
@@ -526,6 +528,12 @@ function applyLang(lang) {
   });
   document.documentElement.lang = lang;
 }
+
+// Helper to get a translation value directly
+window.i18nGet = function(key) {
+  const lang = getLang();
+  return (translations[lang] && translations[lang][key]) || key;
+};
 
 function updateLangBtn(lang) {
   document.querySelectorAll('.lang-btn').forEach(btn => {
