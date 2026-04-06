@@ -63,7 +63,7 @@
   </div>
 
   <!-- MARKETING BAR -->
-  <div class="marketing-bar">
+  <div class="marketing-bar" id="marketingBarWrap">
     <div class="marketing-bar-inner" id="marketingBar">
       <div class="marketing-item active" data-i18n="mkt1">ระบบกันแบนอัปเกรดแล้ว รองรับ PUBG Mobile 4.3</div>
       <div class="marketing-item" data-i18n="mkt2">สมัครใหม่วันนี้ รับส่วนลดพิเศษ ติดต่อแอดมิน</div>
@@ -274,6 +274,32 @@
 
   <script type="module">
     import { auth, db, onAuthStateChanged, collection, query, where, getDocs } from './js/firebase.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    // Load promo banner from Firestore
+    async function loadPromoBanner() {
+      const snap = await getDoc(doc(db, 'config', 'promotions'));
+      const cfg  = snap.exists() ? snap.data() : {};
+      const lang = localStorage.getItem('lang') || 'th';
+      const wrap = document.getElementById('marketingBarWrap');
+
+      if (cfg.bar_active === false) {
+        wrap.style.display = 'none';
+        return;
+      }
+
+      const promoText = lang === 'en' ? cfg.banner_en : cfg.banner_th;
+      if (promoText) {
+        // Prepend promo item as first item
+        const bar = document.getElementById('marketingBar');
+        const promoItem = document.createElement('div');
+        promoItem.className = 'marketing-item promo-highlight';
+        promoItem.textContent = promoText;
+        bar.insertBefore(promoItem, bar.firstChild);
+      }
+    }
+
+    loadPromoBanner();
 
     // โหลดสต็อกคีย์และแสดงในการ์ด
     async function loadStock() {

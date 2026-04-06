@@ -57,6 +57,7 @@
         <button class="admin-tab" onclick="switchTab('addkeys')">เพิ่มคีย์</button>
         <button class="admin-tab" onclick="switchTab('news')">ข่าวสาร</button>
         <button class="admin-tab" onclick="switchTab('videos')">วิดีโอ</button>
+        <button class="admin-tab" onclick="switchTab('promotions')">โปรโมชัน</button>
       </div>
     </div>
 
@@ -290,6 +291,92 @@
     <button class="btn btn-primary" style="width:100%;padding:0.8rem;" onclick="saveVideos()">บันทึกวิดีโอทั้งหมด</button>
   </div>
 
+  <!-- PROMOTIONS TAB -->
+  <div class="admin-content hidden" id="tabPromotions" style="max-width:800px;margin:2rem auto;padding:0 2rem 4rem;">
+    <div class="admin-section-title" style="margin-bottom:1.5rem;">จัดการโปรโมชัน</div>
+
+    <!-- PROMO BANNER SETTINGS -->
+    <div class="promo-config-card">
+      <div class="promo-config-title">แถบโปรโมชัน (Marketing Bar)</div>
+      <div class="promo-config-desc">ข้อความที่แสดงในแถบเลื่อนบนหน้าร้านค้า</div>
+      <div class="promo-toggle-row">
+        <span>เปิด/ปิดแถบโปรโมชัน</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="promoBarActive" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="form-group" style="margin-top:0.8rem;">
+        <label>ข้อความ (ภาษาไทย)</label>
+        <input type="text" id="promoBannerTh" placeholder="เช่น สมัครใหม่วันนี้ รับส่วนลดพิเศษ!" />
+      </div>
+      <div class="form-group">
+        <label>ข้อความ (English)</label>
+        <input type="text" id="promoBannerEn" placeholder="e.g. New members get special discount today!" />
+      </div>
+      <div class="alert alert-error hidden" id="bannerErr"></div>
+      <div class="alert alert-success hidden" id="bannerSuccess"></div>
+      <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="saveBanner()">บันทึกแถบโปรโมชัน</button>
+    </div>
+
+    <!-- COUPON CODES -->
+    <div class="promo-config-card" style="margin-top:1.5rem;">
+      <div class="promo-config-title">โค้ดส่วนลด</div>
+      <div class="promo-config-desc">สร้างโค้ดส่วนลดสำหรับโพสต์ลง Facebook เพื่อกระตุ้นยอดขาย</div>
+
+      <!-- ADD COUPON FORM -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.6rem;align-items:end;margin-bottom:1rem;">
+        <div class="form-group" style="margin:0;">
+          <label>โค้ด</label>
+          <input type="text" id="newCouponCode" placeholder="เช่น DGKING10" style="text-transform:uppercase;" />
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>ส่วนลด (฿)</label>
+          <input type="number" id="newCouponDiscount" placeholder="เช่น 20" min="1" />
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>ใช้ได้กี่ครั้ง</label>
+          <input type="number" id="newCouponMax" placeholder="0 = ไม่จำกัด" min="0" value="0" />
+        </div>
+        <button class="btn btn-primary" onclick="addCoupon()" style="padding:0.6rem 1rem;white-space:nowrap;">+ เพิ่มโค้ด</button>
+      </div>
+      <div class="alert alert-error hidden" id="couponErr"></div>
+      <div class="alert alert-success hidden" id="couponSuccess"></div>
+      <div id="couponList">กำลังโหลด...</div>
+    </div>
+
+    <!-- POINTS SYSTEM -->
+    <div class="promo-config-card" style="margin-top:1.5rem;">
+      <div class="promo-config-title">ระบบสะสมแต้ม</div>
+      <div class="promo-config-desc">ลูกค้าได้รับแต้มทุกครั้งที่ซื้อ ครบ 50 แต้มแลกคีย์ 1 วันฟรี</div>
+      <div class="promo-toggle-row">
+        <span>เปิด/ปิดระบบแต้ม</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="pointsActive" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div style="margin-top:1rem;">
+        <div class="promo-config-desc" style="margin-bottom:0.8rem;">แต้มที่ได้รับต่อการซื้อ:</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;" id="pointsGrid">
+          <div class="points-row"><span>1 วัน</span><input type="number" id="pts_1" value="5" min="0" /></div>
+          <div class="points-row"><span>3 วัน</span><input type="number" id="pts_3" value="12" min="0" /></div>
+          <div class="points-row"><span>7 วัน</span><input type="number" id="pts_7" value="25" min="0" /></div>
+          <div class="points-row"><span>14 วัน</span><input type="number" id="pts_14" value="45" min="0" /></div>
+          <div class="points-row"><span>30 วัน</span><input type="number" id="pts_30" value="80" min="0" /></div>
+          <div class="points-row"><span>60 วัน</span><input type="number" id="pts_60" value="120" min="0" /></div>
+        </div>
+        <div class="form-group" style="margin-top:0.8rem;">
+          <label>แต้มที่ต้องสะสมเพื่อแลกคีย์ 1 วัน</label>
+          <input type="number" id="ptsRedeem" value="50" min="1" style="max-width:120px;" />
+        </div>
+      </div>
+      <div class="alert alert-error hidden" id="pointsErr"></div>
+      <div class="alert alert-success hidden" id="pointsSuccess"></div>
+      <button class="btn btn-primary" style="margin-top:0.8rem;" onclick="savePointsConfig()">บันทึกการตั้งค่าแต้ม</button>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div id="toast" class="toast hidden"></div>
 
@@ -400,7 +487,7 @@
     window.addKeys = addKeys;
 
     function switchTab(tab) {
-      const tabs = ['dashboard','orders','keys','addkeys','news','videos'];
+      const tabs = ['dashboard','orders','keys','addkeys','news','videos','promotions'];
       document.querySelectorAll('.admin-tab').forEach((t,i) => {
         t.classList.toggle('active', tabs[i] === tab);
       });
@@ -412,6 +499,7 @@
       if (tab === 'keys') loadKeys();
       if (tab === 'news') loadNews();
       if (tab === 'videos') loadVideos();
+      if (tab === 'promotions') loadPromotions();
     };
 
     async function loadDashboard() {
@@ -945,6 +1033,127 @@
       } catch(e) {
         showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
       }
+    };
+
+    // ===== PROMOTIONS =====
+    async function loadPromotions() {
+      // Load banner config
+      const snap = await getDoc(doc(db, 'config', 'promotions'));
+      const cfg  = snap.exists() ? snap.data() : {};
+      document.getElementById('promoBarActive').checked = cfg.bar_active !== false;
+      document.getElementById('promoBannerTh').value    = cfg.banner_th || '';
+      document.getElementById('promoBannerEn').value    = cfg.banner_en || '';
+      document.getElementById('pointsActive').checked   = cfg.points_active !== false;
+      document.getElementById('pts_1').value   = cfg.pts_1   ?? 5;
+      document.getElementById('pts_3').value   = cfg.pts_3   ?? 12;
+      document.getElementById('pts_7').value   = cfg.pts_7   ?? 25;
+      document.getElementById('pts_14').value  = cfg.pts_14  ?? 45;
+      document.getElementById('pts_30').value  = cfg.pts_30  ?? 80;
+      document.getElementById('pts_60').value  = cfg.pts_60  ?? 120;
+      document.getElementById('ptsRedeem').value = cfg.pts_redeem ?? 50;
+      loadCoupons();
+    }
+
+    window.saveBanner = async function() {
+      const errEl = document.getElementById('bannerErr');
+      const sucEl = document.getElementById('bannerSuccess');
+      errEl.classList.add('hidden'); sucEl.classList.add('hidden');
+      try {
+        await setDoc(doc(db, 'config', 'promotions'), {
+          bar_active: document.getElementById('promoBarActive').checked,
+          banner_th:  document.getElementById('promoBannerTh').value.trim(),
+          banner_en:  document.getElementById('promoBannerEn').value.trim(),
+        }, { merge: true });
+        sucEl.textContent = 'บันทึกแถบโปรโมชันสำเร็จ';
+        sucEl.classList.remove('hidden');
+        showToast('บันทึกแถบโปรโมชันสำเร็จ');
+      } catch(e) {
+        errEl.textContent = e.message; errEl.classList.remove('hidden');
+      }
+    };
+
+    window.savePointsConfig = async function() {
+      const errEl = document.getElementById('pointsErr');
+      const sucEl = document.getElementById('pointsSuccess');
+      errEl.classList.add('hidden'); sucEl.classList.add('hidden');
+      try {
+        await setDoc(doc(db, 'config', 'promotions'), {
+          points_active: document.getElementById('pointsActive').checked,
+          pts_1:    parseInt(document.getElementById('pts_1').value)   || 5,
+          pts_3:    parseInt(document.getElementById('pts_3').value)   || 12,
+          pts_7:    parseInt(document.getElementById('pts_7').value)   || 25,
+          pts_14:   parseInt(document.getElementById('pts_14').value)  || 45,
+          pts_30:   parseInt(document.getElementById('pts_30').value)  || 80,
+          pts_60:   parseInt(document.getElementById('pts_60').value)  || 120,
+          pts_redeem: parseInt(document.getElementById('ptsRedeem').value) || 50,
+        }, { merge: true });
+        sucEl.textContent = 'บันทึกการตั้งค่าแต้มสำเร็จ';
+        sucEl.classList.remove('hidden');
+        showToast('บันทึกการตั้งค่าแต้มสำเร็จ');
+      } catch(e) {
+        errEl.textContent = e.message; errEl.classList.remove('hidden');
+      }
+    };
+
+    async function loadCoupons() {
+      const el   = document.getElementById('couponList');
+      const snap = await getDocs(collection(db, 'coupons'));
+      if (snap.empty) { el.innerHTML = '<p class="no-data">ยังไม่มีโค้ดส่วนลด</p>'; return; }
+      const rows = snap.docs.map(d => {
+        const c = d.data();
+        const used = c.usedCount || 0;
+        const max  = c.maxUse || 0;
+        return `<div class="coupon-row">
+          <div class="coupon-code">${d.id}</div>
+          <div class="coupon-discount">ลด ฿${c.discount}</div>
+          <div class="coupon-used">${used}/${max === 0 ? '∞' : max} ครั้ง</div>
+          <div class="coupon-status">
+            <label class="toggle-switch" style="transform:scale(0.85);">
+              <input type="checkbox" ${c.active !== false ? 'checked' : ''} onchange="toggleCoupon('${d.id}', this.checked)" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div>
+            <button class="btn-admin-delete" onclick="deleteCoupon('${d.id}')">ลบ</button>
+          </div>
+        </div>`;
+      }).join('');
+      el.innerHTML = `<div class="coupon-list-header">
+        <span>โค้ด</span><span>ส่วนลด</span><span>ใช้แล้ว</span><span>สถานะ</span><span></span>
+      </div>${rows}`;
+    }
+
+    window.addCoupon = async function() {
+      const code     = document.getElementById('newCouponCode').value.trim().toUpperCase();
+      const discount = parseInt(document.getElementById('newCouponDiscount').value);
+      const maxUse   = parseInt(document.getElementById('newCouponMax').value) || 0;
+      const errEl    = document.getElementById('couponErr');
+      const sucEl    = document.getElementById('couponSuccess');
+      errEl.classList.add('hidden'); sucEl.classList.add('hidden');
+      if (!code || !discount) { errEl.textContent = 'กรุณากรอกโค้ดและส่วนลด'; errEl.classList.remove('hidden'); return; }
+      try {
+        await setDoc(doc(db, 'coupons', code), { discount, maxUse, usedCount: 0, active: true, createdAt: serverTimestamp() });
+        sucEl.textContent = `เพิ่มโค้ด ${code} สำเร็จ`;
+        sucEl.classList.remove('hidden');
+        document.getElementById('newCouponCode').value = '';
+        document.getElementById('newCouponDiscount').value = '';
+        loadCoupons();
+      } catch(e) {
+        errEl.textContent = e.message; errEl.classList.remove('hidden');
+      }
+    };
+
+    window.toggleCoupon = async function(code, active) {
+      await updateDoc(doc(db, 'coupons', code), { active });
+      showToast(active ? `เปิดโค้ด ${code}` : `ปิดโค้ด ${code}`);
+    };
+
+    window.deleteCoupon = async function(code) {
+      if (!confirm(`ลบโค้ด ${code}?`)) return;
+      const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      await deleteDoc(doc(db, 'coupons', code));
+      showToast(`ลบโค้ด ${code} แล้ว`);
+      loadCoupons();
     };
   </script>
 

@@ -641,3 +641,9 @@
   background: var(--gold);
   flex-shrink: 0;
 }
+
+/* Promo highlight in marketing bar */
+.marketing-item.promo-highlight {
+  color: var(--gold);
+  font-weight: 700;
+}
