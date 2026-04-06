@@ -213,15 +213,7 @@
 
       </div>
 
-      <!-- PROMO SECTION -->
-      <div id="promoSection" style="display:none;">
-        <div id="promoContent">
-          <div class="promo-info-card">
-            <div class="promo-info-title">โปรโมชันพิเศษ</div>
-            <div class="promo-info-body" id="promoInfoBody">กำลังโหลด...</div>
-          </div>
-        </div>
-      </div>
+      <!-- PROMO SECTION moved outside shop-main below -->
 
     </div>
   </div><!-- end shop-main-wrapper -->
@@ -509,6 +501,7 @@
         document.getElementById('productsGrid').style.display = isPromo ? 'none' : '';
         document.querySelector('.shop-main-wrapper').style.display = isPromo ? 'none' : '';
         document.getElementById('promoSection').style.display = isPromo ? 'block' : 'none';
+        if (isPromo) loadPromoInfo();
       });
     });
 
