@@ -306,10 +306,12 @@
 
     // Load promo info from config
     async function loadPromoInfo() {
+      console.log('loadPromoInfo called');
       const snap = await getDoc(doc(db, 'config', 'promotions'));
       const cfg  = snap.exists() ? snap.data() : {};
       const lang = localStorage.getItem('lang') || 'th';
       const el   = document.getElementById('promoInfoBody');
+      console.log('promoInfoBody element:', el);
       if (!el) return;
 
       const text = lang === 'en' ? cfg.banner_en : cfg.banner_th;
@@ -402,10 +404,13 @@
       el.innerHTML = html;
     }
 
-    // Only load promo info when tab is clicked, not on page load
+    // Expose to global scope immediately
     window.loadPromoInfo = loadPromoInfo;
+    
+    // Re-load on language change
     document.addEventListener('langchange', () => {
-      if (document.getElementById('promoSection').style.display !== 'none') {
+      const promoEl = document.getElementById('promoSection');
+      if (promoEl && promoEl.style.display !== 'none') {
         loadPromoInfo();
       }
     });
@@ -505,9 +510,12 @@
         document.getElementById('productsGrid').style.display = isPromo ? 'none' : '';
         document.querySelector('.shop-main-wrapper').style.display = isPromo ? 'none' : '';
         const promoEl = document.getElementById('promoSection');
+        console.log('Tab clicked, isPromo:', isPromo, 'promoEl:', promoEl);
         promoEl.style.display = isPromo ? 'block' : 'none';
+        console.log('After set display:', promoEl.style.display);
         if (isPromo) {
           setTimeout(() => {
+            console.log('Calling loadPromoInfo, type:', typeof window.loadPromoInfo);
             if (typeof window.loadPromoInfo === 'function') window.loadPromoInfo();
           }, 50);
         }
