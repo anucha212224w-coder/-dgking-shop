@@ -750,49 +750,60 @@
   background: var(--bg2);
   border: 1px solid rgba(245,166,35,0.2);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   margin-bottom: 1rem;
 }
 
 .promo-pts-title {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 800;
   color: var(--gold);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.3rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
 }
 
 .promo-pts-sub {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   margin-bottom: 1.2rem;
   line-height: 1.6;
 }
 
 .promo-pts-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
+  display: flex;
+  gap: 0.5rem;
   margin-bottom: 1rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 0.2rem;
 }
+
+.promo-pts-grid::-webkit-scrollbar { display: none; }
 
 .promo-pts-card {
   background: var(--bg3);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.8rem 0.5rem;
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
   text-align: center;
+  flex: 1;
+  min-width: 90px;
+  transition: border-color 0.2s;
 }
 
+.promo-pts-card:hover { border-color: rgba(245,166,35,0.4); }
+
 .promo-pts-label {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
+  white-space: nowrap;
 }
 
 .promo-pts-value {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: var(--gold);
   font-family: 'Roboto Condensed', sans-serif;
@@ -800,15 +811,19 @@
 }
 
 .promo-pts-unit {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
   margin-top: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .promo-pts-redeem {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   text-align: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
 }
 
 .promo-pts-redeem a {
@@ -817,6 +832,60 @@
   font-weight: 600;
 }
 
-@media (max-width: 480px) {
-  .promo-pts-grid { grid-template-columns: repeat(2, 1fr); }
+/* Channel links - horizontal */
+.promo-info-card {
+  background: var(--bg2);
+  border: 1px solid rgba(245,166,35,0.2);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1rem;
+}
+
+.promo-info-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.promo-info-text {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+  line-height: 1.6;
+}
+
+.promo-channels {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.promo-channel-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 0.65rem 1rem;
+  background: rgba(245,166,35,0.08);
+  border: 1px solid rgba(245,166,35,0.3);
+  border-radius: 8px;
+  color: var(--gold);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.promo-channel-btn:hover {
+  background: rgba(245,166,35,0.18);
+  border-color: var(--gold);
+}
+
+@media (max-width: 600px) {
+  .promo-pts-card { min-width: 72px; padding: 0.7rem 0.5rem; }
+  .promo-pts-value { font-size: 1.3rem; }
+  .promo-channel-btn { min-width: 100%; }
 }
