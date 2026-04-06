@@ -109,7 +109,7 @@
         document.getElementById('singleTitle').textContent = n.title;
         document.getElementById('singleDesc').textContent  = n.desc || '';
         document.getElementById('singleDate').textContent  = dt;
-        document.getElementById('singleType').textContent  = n.type === 'promo' ? 'โปรโมชัน' : 'ข่าวสาร';
+        document.getElementById('singleType').textContent  = n.type === 'promo' ? g('news_tab_promo') : g('news_tab_news');
         document.getElementById('singleType').className    = 'news-type-badge ' + (n.type === 'promo' ? 'badge-promo' : 'badge-news');
       }
     } else {
@@ -119,16 +119,20 @@
       renderNews(allNews);
     }
 
+    function g(key) { return window.i18nGet ? window.i18nGet(key) : key; }
+
     function renderNews(list) {
       const grid = document.getElementById('newsGrid');
-      if (!list.length) { grid.innerHTML = '<p style="color:var(--text-muted);padding:3rem;text-align:center;">ยังไม่มีข่าวสาร</p>'; return; }
+      const lang = localStorage.getItem('lang') || 'th';
+      if (!list.length) { grid.innerHTML = `<p style="color:var(--text-muted);padding:3rem;text-align:center;">${g('news_empty')}</p>`; return; }
       grid.innerHTML = list.map(n => {
-        const dt = n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString('th-TH') : '';
+        const dt = n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString(lang === 'en' ? 'en-US' : 'th-TH') : '';
+        const typeLabel = n.type === 'promo' ? g('news_tab_promo') : g('news_tab_news');
         return `<a href="news.html?id=${n.id}" class="news-card">
           <div class="news-card-img" style="background-image:url('${n.image || 'images/bg3.jpg'}')"></div>
           <div class="news-card-body">
             <div class="news-card-meta">
-              <span class="news-type-badge ${n.type === 'promo' ? 'badge-promo' : 'badge-news'}">${n.type === 'promo' ? 'โปรโมชัน' : 'ข่าวสาร'}</span>
+              <span class="news-type-badge ${n.type === 'promo' ? 'badge-promo' : 'badge-news'}">${typeLabel}</span>
               <span class="news-card-date">${dt}</span>
             </div>
             <div class="news-card-title">${n.title}</div>
@@ -143,6 +147,13 @@
       btn.classList.add('active');
       renderNews(type === 'all' ? allNews : allNews.filter(n => n.type === type));
     };
+
+    // Re-render on lang change
+    document.addEventListener('langchange', () => {
+      const activeTab = document.querySelector('.news-tab.active');
+      const type = activeTab ? activeTab.dataset.type : 'all';
+      renderNews(type === 'all' ? allNews : allNews.filter(n => n.type === type));
+    });
   </script>
   <script src="js/main.js"></script>
 </body>
