@@ -405,6 +405,7 @@
 
     loadPromoInfo();
     document.addEventListener('langchange', loadPromoInfo);
+    window.loadPromoInfo = loadPromoInfo;
 
     // โหลดสต็อกคีย์และแสดงในการ์ด
     async function loadStock() {
