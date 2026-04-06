@@ -521,8 +521,13 @@
               window.loadPromoInfo().then(() => {
                 console.log('loadPromoInfo completed');
                 const promoEl2 = document.getElementById('promoSection');
+                const promoContent = document.getElementById('promoContent');
                 console.log('After loadPromoInfo - display:', promoEl2.style.display);
                 console.log('After loadPromoInfo - computed:', window.getComputedStyle(promoEl2).display);
+                console.log('promoSection height:', promoEl2.offsetHeight, 'width:', promoEl2.offsetWidth);
+                console.log('promoContent height:', promoContent.offsetHeight, 'width:', promoContent.offsetWidth);
+                console.log('promoContent innerHTML length:', promoContent.innerHTML.length);
+                console.log('promoContent first 200 chars:', promoContent.innerHTML.substring(0, 200));
               });
             }
           }, 50);
