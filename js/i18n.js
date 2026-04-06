@@ -113,8 +113,24 @@ const translations = {
     profile_save_pass: 'บันทึกรหัสผ่านใหม่',
     profile_logout: 'ออกจากระบบ',
 
-    // Profile error/success messages
-    err_fill_all: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+    // Placeholders
+    ph_email: 'example@email.com',
+    ph_password: 'กรอกรหัสผ่าน',
+    ph_username: 'ตัวอักษรและตัวเลข 4-20 ตัว',
+    ph_pass_min6: 'อย่างน้อย 6 ตัวอักษร',
+    ph_confirm_pass: 'กรอกรหัสผ่านอีกครั้ง',
+
+    // Auth error/success messages
+    success_login: 'เข้าสู่ระบบสำเร็จ กำลังเปลี่ยนหน้า...',
+    success_register: 'สมัครสมาชิกสำเร็จ กำลังไปหน้าเข้าสู่ระบบ...',
+    success_reset_email: 'ส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมลแล้ว กรุณาตรวจสอบกล่องจดหมาย',
+    err_invalid_credential: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
+    err_user_not_found: 'ไม่พบบัญชีนี้ในระบบ',
+    err_too_many_requests: 'ลองใหม่อีกครั้งในภายหลัง',
+    err_enter_email: 'กรุณากรอกอีเมลก่อนกดลืมรหัสผ่าน',
+    err_email_not_found: 'ไม่พบอีเมลนี้ในระบบ',
+    err_email_in_use: 'อีเมลนี้ถูกใช้งานแล้ว',
+    err_invalid_email: 'รูปแบบอีเมลไม่ถูกต้อง',
     err_pass_short: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร',
     err_pass_mismatch: 'รหัสผ่านไม่ตรงกัน',
     err_relogin: 'กรุณาออกจากระบบแล้วเข้าสู่ระบบใหม่ก่อนเปลี่ยนรหัสผ่าน',
@@ -373,8 +389,24 @@ const translations = {
     profile_save_pass: 'Save New Password',
     profile_logout: 'Logout',
 
-    // Profile error/success messages
-    err_fill_all: 'Please fill in all fields',
+    // Placeholders
+    ph_email: 'example@email.com',
+    ph_password: 'Enter password',
+    ph_username: 'Letters and numbers, 4-20 chars',
+    ph_pass_min6: 'At least 6 characters',
+    ph_confirm_pass: 'Enter password again',
+
+    // Auth error/success messages
+    success_login: 'Login successful, redirecting...',
+    success_register: 'Registration successful, redirecting to login...',
+    success_reset_email: 'Password reset link sent to your email, please check your inbox',
+    err_invalid_credential: 'Invalid email or password',
+    err_user_not_found: 'Account not found',
+    err_too_many_requests: 'Too many attempts, please try again later',
+    err_enter_email: 'Please enter your email before clicking forgot password',
+    err_email_not_found: 'Email not found in the system',
+    err_email_in_use: 'This email is already in use',
+    err_invalid_email: 'Invalid email format',
     err_pass_short: 'Password must be at least 6 characters',
     err_pass_mismatch: 'Passwords do not match',
     err_relogin: 'Please logout and login again before changing password',

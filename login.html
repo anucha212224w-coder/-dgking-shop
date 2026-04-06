@@ -38,11 +38,11 @@
       <form id="loginForm" novalidate>
         <div class="form-group">
           <label for="email" data-i18n="login_email">อีเมล</label>
-          <input type="email" id="email" placeholder="example@email.com" autocomplete="email" />
+          <input type="email" id="email" data-i18n-placeholder="ph_email" placeholder="example@email.com" autocomplete="email" />
         </div>
         <div class="form-group">
           <label for="password" data-i18n="login_pass">รหัสผ่าน</label>
-          <input type="password" id="password" placeholder="กรอกรหัสผ่าน" autocomplete="current-password" />
+          <input type="password" id="password" data-i18n-placeholder="ph_password" placeholder="กรอกรหัสผ่าน" autocomplete="current-password" />
         </div>
         <div style="text-align:right; margin-top:-0.6rem; margin-bottom:1.2rem;">
           <a href="#" id="forgotBtn" style="font-size:0.85rem;" data-i18n="login_forgot">ลืมรหัสผ่าน?</a>
@@ -65,40 +65,41 @@
       el.style.display = 'block';
     }
 
+    function g(key) { return window.i18nGet ? window.i18nGet(key) : key; }
+
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email    = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
       if (!email || !password)
-        return showAlert('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+        return showAlert(g('err_fill_all'), 'error');
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        showAlert('เข้าสู่ระบบสำเร็จ กำลังเปลี่ยนหน้า...', 'success');
+        showAlert(g('success_login'), 'success');
         setTimeout(() => window.location.href = 'index.html', 1200);
       } catch (err) {
         const msg = err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password'
-          ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง'
+          ? g('err_invalid_credential')
           : err.code === 'auth/user-not-found'
-          ? 'ไม่พบบัญชีนี้ในระบบ'
+          ? g('err_user_not_found')
           : err.code === 'auth/too-many-requests'
-          ? 'ลองใหม่อีกครั้งในภายหลัง'
-          : 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+          ? g('err_too_many_requests')
+          : g('err_generic');
         showAlert(msg, 'error');
       }
     });
 
-    // ลืมรหัสผ่าน
     document.getElementById('forgotBtn').addEventListener('click', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
-      if (!email) return showAlert('กรุณากรอกอีเมลก่อนกดลืมรหัสผ่าน', 'error');
+      if (!email) return showAlert(g('err_enter_email'), 'error');
       try {
         await sendPasswordResetEmail(auth, email);
-        showAlert('ส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมลแล้ว กรุณาตรวจสอบกล่องจดหมาย', 'success');
+        showAlert(g('success_reset_email'), 'success');
       } catch {
-        showAlert('ไม่พบอีเมลนี้ในระบบ', 'error');
+        showAlert(g('err_email_not_found'), 'error');
       }
     });
   </script>
