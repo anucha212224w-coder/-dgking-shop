@@ -513,10 +513,18 @@
         console.log('Tab clicked, isPromo:', isPromo, 'promoEl:', promoEl);
         promoEl.style.display = isPromo ? 'block' : 'none';
         console.log('After set display:', promoEl.style.display);
+        console.log('Computed display:', window.getComputedStyle(promoEl).display);
         if (isPromo) {
           setTimeout(() => {
             console.log('Calling loadPromoInfo, type:', typeof window.loadPromoInfo);
-            if (typeof window.loadPromoInfo === 'function') window.loadPromoInfo();
+            if (typeof window.loadPromoInfo === 'function') {
+              window.loadPromoInfo().then(() => {
+                console.log('loadPromoInfo completed');
+                const promoEl2 = document.getElementById('promoSection');
+                console.log('After loadPromoInfo - display:', promoEl2.style.display);
+                console.log('After loadPromoInfo - computed:', window.getComputedStyle(promoEl2).display);
+              });
+            }
           }, 50);
         }
       });
