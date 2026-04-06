@@ -242,8 +242,9 @@
       <div class="footer-logo">DG <span>KING</span></div>
       <div class="footer-links">
         <a href="index.html" data-i18n="footer_home">หน้าแรก</a>
-        <a href="login.html" data-i18n="footer_login">เข้าสู่ระบบ</a>
-        <a href="register.html" data-i18n="footer_register">สมัครสมาชิก</a>
+        <a href="login.html" id="footerLogin" data-i18n="footer_login">เข้าสู่ระบบ</a>
+        <a href="register.html" id="footerRegister" data-i18n="footer_register">สมัครสมาชิก</a>
+        <a href="profile.html" id="footerAccount" style="display:none;" data-i18n="nav_account">บัญชีของฉัน</a>
       </div>
       <p class="footer-copy" data-i18n="footer_copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
     </div>
@@ -309,6 +310,12 @@
       if (user) {
         guests.forEach(el => el.style.display = 'none');
         member.style.display = 'block';
+        const fl = document.getElementById('footerLogin');
+        const fr = document.getElementById('footerRegister');
+        const fa = document.getElementById('footerAccount');
+        if (fl) fl.style.display = 'none';
+        if (fr) fr.style.display = 'none';
+        if (fa) fa.style.display = 'inline';
       }
       document.getElementById('navbar').style.opacity = '1';
     });

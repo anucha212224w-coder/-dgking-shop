@@ -146,6 +146,8 @@
         <a href="index.html" data-i18n="footer_home">หน้าแรก</a>
         <a href="shop.html" data-i18n="footer_shop">ร้านค้า</a>
         <a href="download.html" data-i18n="footer_download">ดาวน์โหลด</a>
+        <a href="login.html" id="footerLogin" data-i18n="footer_login">เข้าสู่ระบบ</a>
+        <a href="profile.html" id="footerAccount" style="display:none;" data-i18n="nav_account">บัญชีของฉัน</a>
       </div>
       <p class="footer-copy" data-i18n="footer_copy">2026 DG KING - บริการแฮก PUBG Mobile - สงวนลิขสิทธิ์ทุกประการ</p>
     </div>
@@ -156,7 +158,14 @@
     onAuthStateChanged(auth, (user) => {
       const guests = document.querySelectorAll('#navGuest, #navGuest2');
       const member = document.getElementById('navUser');
-      if (user) { guests.forEach(el => el.style.display = 'none'); member.style.display = 'block'; }
+      if (user) {
+        guests.forEach(el => el.style.display = 'none');
+        member.style.display = 'block';
+        const fl = document.getElementById('footerLogin');
+        const fa = document.getElementById('footerAccount');
+        if (fl) fl.style.display = 'none';
+        if (fa) fa.style.display = 'inline';
+      }
       document.getElementById('navbar').style.opacity = '1';
     });
   </script>
