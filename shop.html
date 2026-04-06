@@ -403,9 +403,13 @@
       el.innerHTML = html;
     }
 
-    loadPromoInfo();
-    document.addEventListener('langchange', loadPromoInfo);
+    // Only load promo info when tab is clicked, not on page load
     window.loadPromoInfo = loadPromoInfo;
+    document.addEventListener('langchange', () => {
+      if (document.getElementById('promoSection').style.display !== 'none') {
+        loadPromoInfo();
+      }
+    });
 
     // โหลดสต็อกคีย์และแสดงในการ์ด
     async function loadStock() {
