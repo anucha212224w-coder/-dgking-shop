@@ -325,11 +325,12 @@
 
       // LEFT: Announcement from news collection
       const { collection: col, query: q, where: w, orderBy: ob, getDocs: gd } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      const newsSnap = await gd(q(col(db, 'news'), w('type', '==', 'promo'), ob('createdAt', 'desc')));
+      const newsSnap = await gd(q(col(db, 'news'), w('type', '==', 'promo')));
       const announceTitle = lang === 'en' ? 'Announcements' : 'ประกาศ';
       let announceBody = '';
       if (!newsSnap.empty) {
-        announceBody = newsSnap.docs.map(d => {
+        const sorted = newsSnap.docs.sort((a, b) => (b.data().createdAt?.seconds || 0) - (a.data().createdAt?.seconds || 0));
+        announceBody = sorted.map(d => {
           const n  = d.data();
           const dt = n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString(lang === 'en' ? 'en-US' : 'th-TH') : '';
           return `<a href="news.html?id=${d.id}" class="promo-announce-item">
