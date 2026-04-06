@@ -295,28 +295,43 @@
   <div class="admin-content hidden" id="tabPromotions" style="max-width:800px;margin:2rem auto;padding:0 2rem 4rem;">
     <div class="admin-section-title" style="margin-bottom:1.5rem;">จัดการโปรโมชัน</div>
 
-    <!-- PROMO BANNER SETTINGS -->
+    <!-- MARKETING BAR MESSAGES -->
     <div class="promo-config-card">
-      <div class="promo-config-title">แถบโปรโมชัน (Marketing Bar)</div>
-      <div class="promo-config-desc">ข้อความสั้นๆ ที่แสดงในแถบเลื่อนบนหน้าร้านค้า</div>
+      <div class="promo-config-title">ข้อความแถบวิ่ง (Marketing Bar)</div>
+      <div class="promo-config-desc">ข้อความสั้นๆ หลายข้อความที่แสดงในแถบเลื่อนบนหน้าร้านค้า จะเปลี่ยนไปเรื่อยๆ ตามลำดับ</div>
       <div class="promo-toggle-row">
-        <span>เปิด/ปิดแถบโปรโมชัน</span>
+        <span>เปิด/ปิดแถบวิ่ง</span>
         <label class="toggle-switch">
-          <input type="checkbox" id="promoBarActive" />
+          <input type="checkbox" id="marketingBarActive" />
           <span class="toggle-slider"></span>
         </label>
       </div>
+      <div style="margin-top:1rem;">
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;">
+          <input type="text" id="newMarketingMsg" placeholder="พิมพ์ข้อความใหม่..." style="flex:1;" />
+          <button class="btn btn-primary" onclick="addMarketingMsg()" style="padding:0.6rem 1rem;white-space:nowrap;">+ เพิ่ม</button>
+        </div>
+        <div id="marketingMsgList">กำลังโหลด...</div>
+      </div>
+      <div class="alert alert-error hidden" id="marketingErr"></div>
+      <div class="alert alert-success hidden" id="marketingSuccess"></div>
+    </div>
+
+    <!-- CHANNEL DESCRIPTION -->
+    <div class="promo-config-card" style="margin-top:1.5rem;">
+      <div class="promo-config-title">คำอธิบายช่องทางรับโค้ด</div>
+      <div class="promo-config-desc">ข้อความที่แสดงในคอลัมน์ "รับโค้ด" ของแท็บโปรโมชัน เพื่อชวนลูกค้าติดตามช่องทางรับโค้ดส่วนลด</div>
       <div class="form-group" style="margin-top:0.8rem;">
-        <label>ข้อความ (ภาษาไทย)</label>
-        <input type="text" id="promoBannerTh" placeholder="เช่น สมัครใหม่วันนี้ รับส่วนลดพิเศษ!" />
+        <label>คำอธิบาย (ภาษาไทย)</label>
+        <input type="text" id="channelDescTh" placeholder="เช่น ติดตามช่องทางของเราเพื่อรับโค้ดส่วนลดพิเศษ" />
       </div>
       <div class="form-group">
-        <label>ข้อความ (English)</label>
-        <input type="text" id="promoBannerEn" placeholder="e.g. New members get special discount today!" />
+        <label>คำอธิบาย (English)</label>
+        <input type="text" id="channelDescEn" placeholder="e.g. Follow our channels for exclusive discount codes" />
       </div>
-      <div class="alert alert-error hidden" id="bannerErr"></div>
-      <div class="alert alert-success hidden" id="bannerSuccess"></div>
-      <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="saveBanner()">บันทึกแถบโปรโมชัน</button>
+      <div class="alert alert-error hidden" id="channelErr"></div>
+      <div class="alert alert-success hidden" id="channelSuccess"></div>
+      <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="saveChannelDesc()">บันทึกคำอธิบาย</button>
     </div>
 
     <!-- PROMO DESCRIPTION -->
@@ -438,7 +453,7 @@
   </div>
 
   <script type="module">
-    import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, collection, query, orderBy, getDocs, addDoc, serverTimestamp, where, updateDoc, doc, limit, getDoc, setDoc } from './js/firebase.js';
+    import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, collection, query, orderBy, getDocs, addDoc, serverTimestamp, where, updateDoc, doc, limit, getDoc, setDoc, deleteDoc } from './js/firebase.js';
 
     const ADMIN_EMAIL = 'anucha212224w@gmail.com';
 
@@ -1054,38 +1069,80 @@
 
     // ===== PROMOTIONS =====
     async function loadPromotions() {
-      // Load banner config
+      // Load config
       const snap = await getDoc(doc(db, 'config', 'promotions'));
       const cfg  = snap.exists() ? snap.data() : {};
-      document.getElementById('promoBarActive').checked = cfg.bar_active !== false;
-      document.getElementById('promoBannerTh').value    = cfg.banner_th || '';
-      document.getElementById('promoBannerEn').value    = cfg.banner_en || '';
-      document.getElementById('promoDescTh').value      = cfg.desc_th || '';
-      document.getElementById('promoDescEn').value      = cfg.desc_en || '';
-      document.getElementById('pointsActive').checked   = cfg.points_active !== false;
-      document.getElementById('pts_1').value   = cfg.pts_1   ?? 5;
-      document.getElementById('pts_3').value   = cfg.pts_3   ?? 12;
-      document.getElementById('pts_7').value   = cfg.pts_7   ?? 25;
-      document.getElementById('pts_14').value  = cfg.pts_14  ?? 45;
-      document.getElementById('pts_30').value  = cfg.pts_30  ?? 80;
-      document.getElementById('pts_60').value  = cfg.pts_60  ?? 120;
+      document.getElementById('marketingBarActive').checked = cfg.marketing_active !== false;
+      document.getElementById('channelDescTh').value = cfg.channel_desc_th || '';
+      document.getElementById('channelDescEn').value = cfg.channel_desc_en || '';
+      document.getElementById('promoDescTh').value = cfg.desc_th || '';
+      document.getElementById('promoDescEn').value = cfg.desc_en || '';
+      document.getElementById('pointsActive').checked = cfg.points_active !== false;
+      document.getElementById('pts_1').value = cfg.pts_1 ?? 5;
+      document.getElementById('pts_3').value = cfg.pts_3 ?? 12;
+      document.getElementById('pts_7').value = cfg.pts_7 ?? 25;
+      document.getElementById('pts_14').value = cfg.pts_14 ?? 45;
+      document.getElementById('pts_30').value = cfg.pts_30 ?? 80;
+      document.getElementById('pts_60').value = cfg.pts_60 ?? 120;
       document.getElementById('ptsRedeem').value = cfg.pts_redeem ?? 50;
+      loadMarketingMessages();
       loadCoupons();
     }
 
-    window.saveBanner = async function() {
-      const errEl = document.getElementById('bannerErr');
-      const sucEl = document.getElementById('bannerSuccess');
+    async function loadMarketingMessages() {
+      const snap = await getDocs(collection(db, 'marketing_messages'));
+      const list = document.getElementById('marketingMsgList');
+      if (snap.empty) {
+        list.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">ยังไม่มีข้อความ</p>';
+        return;
+      }
+      list.innerHTML = snap.docs.map(d => {
+        const msg = d.data();
+        return `<div class="marketing-msg-item">
+          <span>${msg.text}</span>
+          <button class="btn-delete" onclick="deleteMarketingMsg('${d.id}')">ลบ</button>
+        </div>`;
+      }).join('');
+    }
+
+    window.addMarketingMsg = async function() {
+      const input = document.getElementById('newMarketingMsg');
+      const text = input.value.trim();
+      if (!text) return;
+      try {
+        await addDoc(collection(db, 'marketing_messages'), { text, createdAt: new Date() });
+        input.value = '';
+        loadMarketingMessages();
+        showToast('เพิ่มข้อความสำเร็จ');
+      } catch(e) {
+        alert(e.message);
+      }
+    };
+
+    window.deleteMarketingMsg = async function(id) {
+      if (!confirm('ลบข้อความนี้?')) return;
+      try {
+        await deleteDoc(doc(db, 'marketing_messages', id));
+        loadMarketingMessages();
+        showToast('ลบข้อความสำเร็จ');
+      } catch(e) {
+        alert(e.message);
+      }
+    };
+
+    window.saveChannelDesc = async function() {
+      const errEl = document.getElementById('channelErr');
+      const sucEl = document.getElementById('channelSuccess');
       errEl.classList.add('hidden'); sucEl.classList.add('hidden');
       try {
         await setDoc(doc(db, 'config', 'promotions'), {
-          bar_active: document.getElementById('promoBarActive').checked,
-          banner_th:  document.getElementById('promoBannerTh').value.trim(),
-          banner_en:  document.getElementById('promoBannerEn').value.trim(),
+          marketing_active: document.getElementById('marketingBarActive').checked,
+          channel_desc_th: document.getElementById('channelDescTh').value.trim(),
+          channel_desc_en: document.getElementById('channelDescEn').value.trim(),
         }, { merge: true });
-        sucEl.textContent = 'บันทึกแถบโปรโมชันสำเร็จ';
+        sucEl.textContent = 'บันทึกคำอธิบายสำเร็จ';
         sucEl.classList.remove('hidden');
-        showToast('บันทึกแถบโปรโมชันสำเร็จ');
+        showToast('บันทึกคำอธิบายสำเร็จ');
       } catch(e) {
         errEl.textContent = e.message; errEl.classList.remove('hidden');
       }

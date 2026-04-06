@@ -1069,6 +1069,41 @@
   font-size: 0.9rem;
 }
 
+.marketing-msg-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 1rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.marketing-msg-item span {
+  flex: 1;
+  color: var(--text);
+}
+
+.btn-delete {
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-delete:hover {
+  background: var(--danger);
+  color: #0a0a0a;
+}
+
 /* TOGGLE SWITCH */
 .toggle-switch {
   position: relative;

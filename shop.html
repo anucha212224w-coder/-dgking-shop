@@ -274,30 +274,45 @@
     import { auth, db, onAuthStateChanged, collection, query, where, getDocs, orderBy } from './js/firebase.js';
     import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-    // Load promo banner from Firestore
-    async function loadPromoBanner() {
-      const snap = await getDoc(doc(db, 'config', 'promotions'));
-      const cfg  = snap.exists() ? snap.data() : {};
-      const lang = localStorage.getItem('lang') || 'th';
+    // Load marketing messages from Firestore
+    async function loadMarketingBar() {
+      const cfgSnap = await getDoc(doc(db, 'config', 'promotions'));
+      const cfg = cfgSnap.exists() ? cfgSnap.data() : {};
       const wrap = document.getElementById('marketingBarWrap');
 
-      if (cfg.bar_active === false) {
+      if (cfg.marketing_active === false) {
         wrap.style.display = 'none';
         return;
       }
 
-      const promoText = lang === 'en' ? cfg.banner_en : cfg.banner_th;
-      if (promoText) {
-        // Prepend promo item as first item
-        const bar = document.getElementById('marketingBar');
-        const promoItem = document.createElement('div');
-        promoItem.className = 'marketing-item promo-highlight';
-        promoItem.textContent = promoText;
-        bar.insertBefore(promoItem, bar.firstChild);
+      const msgSnap = await getDocs(collection(db, 'marketing_messages'));
+      if (msgSnap.empty) return;
+
+      const bar = document.getElementById('marketingBar');
+      bar.innerHTML = ''; // Clear existing
+      msgSnap.docs.forEach(d => {
+        const item = document.createElement('div');
+        item.className = 'marketing-item';
+        item.textContent = d.data().text;
+        bar.appendChild(item);
+      });
+
+      // Re-init carousel
+      const items = bar.querySelectorAll('.marketing-item');
+      if (items.length > 0) {
+        items[0].classList.add('active');
+        const dotsEl = document.getElementById('marketingDots');
+        dotsEl.innerHTML = '';
+        items.forEach((_, i) => {
+          const dot = document.createElement('span');
+          dot.className = 'mkt-dot' + (i === 0 ? ' active' : '');
+          dot.onclick = () => goMkt(i);
+          dotsEl.appendChild(dot);
+        });
       }
     }
 
-    loadPromoBanner();
+    loadMarketingBar();
 
     // Load promo info from config
     async function loadPromoInfo() {
@@ -307,7 +322,6 @@
       const el   = document.getElementById('promoContent');
       if (!el) return;
 
-      const text = lang === 'en' ? cfg.banner_en : cfg.banner_th;
       const redeem = cfg.pts_redeem || 50;
       const ptsMap = [
         { label: lang === 'en' ? '1 Day' : '1 วัน',  pts: cfg.pts_1  ?? 5  },
@@ -353,7 +367,7 @@
 
       // RIGHT: Channel links
       const channelTitle = lang === 'en' ? 'Get Discount Codes' : 'รับโค้ดส่วนลด';
-      const channelSub   = text || (lang === 'en'
+      const channelSub = (lang === 'en' ? cfg.channel_desc_en : cfg.channel_desc_th) || (lang === 'en'
         ? 'Follow our channels for exclusive discount codes'
         : 'ติดตามช่องทางของเราเพื่อรับโค้ดส่วนลดพิเศษ');
       html += `<div class="promo-col">
