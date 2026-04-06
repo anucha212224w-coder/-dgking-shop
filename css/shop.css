@@ -860,9 +860,6 @@
 }
 
 .promo-ch-icon {
-  background: rgba(245,166,35,0.15);
-  border: 1px solid rgba(245,166,35,0.3);
-  color: var(--gold);
   width: 32px;
   height: 32px;
   border-radius: 8px;
@@ -870,6 +867,16 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.promo-ch-icon.tg {
+  background: #2AABEE;
+  color: #fff;
+}
+
+.promo-ch-icon.fb {
+  background: #1877F2;
+  color: #fff;
 }
 
 /* Promo info card (legacy) */
