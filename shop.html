@@ -221,10 +221,7 @@
   <!-- PROMO SECTION - full width outside shop-main -->
   <div id="promoSection" style="display:none;" class="promo-section-wrap">
     <div id="promoContent">
-      <div class="promo-info-card">
-        <div class="promo-info-title">โปรโมชันพิเศษ</div>
-        <div class="promo-info-body" id="promoInfoBody">กำลังโหลด...</div>
-      </div>
+      กำลังโหลด...
     </div>
   </div>
 
@@ -310,8 +307,8 @@
       const snap = await getDoc(doc(db, 'config', 'promotions'));
       const cfg  = snap.exists() ? snap.data() : {};
       const lang = localStorage.getItem('lang') || 'th';
-      const el   = document.getElementById('promoInfoBody');
-      console.log('promoInfoBody element:', el);
+      const el   = document.getElementById('promoContent');
+      console.log('promoContent element:', el);
       if (!el) return;
 
       const text = lang === 'en' ? cfg.banner_en : cfg.banner_th;
@@ -401,7 +398,10 @@
 
       html += `</div>`;
 
+      console.log('Generated HTML length:', html.length);
+      console.log('Setting innerHTML...');
       el.innerHTML = html;
+      console.log('innerHTML set complete');
     }
 
     // Expose to global scope immediately
