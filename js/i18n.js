@@ -113,6 +113,16 @@ const translations = {
     profile_save_pass: 'บันทึกรหัสผ่านใหม่',
     profile_logout: 'ออกจากระบบ',
 
+    // Profile error/success messages
+    err_fill_all: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+    err_pass_short: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร',
+    err_pass_mismatch: 'รหัสผ่านไม่ตรงกัน',
+    err_relogin: 'กรุณาออกจากระบบแล้วเข้าสู่ระบบใหม่ก่อนเปลี่ยนรหัสผ่าน',
+    err_generic: 'เกิดข้อผิดพลาด กรุณาลองใหม่',
+    success_pass_changed: 'เปลี่ยนรหัสผ่านสำเร็จ',
+    profile_new_pass_ph: 'อย่างน้อย 6 ตัวอักษร',
+    profile_confirm_pass_ph: 'กรอกรหัสผ่านอีกครั้ง',
+
     // Orders
     orders_title: 'ออเดอร์ของฉัน',
     orders_buy_more: 'ซื้อเพิ่ม',
@@ -363,6 +373,16 @@ const translations = {
     profile_save_pass: 'Save New Password',
     profile_logout: 'Logout',
 
+    // Profile error/success messages
+    err_fill_all: 'Please fill in all fields',
+    err_pass_short: 'Password must be at least 6 characters',
+    err_pass_mismatch: 'Passwords do not match',
+    err_relogin: 'Please logout and login again before changing password',
+    err_generic: 'An error occurred, please try again',
+    success_pass_changed: 'Password changed successfully',
+    profile_new_pass_ph: 'At least 6 characters',
+    profile_confirm_pass_ph: 'Enter password again',
+
     // Orders
     orders_title: 'My Orders',
     orders_buy_more: 'Buy More',
@@ -527,6 +547,11 @@ function applyLang(lang) {
         el.innerHTML = t[key];
       }
     }
+  });
+  // Handle separate placeholder keys
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (t[key] !== undefined) el.placeholder = t[key];
   });
   document.documentElement.lang = lang;
 }
