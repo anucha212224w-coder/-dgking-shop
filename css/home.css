@@ -381,6 +381,12 @@
   .kv-slide {
     background-position: 70% 60%;
   }
+  .slide-bg1 {
+    background-position: 40% 70%;
+  }
+  .slide-bg3 {
+    background-position: 70% 60%;
+  }
 
   .kv-section {
     min-height: 100svh;
