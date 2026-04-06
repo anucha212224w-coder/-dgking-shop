@@ -304,10 +304,19 @@
 
         const data = await res.json();
 
-        if (!res.ok) throw new Error(data.message || 'สลิปไม่ถูกต้อง');
+        // Translate server error codes
+        if (!res.ok) {
+          const errMap = {
+            SLIP_DUPLICATE: g('err_slip_duplicate'),
+            SLIP_INVALID:   g('err_slip_invalid'),
+            AMOUNT_MISMATCH: `${g('err_amount_mismatch_pre')} ฿${data.slipAmount} ${g('err_amount_mismatch_mid')} ฿${data.expectedAmount}`,
+            SERVER_ERROR:   g('err_server'),
+          };
+          throw new Error(errMap[data.errorCode] || data.message || g('err_slip_invalid'));
+        }
 
-        // แสดง success message จริงจาก SlipOK
-        sucEl.textContent = data.message;
+        // Success message
+        sucEl.textContent = `${g('slip_verified')} ฿${data.slipAmount} ${g('slip_from')} ${data.senderName || '-'}`;
         sucEl.classList.remove('hidden');
         await new Promise(r => setTimeout(r, 1200));
 

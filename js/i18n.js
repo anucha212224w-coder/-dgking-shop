@@ -150,6 +150,15 @@ const translations = {
     copied: 'คัดลอกแล้ว',
     contact_admin_msg: 'กรุณาติดต่อแอดมินเพื่อดำเนินการชำระเงิน',
 
+    // Slip verification
+    err_slip_duplicate: 'สลิปซ้ำ สลิปนี้เคยถูกใช้งานแล้ว',
+    err_slip_invalid: 'สลิปไม่ถูกต้อง กรุณาตรวจสอบและลองใหม่',
+    err_amount_mismatch_pre: 'ยอดในสลิป',
+    err_amount_mismatch_mid: 'ไม่ตรงกับยอดที่ต้องชำระ',
+    err_server: 'เกิดข้อผิดพลาดในการตรวจสอบสลิป กรุณาลองใหม่',
+    slip_verified: 'ตรวจสอบสลิปสำเร็จ ยอด',
+    slip_from: 'จาก',
+
     // Orders
     orders_title: 'ออเดอร์ของฉัน',
     orders_buy_more: 'ซื้อเพิ่ม',
@@ -436,6 +445,15 @@ const translations = {
     copy_key: 'Copy Key',
     copied: 'Copied!',
     contact_admin_msg: 'Please contact admin to proceed with payment',
+
+    // Slip verification
+    err_slip_duplicate: 'Duplicate slip - this slip has already been used',
+    err_slip_invalid: 'Invalid slip, please check and try again',
+    err_amount_mismatch_pre: 'Slip amount',
+    err_amount_mismatch_mid: 'does not match the required amount',
+    err_server: 'Slip verification error, please try again',
+    slip_verified: 'Slip verified successfully. Amount',
+    slip_from: 'from',
 
     // Orders
     orders_title: 'My Orders',
