@@ -76,6 +76,36 @@ textarea {
   color: var(--text-muted);
 }
 
+.pass-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pass-wrap input {
+  flex: 1;
+  padding-right: 4.5rem;
+}
+
+.pass-wrap button {
+  position: absolute;
+  right: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.pass-wrap button:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
 /* NAVBAR */
 .navbar {
   background: rgba(10,10,10,0.95);
