@@ -28,6 +28,12 @@
       <li><a href="contact.html" data-i18n="nav_contact">ติดต่อ</a></li>
       <li><a href="news.html" data-i18n="nav_news">ข่าวสาร</a></li>
       <li><a href="profile.html" class="btn btn-outline" data-i18n="nav_account">บัญชีของฉัน</a></li>
+      <li>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="th">TH</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </li>
     </ul>
   </nav>
 
@@ -38,7 +44,7 @@
     </div>
 
     <div id="ordersList">
-      <div class="orders-loading">กำลังโหลด...</div>
+      <div class="orders-loading" data-i18n="orders_loading">กำลังโหลด...</div>
     </div>
   </div>
 
@@ -46,11 +52,13 @@
     import { auth, db, onAuthStateChanged, collection, query, where, getDocs } from './js/firebase.js';
 
     const STATUS_LABEL = {
-      pending:   { text: 'รอแอดมินตรวจสอบ', cls: 'status-pending' },
-      approved:  { text: 'อนุมัติแล้ว',       cls: 'status-approved' },
-      rejected:  { text: 'ถูกปฏิเสธ',         cls: 'status-rejected' },
-      delivered: { text: 'ส่งคีย์แล้ว',        cls: 'status-delivered' }
+      pending:   { key: 'status_pending',   cls: 'status-pending' },
+      approved:  { key: 'status_approved',  cls: 'status-approved' },
+      rejected:  { key: 'status_rejected',  cls: 'status-rejected' },
+      delivered: { key: 'status_delivered', cls: 'status-delivered' }
     };
+
+    function g(key) { return window.i18nGet ? window.i18nGet(key) : key; }
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) { location.href = 'login.html'; return; }
@@ -63,8 +71,8 @@
       if (snap.empty) {
         list.innerHTML = `<div class="orders-empty">
           <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <p>ยังไม่มีออเดอร์</p>
-          <a href="shop.html" class="btn btn-primary">ไปซื้อสินค้า</a>
+          <p>${g('orders_empty')}</p>
+          <a href="shop.html" class="btn btn-primary">${g('orders_go_shop')}</a>
         </div>`;
         return;
       }
@@ -73,25 +81,31 @@
       snap.forEach(d => orders.push({ id: d.id, ...d.data() }));
       orders.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
-      list.innerHTML = orders.map(o => {
-        const s   = STATUS_LABEL[o.status] || STATUS_LABEL.pending;
-        const dt  = o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString('th-TH') : '-';
-        const key = o.keyCode ? `<div class="order-key-box">คีย์: <span>${o.keyCode}</span></div>` : '';
-        return `<div class="order-item">
-          <div class="order-item-top">
-            <div>
-              <div class="order-product">คีย์ ${o.product}</div>
-              <div class="order-date">${dt}</div>
+      const lang = localStorage.getItem('lang') || 'th';
+      const renderOrders = () => {
+        list.innerHTML = orders.map(o => {
+          const s   = STATUS_LABEL[o.status] || STATUS_LABEL.pending;
+          const dt  = o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString(lang === 'en' ? 'en-US' : 'th-TH') : '-';
+          const key = o.keyCode ? `<div class="order-key-box">${g('orders_key')}: <span>${o.keyCode}</span></div>` : '';
+          return `<div class="order-item">
+            <div class="order-item-top">
+              <div>
+                <div class="order-product">${g('orders_key')} ${o.product}</div>
+                <div class="order-date">${dt}</div>
+              </div>
+              <div class="order-right">
+                <div class="order-price">฿${o.price}</div>
+                <div class="order-status ${s.cls}">${g(s.key)}</div>
+              </div>
             </div>
-            <div class="order-right">
-              <div class="order-price">฿${o.price}</div>
-              <div class="order-status ${s.cls}">${s.text}</div>
-            </div>
-          </div>
-          <div class="order-id">หมายเลขออเดอร์: ${o.id.slice(0,8).toUpperCase()}</div>
-          ${key}
-        </div>`;
-      }).join('');
+            <div class="order-id">${g('orders_id')} ${o.id.slice(0,8).toUpperCase()}</div>
+            ${key}
+          </div>`;
+        }).join('');
+      };
+
+      renderOrders();
+      document.addEventListener('langchange', renderOrders);
     });
   </script>
   <script src="js/main.js"></script>
