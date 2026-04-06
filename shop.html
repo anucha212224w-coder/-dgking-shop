@@ -323,15 +323,40 @@
 
       let html = `<div class="promo-layout">`;
 
-      // LEFT: Points table
+      // LEFT: Announcement from news collection
+      const { collection: col, query: q, where: w, orderBy: ob, getDocs: gd } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      const newsSnap = await gd(q(col(db, 'news'), w('type', '==', 'promo'), ob('createdAt', 'desc')));
+      const announceTitle = lang === 'en' ? 'Announcements' : 'ประกาศ';
+      let announceBody = '';
+      if (!newsSnap.empty) {
+        announceBody = newsSnap.docs.map(d => {
+          const n  = d.data();
+          const dt = n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString(lang === 'en' ? 'en-US' : 'th-TH') : '';
+          return `<a href="news.html?id=${d.id}" class="promo-announce-item">
+            ${n.image ? `<div class="promo-announce-img" style="background-image:url('${n.image}')"></div>` : ''}
+            <div>
+              <div class="promo-announce-title">${n.title}</div>
+              <div class="promo-announce-date">${dt}</div>
+            </div>
+          </a>`;
+        }).join('');
+      } else {
+        announceBody = `<p class="promo-empty">${lang === 'en' ? 'No announcements yet' : 'ยังไม่มีประกาศ'}</p>`;
+      }
+      html += `<div class="promo-col">
+        <div class="promo-col-title">${announceTitle}</div>
+        <div class="promo-announce-list">${announceBody}</div>
+      </div>`;
+
+      // MIDDLE: Points table
       if (cfg.points_active !== false) {
-        const title = lang === 'en' ? 'Points Reward' : 'ระบบสะสมแต้ม';
-        const sub   = lang === 'en'
-          ? `Collect <strong>${redeem} points</strong> → free 1-day key`
-          : `สะสมครบ <strong>${redeem} แต้ม</strong> → แลกคีย์ 1 วันฟรี`;
-        html += `<div class="promo-left">
-          <div class="promo-pts-title">${title}</div>
-          <p class="promo-pts-sub">${sub}</p>
+        const ptsTitle = lang === 'en' ? 'Points Reward' : 'แต้มสะสม';
+        const ptsSub   = lang === 'en'
+          ? `Collect <strong>${redeem} pts</strong> → free 1-day key`
+          : `ครบ <strong>${redeem} แต้ม</strong> → คีย์ 1 วันฟรี`;
+        html += `<div class="promo-col">
+          <div class="promo-col-title">${ptsTitle}</div>
+          <p class="promo-pts-sub">${ptsSub}</p>
           <div class="promo-pts-grid">
             ${ptsMap.map(p => `
               <div class="promo-pts-card">
@@ -349,10 +374,10 @@
       // RIGHT: Channel links
       const channelTitle = lang === 'en' ? 'Get Discount Codes' : 'รับโค้ดส่วนลด';
       const channelSub   = text || (lang === 'en'
-        ? 'Follow our channels to receive exclusive discount codes and promotions'
-        : 'ติดตามช่องทางของเราเพื่อรับโค้ดส่วนลดและโปรโมชันพิเศษ');
-      html += `<div class="promo-right">
-        <div class="promo-pts-title">${channelTitle}</div>
+        ? 'Follow our channels for exclusive discount codes'
+        : 'ติดตามช่องทางของเราเพื่อรับโค้ดส่วนลดพิเศษ');
+      html += `<div class="promo-col">
+        <div class="promo-col-title">${channelTitle}</div>
         <p class="promo-pts-sub">${channelSub}</p>
         <div class="promo-channels">
           <a href="https://t.me/dgshopth" target="_blank" class="promo-channel-btn">
