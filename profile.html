@@ -99,6 +99,25 @@
       </div>
     </div>
 
+    <!-- POINTS CARD -->
+    <div class="profile-card" id="pointsCard" style="display:none;">
+      <h3>🎯 แต้มสะสม</h3>
+      <div style="text-align:center;padding:1rem 0;">
+        <div style="font-size:3rem;font-weight:800;color:var(--gold);font-family:'Roboto Condensed',sans-serif;" id="displayPoints">0</div>
+        <div style="font-size:0.82rem;color:var(--text-muted);margin-top:0.3rem;">แต้ม</div>
+        <div class="points-progress-wrap" style="margin:1rem 0;">
+          <div class="points-progress-bar">
+            <div class="points-progress-fill" id="pointsProgressFill" style="width:0%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-muted);margin-top:0.3rem;">
+            <span>0</span>
+            <span id="pointsTarget">50 แต้ม = คีย์ 1 วันฟรี</span>
+          </div>
+        </div>
+        <div id="redeemSection"></div>
+      </div>
+    </div>
+
     <div class="profile-card">
       <h3 data-i18n="profile_change_pass">เปลี่ยนรหัสผ่าน</h3>
       <div id="pwAlert" class="alert"></div>
@@ -122,7 +141,7 @@
   </div>
 
   <script type="module">
-    import { auth, db, onAuthStateChanged, updatePassword, doc, getDoc } from './js/firebase.js';
+    import { auth, db, onAuthStateChanged, updatePassword, doc, getDoc, updateDoc, addDoc, collection, query, where, getDocs, serverTimestamp } from './js/firebase.js';
     import { signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     function g(key) { return window.i18nGet ? window.i18nGet(key) : key; }
@@ -134,9 +153,11 @@
       el.style.display = 'block';
     }
 
+    let currentUser = null;
+
     onAuthStateChanged(auth, async (user) => {
       if (!user) return window.location.href = 'login.html';
-      document.getElementById('navbar').style.opacity = '1';
+      currentUser = user;
       document.getElementById('displayEmail').textContent = user.email;
 
       const snap = await getDoc(doc(db, 'users', user.uid));
@@ -148,8 +169,72 @@
           const d = new Date(data.createdAt);
           document.getElementById('displayCreated').textContent = d.toLocaleDateString(lang === 'en' ? 'en-US' : 'th-TH');
         }
+
+        // Points
+        const cfgSnap = await getDoc(doc(db, 'config', 'promotions'));
+        const cfg = cfgSnap.exists() ? cfgSnap.data() : {};
+        if (cfg.points_active !== false) {
+          const points  = data.points || 0;
+          const redeem  = cfg.pts_redeem || 50;
+          const pct     = Math.min((points / redeem) * 100, 100);
+          document.getElementById('pointsCard').style.display = 'block';
+          document.getElementById('displayPoints').textContent = points;
+          document.getElementById('pointsProgressFill').style.width = pct + '%';
+          document.getElementById('pointsTarget').textContent = `${redeem} แต้ม = คีย์ 1 วันฟรี`;
+          if (points >= redeem) {
+            document.getElementById('redeemSection').innerHTML = `
+              <div id="redeemAlert" class="alert" style="display:none;margin-bottom:0.5rem;"></div>
+              <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="redeemPoints(${redeem})">
+                🎁 แลกคีย์ 1 วันฟรี (ใช้ ${redeem} แต้ม)
+              </button>`;
+          } else {
+            document.getElementById('redeemSection').innerHTML = `<p style="font-size:0.8rem;color:var(--text-muted);">อีก ${redeem - points} แต้มจะได้คีย์ฟรี</p>`;
+          }
+        }
       }
     });
+
+    window.redeemPoints = async function(redeem) {
+      const userRef  = doc(db, 'users', currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      const points   = userSnap.data().points || 0;
+      const alertEl  = document.getElementById('redeemAlert');
+
+      if (points < redeem) {
+        alertEl.textContent = 'แต้มไม่เพียงพอ';
+        alertEl.className = 'alert alert-error';
+        alertEl.style.display = 'block';
+        return;
+      }
+
+      // Get a free key
+      const keysQ  = query(collection(db, 'keys'), where('product', '==', '1 วัน'), where('used', '==', false), limit(1));
+      const keysSnap = await getDocs(keysQ);
+      if (keysSnap.empty) {
+        alertEl.textContent = 'คีย์หมดสต็อกชั่วคราว กรุณาติดต่อแอดมิน';
+        alertEl.className = 'alert alert-error';
+        alertEl.style.display = 'block';
+        return;
+      }
+
+      const keyDoc  = keysSnap.docs[0];
+      const keyCode = keyDoc.data().code;
+      await updateDoc(doc(db, 'keys', keyDoc.id), { used: true, usedAt: serverTimestamp() });
+      await updateDoc(userRef, { points: points - redeem });
+      await addDoc(collection(db, 'orders'), {
+        uid: currentUser.uid, email: currentUser.email,
+        product: '1 วัน', price: 0, status: 'delivered',
+        keyCode, keyId: keyDoc.id, redeemed: true,
+        createdAt: serverTimestamp()
+      });
+
+      alertEl.innerHTML = `🎉 แลกสำเร็จ! คีย์ของคุณ: <strong style="color:var(--gold);font-family:monospace;">${keyCode}</strong>`;
+      alertEl.className = 'alert alert-success';
+      alertEl.style.display = 'block';
+      document.getElementById('displayPoints').textContent = points - redeem;
+      document.getElementById('pointsProgressFill').style.width = '0%';
+      document.querySelector('#redeemSection button')?.remove();
+    };
 
     document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
       e.preventDefault();

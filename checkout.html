@@ -78,6 +78,13 @@
           <span id="s1Email" class="text-muted">-</span>
         </div>
         <hr class="order-divider" />
+        <!-- COUPON CODE -->
+        <div class="coupon-input-row">
+          <input type="text" id="couponInput" placeholder="โค้ดส่วนลด" style="text-transform:uppercase;flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.8rem;color:var(--text);font-size:0.88rem;outline:none;font-family:inherit;" />
+          <button class="btn btn-outline" onclick="applyCoupon()" style="white-space:nowrap;padding:0.5rem 1rem;">ใช้โค้ด</button>
+        </div>
+        <div id="couponMsg" style="font-size:0.8rem;margin-top:0.3rem;display:none;"></div>
+        <hr class="order-divider" />
         <div class="order-row total-row">
           <span data-i18n="checkout_total">ยอดที่ต้องชำระ</span>
           <span id="s1Total" class="price-gold">-</span>
@@ -163,18 +170,49 @@
   </div>
 
   <script type="module">
-    import { auth, db, onAuthStateChanged, addDoc, collection, query, where, getDocs, updateDoc, doc, serverTimestamp, limit } from './js/firebase.js';
+    import { auth, db, onAuthStateChanged, addDoc, collection, query, where, getDocs, updateDoc, doc, serverTimestamp, limit, getDoc, setDoc } from './js/firebase.js';
 
     const SLIPOK_API_KEY = 'SLIPOKVKFKKTP';
     const SLIPOK_BRANCH  = '56967';
 
-    // Parse URL params
     const params  = new URLSearchParams(location.search);
     const product = params.get('product') || '-';
     const price   = parseFloat(params.get('price')) || 0;
 
-    let currentUser = null;
-    let orderId     = null;
+    let currentUser  = null;
+    let orderId      = null;
+    let finalPrice   = price;   // ราคาหลังหักโค้ด
+    let appliedCoupon = null;   // { code, discount }
+
+    // Coupon logic
+    window.applyCoupon = async function() {
+      const code  = document.getElementById('couponInput').value.trim().toUpperCase();
+      const msgEl = document.getElementById('couponMsg');
+      if (!code) return;
+
+      const snap = await getDoc(doc(db, 'coupons', code));
+      if (!snap.exists() || snap.data().active === false) {
+        msgEl.textContent = '❌ โค้ดไม่ถูกต้องหรือหมดอายุแล้ว';
+        msgEl.style.color = '#ff4d4d';
+        msgEl.style.display = 'block';
+        return;
+      }
+      const c = snap.data();
+      if (c.maxUse > 0 && (c.usedCount || 0) >= c.maxUse) {
+        msgEl.textContent = '❌ โค้ดนี้ถูกใช้ครบจำนวนแล้ว';
+        msgEl.style.color = '#ff4d4d';
+        msgEl.style.display = 'block';
+        return;
+      }
+      finalPrice = Math.max(price - c.discount, 0);
+      appliedCoupon = { code, discount: c.discount };
+      msgEl.textContent = `✅ ใช้โค้ด ${code} ลด ฿${c.discount} แล้ว`;
+      msgEl.style.color = 'var(--gold)';
+      msgEl.style.display = 'block';
+      document.getElementById('s1Total').textContent   = '฿' + finalPrice;
+      document.getElementById('s2Amount').textContent  = '฿' + finalPrice;
+      if (document.getElementById('qrCanvas').getContext) generateQR();
+    };
 
     // Auth check
     onAuthStateChanged(auth, (user) => {
@@ -185,11 +223,10 @@
       document.getElementById('navbar').style.opacity = '1';
       document.getElementById('s1Product').textContent = (window.i18nGet ? window.i18nGet('orders_key') : 'คีย์') + ' ' + productDisplay;
       document.getElementById('s1Price').textContent   = '฿' + price;
-      document.getElementById('s1Total').textContent   = '฿' + price;
+      document.getElementById('s1Total').textContent   = '฿' + finalPrice;
       document.getElementById('s1Email').textContent   = user.email;
-      document.getElementById('s2Amount').textContent  = '฿' + price;
+      document.getElementById('s2Amount').textContent  = '฿' + finalPrice;
 
-      // Re-render product name on lang change
       document.addEventListener('langchange', (e) => {
         const l = e.detail || 'th';
         const pd = l === 'en' ? product.replace('วัน', 'Day') : product;
@@ -211,7 +248,7 @@
     // Generate PromptPay QR
     function generateQR() {
       try {
-        const payload = buildPromptPay('0612373304', price);
+        const payload = buildPromptPay('0612373304', finalPrice);
         QRCode.toCanvas(document.getElementById('qrCanvas'), payload, {
           width: 220,
           margin: 2,
@@ -299,7 +336,7 @@
         const res  = await fetch('https://dgking-server-production.up.railway.app/api/verify-slip', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageBase64, amount: price })
+          body: JSON.stringify({ imageBase64, amount: finalPrice })
         });
 
         const data = await res.json();
@@ -333,7 +370,10 @@
         if (keysSnap.empty) {
           const orderRef = await addDoc(collection(db, 'orders'), {
             uid: currentUser.uid, email: currentUser.email,
-            product, price, status: 'pending',
+            product, price: finalPrice, originalPrice: price,
+            couponCode: appliedCoupon?.code || null,
+            couponDiscount: appliedCoupon?.discount || 0,
+            status: 'pending',
             slipData: data.data || {}, slipImage: imageBase64,
             createdAt: serverTimestamp()
           });
@@ -346,7 +386,10 @@
           await updateDoc(doc(db, 'keys', keyDoc.id), { used: true, usedAt: serverTimestamp() });
           const orderRef = await addDoc(collection(db, 'orders'), {
             uid: currentUser.uid, email: currentUser.email,
-            product, price, status: 'delivered',
+            product, price: finalPrice, originalPrice: price,
+            couponCode: appliedCoupon?.code || null,
+            couponDiscount: appliedCoupon?.discount || 0,
+            status: 'delivered',
             keyCode, keyId: keyDoc.id,
             slipData: data.data || {}, slipImage: imageBase64,
             createdAt: serverTimestamp()
@@ -364,6 +407,18 @@
             </div>`;
         }
 
+        // Add points to user
+        await awardPoints();
+
+        // Mark coupon as used
+        if (appliedCoupon) {
+          const cRef = doc(db, 'coupons', appliedCoupon.code);
+          const cSnap = await getDoc(cRef);
+          if (cSnap.exists()) {
+            await updateDoc(cRef, { usedCount: (cSnap.data().usedCount || 0) + 1 });
+          }
+        }
+
         goStep(3);
 
       } catch (err) {
@@ -374,6 +429,30 @@
         btn.textContent = g('checkout_submit');
       }
     };
+
+    // Award points to user after purchase
+    async function awardPoints() {
+      try {
+        const cfgSnap = await getDoc(doc(db, 'config', 'promotions'));
+        const cfg = cfgSnap.exists() ? cfgSnap.data() : {};
+        if (cfg.points_active === false) return;
+
+        const ptsMap = { '1 วัน': cfg.pts_1 ?? 5, '3 วัน': cfg.pts_3 ?? 12, '7 วัน': cfg.pts_7 ?? 25, '14 วัน': cfg.pts_14 ?? 45, '30 วัน': cfg.pts_30 ?? 80, '60 วัน': cfg.pts_60 ?? 120 };
+        const earned = ptsMap[product] || 0;
+        if (earned <= 0) return;
+
+        const userRef  = doc(db, 'users', currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        const current  = userSnap.exists() ? (userSnap.data().points || 0) : 0;
+        await updateDoc(userRef, { points: current + earned });
+
+        // Show points earned on step 3
+        const ptsEl = document.createElement('div');
+        ptsEl.className = 'points-earned-box';
+        ptsEl.innerHTML = `🎯 ได้รับ <strong>${earned} แต้ม</strong> รวมทั้งหมด <strong>${current + earned} แต้ม</strong>`;
+        document.getElementById('keyResultBox').appendChild(ptsEl);
+      } catch(e) { console.error('points error:', e); }
+    }
   </script>
   <script src="js/main.js"></script>
 </body>
