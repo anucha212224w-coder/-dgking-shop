@@ -349,12 +349,26 @@
 
       let html = `<div class="promo-layout">`;
 
-      // LEFT: Promo description from config
+      // LEFT: Announcements from promo_announcements collection
+      const announceSnap = await getDocs(collection(db, 'promo_announcements'));
       const announceTitle = lang === 'en' ? 'Announcements' : 'ประกาศ';
-      const announceBody = (lang === 'en' ? cfg.desc_en : cfg.desc_th) || (lang === 'en' ? 'No announcements yet' : 'ยังไม่มีประกาศ');
+      let announceBody = '';
+      if (!announceSnap.empty) {
+        announceBody = announceSnap.docs.map(d => {
+          const a = d.data();
+          const title = lang === 'en' ? a.title_en : a.title_th;
+          const text = lang === 'en' ? a.text_en : a.text_th;
+          return `<div class="promo-announce-card">
+            <div class="promo-announce-card-title">${title}</div>
+            <div class="promo-announce-card-text">${text.replace(/\n/g, '<br>')}</div>
+          </div>`;
+        }).join('');
+      } else {
+        announceBody = `<p class="promo-empty">${lang === 'en' ? 'No announcements yet' : 'ยังไม่มีประกาศ'}</p>`;
+      }
       html += `<div class="promo-col">
         <div class="promo-col-title">${announceTitle}</div>
-        <div class="promo-desc-text">${announceBody.replace(/\n/g, '<br>')}</div>
+        <div class="promo-announce-list">${announceBody}</div>
       </div>`;
 
       // MIDDLE: Points table

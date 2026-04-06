@@ -334,21 +334,22 @@
       <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="saveChannelDesc()">บันทึกคำอธิบาย</button>
     </div>
 
-    <!-- PROMO DESCRIPTION -->
+    <!-- PROMO ANNOUNCEMENTS -->
     <div class="promo-config-card" style="margin-top:1.5rem;">
-      <div class="promo-config-title">คำอธิบายโปรโมชัน</div>
-      <div class="promo-config-desc">ข้อความอธิบายโปรโมชันที่แสดงในคอลัมน์ "ประกาศ" ของแท็บโปรโมชัน เช่น รายละเอียดการสะสมแต้ม วิธีรับโค้ด เงื่อนไขต่างๆ (สามารถใส่หลายบรรทัดได้)</div>
-      <div class="form-group" style="margin-top:0.8rem;">
-        <label>คำอธิบาย (ภาษาไทย)</label>
-        <textarea id="promoDescTh" rows="10" placeholder="เช่น ตรงนี้ผมจะทำโปรโมชันอะไรดี ต้องทำที่หลังบ้านที่ใส่โปรโมชั่นสินค้า...&#10;&#10;แต่ละวันคีย์ต้องจัดแต้มให้เหมาะสม...&#10;&#10;ส่วนโค้ดส่วนลด แอดมินสร้างโค้ดไว้สัก 3 อัน..."></textarea>
+      <div class="promo-config-title">ประกาศโปรโมชัน</div>
+      <div class="promo-config-desc">ประกาศที่แสดงในคอลัมน์ "ประกาศ" ของแท็บโปรโมชัน สามารถเพิ่มได้หลายประกาศ</div>
+      <div style="margin-top:1rem;">
+        <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.8rem;">
+          <input type="text" id="newAnnounceTitleTh" placeholder="หัวข้อ (ภาษาไทย)" />
+          <textarea id="newAnnounceTextTh" rows="3" placeholder="รายละเอียด (ภาษาไทย)"></textarea>
+          <input type="text" id="newAnnounceTitleEn" placeholder="Title (English)" />
+          <textarea id="newAnnounceTextEn" rows="3" placeholder="Description (English)"></textarea>
+          <button class="btn btn-primary" onclick="addAnnouncement()" style="padding:0.6rem 1rem;align-self:flex-start;">+ เพิ่มประกาศ</button>
+        </div>
+        <div id="announceList">กำลังโหลด...</div>
       </div>
-      <div class="form-group">
-        <label>คำอธิบาย (English)</label>
-        <textarea id="promoDescEn" rows="10" placeholder="e.g. Promotion details, how to collect points, how to get discount codes...&#10;&#10;Each package earns different points...&#10;&#10;Discount codes are posted on our channels..."></textarea>
-      </div>
-      <div class="alert alert-error hidden" id="descErr"></div>
-      <div class="alert alert-success hidden" id="descSuccess"></div>
-      <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="savePromoDesc()">บันทึกคำอธิบาย</button>
+      <div class="alert alert-error hidden" id="announceErr"></div>
+      <div class="alert alert-success hidden" id="announceSuccess"></div>
     </div>
 
     <!-- COUPON CODES -->
@@ -1075,8 +1076,6 @@
       document.getElementById('marketingBarActive').checked = cfg.marketing_active !== false;
       document.getElementById('channelDescTh').value = cfg.channel_desc_th || '';
       document.getElementById('channelDescEn').value = cfg.channel_desc_en || '';
-      document.getElementById('promoDescTh').value = cfg.desc_th || '';
-      document.getElementById('promoDescEn').value = cfg.desc_en || '';
       document.getElementById('pointsActive').checked = cfg.points_active !== false;
       document.getElementById('pts_1').value = cfg.pts_1 ?? 5;
       document.getElementById('pts_3').value = cfg.pts_3 ?? 12;
@@ -1086,8 +1085,67 @@
       document.getElementById('pts_60').value = cfg.pts_60 ?? 120;
       document.getElementById('ptsRedeem').value = cfg.pts_redeem ?? 50;
       loadMarketingMessages();
+      loadAnnouncements();
       loadCoupons();
     }
+
+    async function loadAnnouncements() {
+      const snap = await getDocs(collection(db, 'promo_announcements'));
+      const list = document.getElementById('announceList');
+      if (snap.empty) {
+        list.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">ยังไม่มีประกาศ</p>';
+        return;
+      }
+      list.innerHTML = snap.docs.map(d => {
+        const a = d.data();
+        return `<div class="marketing-msg-item">
+          <div style="flex:1;">
+            <div style="font-weight:600;margin-bottom:0.2rem;">${a.title_th}</div>
+            <div style="font-size:0.85rem;color:var(--text-muted);">${a.text_th.substring(0, 60)}${a.text_th.length > 60 ? '...' : ''}</div>
+          </div>
+          <button class="btn-delete" onclick="deleteAnnouncement('${d.id}')">ลบ</button>
+        </div>`;
+      }).join('');
+    }
+
+    window.addAnnouncement = async function() {
+      const titleTh = document.getElementById('newAnnounceTitleTh').value.trim();
+      const textTh = document.getElementById('newAnnounceTextTh').value.trim();
+      const titleEn = document.getElementById('newAnnounceTitleEn').value.trim();
+      const textEn = document.getElementById('newAnnounceTextEn').value.trim();
+      if (!titleTh || !textTh) {
+        alert('กรุณาใส่หัวข้อและรายละเอียดภาษาไทย');
+        return;
+      }
+      try {
+        await addDoc(collection(db, 'promo_announcements'), {
+          title_th: titleTh,
+          text_th: textTh,
+          title_en: titleEn || titleTh,
+          text_en: textEn || textTh,
+          createdAt: new Date()
+        });
+        document.getElementById('newAnnounceTitleTh').value = '';
+        document.getElementById('newAnnounceTextTh').value = '';
+        document.getElementById('newAnnounceTitleEn').value = '';
+        document.getElementById('newAnnounceTextEn').value = '';
+        loadAnnouncements();
+        showToast('เพิ่มประกาศสำเร็จ');
+      } catch(e) {
+        alert(e.message);
+      }
+    };
+
+    window.deleteAnnouncement = async function(id) {
+      if (!confirm('ลบประกาศนี้?')) return;
+      try {
+        await deleteDoc(doc(db, 'promo_announcements', id));
+        loadAnnouncements();
+        showToast('ลบประกาศสำเร็จ');
+      } catch(e) {
+        alert(e.message);
+      }
+    };
 
     async function loadMarketingMessages() {
       const snap = await getDocs(collection(db, 'marketing_messages'));
@@ -1143,23 +1201,6 @@
         sucEl.textContent = 'บันทึกคำอธิบายสำเร็จ';
         sucEl.classList.remove('hidden');
         showToast('บันทึกคำอธิบายสำเร็จ');
-      } catch(e) {
-        errEl.textContent = e.message; errEl.classList.remove('hidden');
-      }
-    };
-
-    window.savePromoDesc = async function() {
-      const errEl = document.getElementById('descErr');
-      const sucEl = document.getElementById('descSuccess');
-      errEl.classList.add('hidden'); sucEl.classList.add('hidden');
-      try {
-        await setDoc(doc(db, 'config', 'promotions'), {
-          desc_th: document.getElementById('promoDescTh').value.trim(),
-          desc_en: document.getElementById('promoDescEn').value.trim(),
-        }, { merge: true });
-        sucEl.textContent = 'บันทึกคำอธิบายโปรโมชันสำเร็จ';
-        sucEl.classList.remove('hidden');
-        showToast('บันทึกคำอธิบายโปรโมชันสำเร็จ');
       } catch(e) {
         errEl.textContent = e.message; errEl.classList.remove('hidden');
       }

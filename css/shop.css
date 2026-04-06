@@ -790,6 +790,26 @@
 /* Announce items */
 .promo-announce-list { display: flex; flex-direction: column; gap: 0.6rem; }
 
+.promo-announce-card {
+  padding: 0.8rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.promo-announce-card-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+
+.promo-announce-card-text {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+
 .promo-desc-text {
   font-size: 0.85rem;
   color: var(--text);
