@@ -505,8 +505,13 @@
         document.getElementById('keyHeader').style.display = isPromo ? 'none' : '';
         document.getElementById('productsGrid').style.display = isPromo ? 'none' : '';
         document.querySelector('.shop-main-wrapper').style.display = isPromo ? 'none' : '';
-        document.getElementById('promoSection').style.display = isPromo ? 'block' : 'none';
-        if (isPromo) loadPromoInfo();
+        const promoEl = document.getElementById('promoSection');
+        promoEl.style.display = isPromo ? 'block' : 'none';
+        if (isPromo) {
+          setTimeout(() => {
+            if (typeof window.loadPromoInfo === 'function') window.loadPromoInfo();
+          }, 50);
+        }
       });
     });
 
