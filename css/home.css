@@ -376,3 +376,31 @@
   .footer-inner { flex-direction: column; text-align: center; }
   .footer-links { justify-content: center; }
 }
+
+@media (max-width: 768px) {
+  .kv-slide {
+    background-position: center center;
+  }
+
+  .kv-section {
+    min-height: 100svh;
+  }
+
+  .kv-content {
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    gap: 1.5rem;
+  }
+
+  .kv-left {
+    max-width: 100%;
+  }
+
+  .kv-right {
+    display: none;
+  }
+
+  .kv-title {
+    font-size: 2rem;
+  }
+}
