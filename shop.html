@@ -313,6 +313,17 @@
           dot.onclick = () => goMkt(i);
           dotsEl.appendChild(dot);
         });
+        
+        // Start auto-rotate
+        let mIdx = 0;
+        window.goMkt = function(n) {
+          items[mIdx].classList.remove('active');
+          document.querySelectorAll('.mkt-dot')[mIdx].classList.remove('active');
+          mIdx = (n + items.length) % items.length;
+          items[mIdx].classList.add('active');
+          document.querySelectorAll('.mkt-dot')[mIdx].classList.add('active');
+        };
+        setInterval(() => window.goMkt(mIdx + 1), 3500);
       }
     }
 
@@ -475,25 +486,6 @@
   </script>
 
   <script>
-    // Marketing bar
-    const mItems = document.querySelectorAll('.marketing-item');
-    const mDotsEl = document.getElementById('marketingDots');
-    let mIdx = 0;
-    mItems.forEach((_, i) => {
-      const d = document.createElement('span');
-      d.className = 'mkt-dot' + (i === 0 ? ' active' : '');
-      d.onclick = () => goMkt(i);
-      mDotsEl.appendChild(d);
-    });
-    function goMkt(n) {
-      mItems[mIdx].classList.remove('active');
-      document.querySelectorAll('.mkt-dot')[mIdx].classList.remove('active');
-      mIdx = (n + mItems.length) % mItems.length;
-      mItems[mIdx].classList.add('active');
-      document.querySelectorAll('.mkt-dot')[mIdx].classList.add('active');
-    }
-    setInterval(() => goMkt(mIdx + 1), 3500);
-
     // Tabs
     document.querySelectorAll('.shop-tab').forEach(tab => {
       tab.addEventListener('click', () => {
