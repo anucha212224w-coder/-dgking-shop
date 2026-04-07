@@ -11,8 +11,8 @@
   <link rel="apple-touch-icon" href="favicon_io/apple-touch-icon.png" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/checkout.css" />
-  <!-- QR libs -->
-  <script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <!-- QR libs - local file to avoid Safari tracking prevention -->
+  <script src="js/qrcode.min.js"></script>
   <script src="js/i18n.js"></script>
 </head>
 <body>
@@ -105,7 +105,7 @@
           <div class="payment-left">
             <div class="payment-method-label" data-i18n="checkout_pay_method">โอนผ่าน PromptPay</div>
             <div class="qr-wrap">
-              <canvas id="qrCanvas"></canvas>
+              <div id="qrCanvas"></div>
             </div>
             <div class="qr-label" data-i18n="checkout_scan">สแกนด้วย TrueMoney Wallet หรือแอปธนาคาร</div>
             <div class="payment-amount-label" data-i18n="checkout_amount_label">ยอดที่ต้องโอน</div>
@@ -249,10 +249,18 @@
     function generateQR() {
       try {
         const payload = buildPromptPay('0612373304', finalPrice);
-        QRCode.toCanvas(document.getElementById('qrCanvas'), payload, {
+        const qrDiv = document.getElementById('qrCanvas');
+        // Clear previous QR code
+        qrDiv.innerHTML = '';
+        
+        // Use QRCode library (qrcodejs)
+        new QRCode(qrDiv, {
+          text: payload,
           width: 220,
-          margin: 2,
-          color: { dark: '#000000', light: '#ffffff' }
+          height: 220,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
         });
       } catch(e) {
         console.error('QR error:', e);
