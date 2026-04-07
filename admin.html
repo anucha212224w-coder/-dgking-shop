@@ -1400,9 +1400,14 @@
               </div>
             </td>
             <td>
-              <button class="btn btn-sm btn-outline" onclick="resetCustomerPoints('${customer.uid}', '${customer.email}', ${customer.points})" ${!canRedeem ? 'disabled' : ''} style="white-space:nowrap;font-size:0.75rem;padding:0.4rem 0.6rem;">
-                รีเซ็ต
-              </button>
+              <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+                <button class="btn btn-sm btn-outline" onclick="adjustCustomerPoints('${customer.uid}', '${customer.email}', ${customer.points})" style="white-space:nowrap;font-size:0.7rem;padding:0.35rem 0.5rem;">
+                  ปรับ
+                </button>
+                <button class="btn btn-sm btn-outline" onclick="resetCustomerPoints('${customer.uid}', '${customer.email}', ${customer.points})" ${!canRedeem ? 'disabled' : ''} style="white-space:nowrap;font-size:0.7rem;padding:0.35rem 0.5rem;">
+                  รีเซ็ต
+                </button>
+              </div>
             </td>
           </tr>`;
       });
@@ -1425,14 +1430,41 @@
     }
 
     async function resetCustomerPoints(uid, email, currentPoints) {
-      if (!confirm(`ยืนยันรีเซ็ตแต้มของ ${email}?\n\nแต้มปัจจุบัน: ${currentPoints}\nจะรีเซ็ตเป็น: 0`)) return;
+      console.log('resetCustomerPoints called:', uid, email, currentPoints);
+      
+      const confirmed = confirm(`ยืนยันรีเซ็ตแต้มของ ${email}?\n\nแต้มปัจจุบัน: ${currentPoints}\nจะรีเซ็ตเป็น: 0`);
+      console.log('User confirmed:', confirmed);
+      
+      if (!confirmed) return;
 
       try {
+        console.log('Updating user points to 0...');
         await updateDoc(doc(db, 'users', uid), { points: 0 });
+        console.log('Points reset successful');
         showToast('รีเซ็ตแต้มสำเร็จ', 'success');
         loadCustomerPoints();
       } catch (err) {
-        console.error(err);
+        console.error('Error resetting points:', err);
+        showToast('เกิดข้อผิดพลาด: ' + err.message, 'error');
+      }
+    }
+
+    async function adjustCustomerPoints(uid, email, currentPoints) {
+      const newPoints = prompt(`ปรับแต้มของ ${email}\n\nแต้มปัจจุบัน: ${currentPoints}\nใส่จำนวนแต้มใหม่:`, currentPoints);
+      if (newPoints === null) return;
+      
+      const points = parseInt(newPoints);
+      if (isNaN(points) || points < 0) {
+        showToast('กรุณาใส่ตัวเลขที่ถูกต้อง', 'error');
+        return;
+      }
+
+      try {
+        await updateDoc(doc(db, 'users', uid), { points: points });
+        showToast('ปรับแต้มสำเร็จ', 'success');
+        loadCustomerPoints();
+      } catch (err) {
+        console.error('Error adjusting points:', err);
         showToast('เกิดข้อผิดพลาด: ' + err.message, 'error');
       }
     }
@@ -1440,6 +1472,7 @@
     window.loadCustomerPoints = loadCustomerPoints;
     window.filterCustomerPoints = filterCustomerPoints;
     window.resetCustomerPoints = resetCustomerPoints;
+    window.adjustCustomerPoints = adjustCustomerPoints;
   </script>
 
 </body>
