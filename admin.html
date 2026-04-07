@@ -65,6 +65,7 @@
         <button class="admin-tab" onclick="switchTab('news')">ข่าวสาร</button>
         <button class="admin-tab" onclick="switchTab('videos')">วิดีโอ</button>
         <button class="admin-tab" onclick="switchTab('promotions')">โปรโมชัน</button>
+        <button class="admin-tab" onclick="switchTab('points')">แต้มลูกค้า</button>
       </div>
     </div>
 
@@ -417,6 +418,18 @@
     </div>
   </div>
 
+  <!-- CUSTOMER POINTS TAB -->
+  <div class="admin-content hidden" id="tabPoints" style="max-width:900px;margin:2rem auto;padding:0 2rem 4rem;">
+    <div class="admin-section-header" style="margin-bottom:1.5rem;">
+      <div class="admin-section-title">แต้มสะสมลูกค้า</div>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <input type="text" id="pointsSearch" placeholder="ค้นหาอีเมล..." oninput="filterCustomerPoints()" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.4rem 0.8rem;color:var(--text);font-size:0.82rem;outline:none;font-family:inherit;width:200px;" />
+        <button class="btn btn-outline" onclick="loadCustomerPoints()">รีเฟรช</button>
+      </div>
+    </div>
+    <div id="customerPointsTable">กำลังโหลด...</div>
+  </div>
+
   <!-- TOAST -->
   <div id="toast" class="toast hidden"></div>
 
@@ -527,7 +540,7 @@
     window.addKeys = addKeys;
 
     function switchTab(tab) {
-      const tabs = ['dashboard','orders','keys','addkeys','news','videos','promotions'];
+      const tabs = ['dashboard','orders','keys','addkeys','news','videos','promotions','points'];
       document.querySelectorAll('.admin-tab').forEach((t,i) => {
         t.classList.toggle('active', tabs[i] === tab);
       });
@@ -547,6 +560,7 @@
       if (tab === 'news') loadNews();
       if (tab === 'videos') loadVideos();
       if (tab === 'promotions') loadPromotions();
+      if (tab === 'points') loadCustomerPoints();
     };
 
     function toggleAdminMenu() {
@@ -1311,6 +1325,115 @@
       showToast(`ลบโค้ด ${code} แล้ว`);
       loadCoupons();
     };
+
+    // ===== CUSTOMER POINTS MANAGEMENT =====
+    let allCustomerPoints = [];
+
+    async function loadCustomerPoints() {
+      const table = document.getElementById('customerPointsTable');
+      table.innerHTML = 'กำลังโหลด...';
+
+      try {
+        const usersSnap = await getDocs(collection(db, 'users'));
+        allCustomerPoints = [];
+
+        for (const userDoc of usersSnap.docs) {
+          const userData = userDoc.data();
+          const points = userData.points || 0;
+          if (points > 0) {
+            allCustomerPoints.push({
+              uid: userDoc.id,
+              email: userData.email || 'ไม่ระบุ',
+              username: userData.username || 'ไม่ระบุ',
+              points: points,
+              createdAt: userData.createdAt
+            });
+          }
+        }
+
+        // Sort by points descending
+        allCustomerPoints.sort((a, b) => b.points - a.points);
+        renderCustomerPoints(allCustomerPoints);
+      } catch (err) {
+        console.error(err);
+        table.innerHTML = '<p style="color:var(--danger);padding:1rem;">เกิดข้อผิดพลาด: ' + err.message + '</p>';
+      }
+    }
+
+    function renderCustomerPoints(data) {
+      const table = document.getElementById('customerPointsTable');
+      
+      if (data.length === 0) {
+        table.innerHTML = '<p style="color:var(--text-dim);padding:1rem;text-align:center;">ยังไม่มีลูกค้าที่มีแต้มสะสม</p>';
+        return;
+      }
+
+      let html = `
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>อีเมล</th>
+                <th>ชื่อผู้ใช้</th>
+                <th>แต้มสะสม</th>
+                <th>สถานะ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody>`;
+
+      data.forEach(customer => {
+        const canRedeem = customer.points >= 50;
+        const statusClass = canRedeem ? 'success' : '';
+        const statusText = canRedeem ? 'ครบ 50 แต้ม' : customer.points + ' แต้ม';
+        
+        html += `
+          <tr>
+            <td>${customer.email}</td>
+            <td>${customer.username}</td>
+            <td style="color:var(--gold);font-weight:700;">${customer.points}</td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td>
+              <button class="btn btn-sm btn-outline" onclick="resetCustomerPoints('${customer.uid}', '${customer.email}', ${customer.points})" ${!canRedeem ? 'disabled' : ''}>
+                รีเซ็ตแต้ม
+              </button>
+            </td>
+          </tr>`;
+      });
+
+      html += `
+            </tbody>
+          </table>
+        </div>`;
+
+      table.innerHTML = html;
+    }
+
+    function filterCustomerPoints() {
+      const search = document.getElementById('pointsSearch').value.toLowerCase();
+      const filtered = allCustomerPoints.filter(c => 
+        c.email.toLowerCase().includes(search) || 
+        c.username.toLowerCase().includes(search)
+      );
+      renderCustomerPoints(filtered);
+    }
+
+    async function resetCustomerPoints(uid, email, currentPoints) {
+      if (!confirm(`ยืนยันรีเซ็ตแต้มของ ${email}?\n\nแต้มปัจจุบัน: ${currentPoints}\nจะรีเซ็ตเป็น: 0`)) return;
+
+      try {
+        await updateDoc(doc(db, 'users', uid), { points: 0 });
+        showToast('รีเซ็ตแต้มสำเร็จ', 'success');
+        loadCustomerPoints();
+      } catch (err) {
+        console.error(err);
+        showToast('เกิดข้อผิดพลาด: ' + err.message, 'error');
+      }
+    }
+
+    window.loadCustomerPoints = loadCustomerPoints;
+    window.filterCustomerPoints = filterCustomerPoints;
+    window.resetCustomerPoints = resetCustomerPoints;
   </script>
 
 </body>
