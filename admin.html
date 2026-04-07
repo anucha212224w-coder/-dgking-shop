@@ -1370,13 +1370,11 @@
 
       let html = `
         <div style="overflow-x:auto;">
-          <table class="admin-table">
+          <table class="admin-table customer-points-table">
             <thead>
               <tr>
-                <th>อีเมล</th>
-                <th>ชื่อผู้ใช้</th>
-                <th>แต้มสะสม</th>
-                <th>สถานะ</th>
+                <th>ลูกค้า</th>
+                <th>แต้ม</th>
                 <th>จัดการ</th>
               </tr>
             </thead>
@@ -1385,17 +1383,25 @@
       data.forEach(customer => {
         const canRedeem = customer.points >= 50;
         const statusClass = canRedeem ? 'success' : '';
-        const statusText = canRedeem ? 'ครบ 50 แต้ม' : customer.points + ' แต้ม';
+        const statusText = canRedeem ? '✓ ครบ 50' : customer.points + ' แต้ม';
         
         html += `
           <tr>
-            <td>${customer.email}</td>
-            <td>${customer.username}</td>
-            <td style="color:var(--gold);font-weight:700;">${customer.points}</td>
-            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
             <td>
-              <button class="btn btn-sm btn-outline" onclick="resetCustomerPoints('${customer.uid}', '${customer.email}', ${customer.points})" ${!canRedeem ? 'disabled' : ''}>
-                รีเซ็ตแต้ม
+              <div style="display:flex;flex-direction:column;gap:0.2rem;">
+                <div style="font-weight:600;">${customer.email}</div>
+                <div style="font-size:0.78rem;color:var(--text-dim);">${customer.username}</div>
+              </div>
+            </td>
+            <td>
+              <div style="display:flex;flex-direction:column;gap:0.2rem;align-items:center;">
+                <div style="color:var(--gold);font-weight:700;font-size:1.1rem;">${customer.points}</div>
+                <span class="status-badge ${statusClass}" style="font-size:0.7rem;">${statusText}</span>
+              </div>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline" onclick="resetCustomerPoints('${customer.uid}', '${customer.email}', ${customer.points})" ${!canRedeem ? 'disabled' : ''} style="white-space:nowrap;font-size:0.75rem;padding:0.4rem 0.6rem;">
+                รีเซ็ต
               </button>
             </td>
           </tr>`;

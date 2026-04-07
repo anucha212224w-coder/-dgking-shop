@@ -939,6 +939,28 @@
     padding-top: 1rem;
   }
 
+  /* Customer points table - mobile responsive */
+  .customer-points-table th,
+  .customer-points-table td {
+    padding: 0.6rem 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .customer-points-table th:first-child,
+  .customer-points-table td:first-child {
+    min-width: 140px;
+  }
+
+  .customer-points-table th:nth-child(2),
+  .customer-points-table td:nth-child(2) {
+    min-width: 70px;
+  }
+
+  .customer-points-table th:nth-child(3),
+  .customer-points-table td:nth-child(3) {
+    min-width: 70px;
+  }
+
   /* CONTENT */
   .admin-content {
     padding: 0 1rem 3rem;
