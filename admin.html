@@ -1303,10 +1303,13 @@
         const c = d.data();
         const used = c.usedCount || 0;
         const max  = c.maxUse || 0;
+        const usageText = `${used}/${max === 0 ? '∞' : max}`;
+        const isMaxed = max > 0 && used >= max;
+        
         return `<div class="coupon-row">
           <div class="coupon-code">${d.id}</div>
           <div class="coupon-discount">ลด ฿${c.discount}</div>
-          <div class="coupon-used">${used}/${max === 0 ? '∞' : max} ครั้ง</div>
+          <div class="coupon-used" style="${isMaxed ? 'color:var(--danger);font-weight:700;' : ''}">${usageText}</div>
           <div class="coupon-status">
             <label class="toggle-switch" style="transform:scale(0.85);">
               <input type="checkbox" ${c.active !== false ? 'checked' : ''} onchange="toggleCoupon('${d.id}', this.checked)" />
