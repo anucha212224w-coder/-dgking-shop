@@ -250,12 +250,22 @@
         alertEl.innerHTML = `แลกสำเร็จ! คีย์ของคุณ: <strong style="color:var(--gold);font-family:monospace;">${keyCode}</strong>`;
         alertEl.className = 'alert alert-success';
         alertEl.style.display = 'block';
-        document.getElementById('displayPoints').textContent = points - redeem;
-        document.getElementById('pointsProgressFill').style.width = ((points - redeem) / redeem * 100) + '%';
+        
+        // Reload user data to update UI
+        console.log('Reloading user data...');
+        const updatedSnap = await getDoc(userRef);
+        const updatedPoints = updatedSnap.data().points || 0;
+        console.log('Updated points:', updatedPoints);
+        
+        document.getElementById('displayPoints').textContent = updatedPoints;
+        document.getElementById('pointsProgressFill').style.width = ((updatedPoints / redeem) * 100) + '%';
         
         // Hide redeem button if points < redeem threshold
-        if (points - redeem < redeem) {
-          document.querySelector('#redeemSection button')?.remove();
+        if (updatedPoints < redeem) {
+          const redeemBtn = document.querySelector('#redeemSection button');
+          if (redeemBtn) {
+            redeemBtn.style.display = 'none';
+          }
         }
       } catch (err) {
         console.error('Error in redeemPoints:', err);
