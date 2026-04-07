@@ -609,9 +609,27 @@
         return `<div class="dash-prod-card">
           <div class="dash-prod-name">${p}</div>
           <div class="dash-prod-stats">
-            <div><span>ขายแล้ว</span><strong>${sold} ใบ</strong></div>
-            <div><span>รายได้</span><strong class="price-gold">฿${rev.toLocaleString()}</strong></div>
-            <div><span>สต็อก</span><strong class="${avail === 0 ? 'text-danger' : ''}">${avail} ใบ</strong></div>
+            <div class="stat-item stat-sold">
+              <span class="stat-icon">📦</span>
+              <div class="stat-content">
+                <span class="stat-label">ขายแล้ว</span>
+                <strong class="stat-value">${sold} ใบ</strong>
+              </div>
+            </div>
+            <div class="stat-item stat-revenue">
+              <span class="stat-icon">💰</span>
+              <div class="stat-content">
+                <span class="stat-label">รายได้</span>
+                <strong class="stat-value price-gold">฿${rev.toLocaleString()}</strong>
+              </div>
+            </div>
+            <div class="stat-item stat-stock">
+              <span class="stat-icon">📊</span>
+              <div class="stat-content">
+                <span class="stat-label">สต็อก</span>
+                <strong class="stat-value ${avail === 0 ? 'text-danger' : avail < 5 ? 'text-warning' : 'text-success'}">${avail} ใบ</strong>
+              </div>
+            </div>
           </div>
         </div>`;
       }).join('');
