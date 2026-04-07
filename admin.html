@@ -293,14 +293,14 @@
 
   <!-- PROMOTIONS TAB -->
   <div class="admin-content hidden" id="tabPromotions" style="max-width:800px;margin:2rem auto;padding:0 2rem 4rem;">
-    <div class="admin-section-title" style="margin-bottom:1.5rem;">จัดการโปรโมชัน</div>
+    <div class="admin-section-title" style="margin-bottom:1.5rem;" data-i18n="admin_promo_title">จัดการโปรโมชัน</div>
 
     <!-- MARKETING BAR MESSAGES -->
     <div class="promo-config-card">
-      <div class="promo-config-title">ข้อความแถบวิ่ง (Marketing Bar)</div>
-      <div class="promo-config-desc">ข้อความสั้นๆ หลายข้อความที่แสดงในแถบเลื่อนบนหน้าร้านค้า จะเปลี่ยนไปเรื่อยๆ ตามลำดับ</div>
+      <div class="promo-config-title" data-i18n="admin_mkt_title">ข้อความแถบวิ่ง (Marketing Bar)</div>
+      <div class="promo-config-desc" data-i18n="admin_mkt_desc">ข้อความสั้นๆ หลายข้อความที่แสดงในแถบเลื่อนบนหน้าร้านค้า จะเปลี่ยนไปเรื่อยๆ ตามลำดับ</div>
       <div class="promo-toggle-row">
-        <span>เปิด/ปิดแถบวิ่ง</span>
+        <span data-i18n="admin_mkt_toggle">เปิด/ปิดแถบวิ่ง</span>
         <label class="toggle-switch">
           <input type="checkbox" id="marketingBarActive" />
           <span class="toggle-slider"></span>
@@ -308,10 +308,10 @@
       </div>
       <div style="margin-top:1rem;">
         <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;">
-          <input type="text" id="newMarketingMsg" placeholder="พิมพ์ข้อความใหม่..." style="flex:1;" />
-          <button class="btn btn-primary" onclick="addMarketingMsg()" style="padding:0.6rem 1rem;white-space:nowrap;">+ เพิ่ม</button>
+          <input type="text" id="newMarketingMsg" data-i18n-placeholder="admin_mkt_input_ph" placeholder="พิมพ์ข้อความใหม่..." style="flex:1;" />
+          <button class="btn btn-primary" onclick="addMarketingMsg()" style="padding:0.6rem 1rem;white-space:nowrap;" data-i18n="admin_mkt_add_btn">+ เพิ่ม</button>
         </div>
-        <div id="marketingMsgList">กำลังโหลด...</div>
+        <div id="marketingMsgList" data-i18n="loading">กำลังโหลด...</div>
       </div>
       <div class="alert alert-error hidden" id="marketingErr"></div>
       <div class="alert alert-success hidden" id="marketingSuccess"></div>
@@ -319,34 +319,34 @@
 
     <!-- CHANNEL DESCRIPTION -->
     <div class="promo-config-card" style="margin-top:1.5rem;">
-      <div class="promo-config-title">คำอธิบายช่องทางรับโค้ด</div>
-      <div class="promo-config-desc">ข้อความที่แสดงในคอลัมน์ "รับโค้ด" ของแท็บโปรโมชัน เพื่อชวนลูกค้าติดตามช่องทางรับโค้ดส่วนลด</div>
+      <div class="promo-config-title" data-i18n="admin_channel_title">คำอธิบายช่องทางรับโค้ด</div>
+      <div class="promo-config-desc" data-i18n="admin_channel_desc">ข้อความที่แสดงในคอลัมน์ "รับโค้ด" ของแท็บโปรโมชัน เพื่อชวนลูกค้าติดตามช่องทางรับโค้ดส่วนลด</div>
       <div class="form-group" style="margin-top:0.8rem;">
-        <label>คำอธิบาย (ภาษาไทย)</label>
-        <input type="text" id="channelDescTh" placeholder="เช่น ติดตามช่องทางของเราเพื่อรับโค้ดส่วนลดพิเศษ" />
+        <label data-i18n="admin_channel_th_label">คำอธิบาย (ภาษาไทย)</label>
+        <input type="text" id="channelDescTh" data-i18n-placeholder="admin_channel_th_ph" placeholder="เช่น ติดตามช่องทางของเราเพื่อรับโค้ดส่วนลดพิเศษ" />
       </div>
       <div class="form-group">
-        <label>คำอธิบาย (English)</label>
-        <input type="text" id="channelDescEn" placeholder="e.g. Follow our channels for exclusive discount codes" />
+        <label data-i18n="admin_channel_en_label">คำอธิบาย (English)</label>
+        <input type="text" id="channelDescEn" data-i18n-placeholder="admin_channel_en_ph" placeholder="e.g. Follow our channels for exclusive discount codes" />
       </div>
       <div class="alert alert-error hidden" id="channelErr"></div>
       <div class="alert alert-success hidden" id="channelSuccess"></div>
-      <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="saveChannelDesc()">บันทึกคำอธิบาย</button>
+      <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="saveChannelDesc()" data-i18n="admin_channel_save_btn">บันทึกคำอธิบาย</button>
     </div>
 
     <!-- PROMO ANNOUNCEMENTS -->
     <div class="promo-config-card" style="margin-top:1.5rem;">
-      <div class="promo-config-title">ประกาศโปรโมชัน</div>
-      <div class="promo-config-desc">ประกาศที่แสดงในคอลัมน์ "ประกาศ" ของแท็บโปรโมชัน สามารถเพิ่มได้หลายประกาศ</div>
+      <div class="promo-config-title" data-i18n="admin_announce_title">ประกาศโปรโมชัน</div>
+      <div class="promo-config-desc" data-i18n="admin_announce_desc">ประกาศที่แสดงในคอลัมน์ "ประกาศ" ของแท็บโปรโมชัน สามารถเพิ่มได้หลายประกาศ</div>
       <div style="margin-top:1rem;">
         <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.8rem;">
-          <input type="text" id="newAnnounceTitleTh" placeholder="หัวข้อ (ภาษาไทย)" />
-          <textarea id="newAnnounceTextTh" rows="3" placeholder="รายละเอียด (ภาษาไทย)"></textarea>
-          <input type="text" id="newAnnounceTitleEn" placeholder="Title (English)" />
-          <textarea id="newAnnounceTextEn" rows="3" placeholder="Description (English)"></textarea>
-          <button class="btn btn-primary" onclick="addAnnouncement()" style="padding:0.6rem 1rem;align-self:flex-start;">+ เพิ่มประกาศ</button>
+          <input type="text" id="newAnnounceTitleTh" data-i18n-placeholder="admin_announce_title_th_ph" placeholder="หัวข้อ (ภาษาไทย)" />
+          <textarea id="newAnnounceTextTh" rows="3" data-i18n-placeholder="admin_announce_text_th_ph" placeholder="รายละเอียด (ภาษาไทย)"></textarea>
+          <input type="text" id="newAnnounceTitleEn" data-i18n-placeholder="admin_announce_title_en_ph" placeholder="Title (English)" />
+          <textarea id="newAnnounceTextEn" rows="3" data-i18n-placeholder="admin_announce_text_en_ph" placeholder="Description (English)"></textarea>
+          <button class="btn btn-primary" onclick="addAnnouncement()" style="padding:0.6rem 1rem;align-self:flex-start;" data-i18n="admin_announce_add_btn">+ เพิ่มประกาศ</button>
         </div>
-        <div id="announceList">กำลังโหลด...</div>
+        <div id="announceList" data-i18n="loading">กำลังโหลด...</div>
       </div>
       <div class="alert alert-error hidden" id="announceErr"></div>
       <div class="alert alert-success hidden" id="announceSuccess"></div>
@@ -354,28 +354,28 @@
 
     <!-- COUPON CODES -->
     <div class="promo-config-card" style="margin-top:1.5rem;">
-      <div class="promo-config-title">โค้ดส่วนลด</div>
-      <div class="promo-config-desc">สร้างโค้ดส่วนลดสำหรับโพสต์ลง Facebook เพื่อกระตุ้นยอดขาย</div>
+      <div class="promo-config-title" data-i18n="admin_coupon_title">โค้ดส่วนลด</div>
+      <div class="promo-config-desc" data-i18n="admin_coupon_desc">สร้างโค้ดส่วนลดสำหรับโพสต์ลง Facebook เพื่อกระตุ้นยอดขาย</div>
 
       <!-- ADD COUPON FORM -->
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.6rem;align-items:end;margin-bottom:1rem;">
         <div class="form-group" style="margin:0;">
-          <label>โค้ด</label>
-          <input type="text" id="newCouponCode" placeholder="เช่น DGKING10" style="text-transform:uppercase;" />
+          <label data-i18n="admin_coupon_code_label">โค้ด</label>
+          <input type="text" id="newCouponCode" data-i18n-placeholder="admin_coupon_code_ph" placeholder="เช่น DGKING10" style="text-transform:uppercase;" />
         </div>
         <div class="form-group" style="margin:0;">
-          <label>ส่วนลด (฿)</label>
-          <input type="number" id="newCouponDiscount" placeholder="เช่น 20" min="1" />
+          <label data-i18n="admin_coupon_discount_label">ส่วนลด (฿)</label>
+          <input type="number" id="newCouponDiscount" data-i18n-placeholder="admin_coupon_discount_ph" placeholder="เช่น 20" min="1" />
         </div>
         <div class="form-group" style="margin:0;">
-          <label>ใช้ได้กี่ครั้ง</label>
-          <input type="number" id="newCouponMax" placeholder="0 = ไม่จำกัด" min="0" value="0" />
+          <label data-i18n="admin_coupon_max_label">ใช้ได้กี่ครั้ง</label>
+          <input type="number" id="newCouponMax" data-i18n-placeholder="admin_coupon_max_ph" placeholder="0 = ไม่จำกัด" min="0" value="0" />
         </div>
-        <button class="btn btn-primary" onclick="addCoupon()" style="padding:0.6rem 1rem;white-space:nowrap;">+ เพิ่มโค้ด</button>
+        <button class="btn btn-primary" onclick="addCoupon()" style="padding:0.6rem 1rem;white-space:nowrap;" data-i18n="admin_coupon_add_btn">+ เพิ่มโค้ด</button>
       </div>
       <div class="alert alert-error hidden" id="couponErr"></div>
       <div class="alert alert-success hidden" id="couponSuccess"></div>
-      <div id="couponList">กำลังโหลด...</div>
+      <div id="couponList" data-i18n="loading">กำลังโหลด...</div>
     </div>
 
     <!-- POINTS SYSTEM -->

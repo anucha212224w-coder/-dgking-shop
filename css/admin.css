@@ -1215,6 +1215,27 @@
 .points-row input:focus { border-color: var(--gold); }
 
 @media (max-width: 768px) {
+  /* Promotions tab - fix overflow */
+  #tabPromotions {
+    padding: 0 1rem 4rem !important;
+    max-width: 100% !important;
+  }
+
+  .promo-config-card {
+    padding: 1rem;
+  }
+
+  /* Coupon form - stack on mobile */
+  #tabPromotions div[style*="grid-template-columns: 1fr 1fr 1fr auto"] {
+    grid-template-columns: 1fr !important;
+    gap: 0.8rem !important;
+  }
+
+  /* Points grid - 2 columns on mobile */
+  .points-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
   .coupon-list-header,
   .coupon-row {
     grid-template-columns: 1.5fr 1fr 1fr auto auto;
