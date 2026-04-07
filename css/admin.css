@@ -858,8 +858,8 @@
   .admin-tabs-inner::-webkit-scrollbar { display: none; }
 
   .admin-tab {
-    padding: 0.8rem 0.9rem;
-    font-size: 0.78rem;
+    padding: 0.7rem 0.6rem;
+    font-size: 0.7rem;
     white-space: nowrap;
     flex-shrink: 0;
   }
