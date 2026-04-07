@@ -162,21 +162,28 @@
 .marketing-item {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
+  left: 100%;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   font-size: 0.82rem;
   color: var(--gold);
   opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.4s ease;
   pointer-events: none;
 }
 
 .marketing-item.active {
   opacity: 1;
-  transform: translateY(0);
+  animation: marquee 15s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    left: 100%;
+  }
+  100% {
+    left: -100%;
+  }
 }
 
 .marketing-item svg { display: none; }

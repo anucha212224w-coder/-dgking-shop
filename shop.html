@@ -301,7 +301,7 @@
         bar.appendChild(item);
       });
 
-      // Re-init carousel
+      // Re-init carousel with marquee animation
       const items = bar.querySelectorAll('.marketing-item');
       if (items.length > 0) {
         items[0].classList.add('active');
@@ -314,7 +314,7 @@
           dotsEl.appendChild(dot);
         });
         
-        // Start auto-rotate
+        // Start auto-rotate - wait for marquee animation to complete (15s)
         let mIdx = 0;
         window.goMkt = function(n) {
           items[mIdx].classList.remove('active');
@@ -323,7 +323,8 @@
           items[mIdx].classList.add('active');
           document.querySelectorAll('.mkt-dot')[mIdx].classList.add('active');
         };
-        setInterval(() => window.goMkt(mIdx + 1), 3500);
+        // Change message every 15 seconds (matches animation duration)
+        setInterval(() => window.goMkt(mIdx + 1), 15000);
       }
     }
 
