@@ -895,6 +895,25 @@ footer {
     width: calc(100% - 2rem);
     border-radius: 6px;
     text-align: center;
+    font-weight: 600;
+  }
+
+  .nav-links li .btn-primary {
+    background: linear-gradient(135deg, var(--gold) 0%, #d4a02c 100%);
+    color: #000;
+    border: 1px solid var(--gold);
+    box-shadow: 0 2px 8px rgba(245,166,35,0.3);
+  }
+
+  .nav-links li .btn-outline {
+    background: rgba(245,166,35,0.1);
+    border: 1px solid rgba(245,166,35,0.4);
+    color: var(--gold);
+  }
+
+  .nav-links li .btn-outline:hover {
+    background: rgba(245,166,35,0.2);
+    border-color: var(--gold);
   }
 
   .nav-links li:has(.lang-switcher) {
