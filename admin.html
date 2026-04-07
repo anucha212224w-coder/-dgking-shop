@@ -1448,14 +1448,9 @@
               </div>
             </td>
             <td>
-              <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
-                <button class="btn btn-sm btn-outline" onclick="adjustCustomerPoints('${customer.uid}', '${customer.email}', ${customer.points})" style="white-space:nowrap;font-size:0.7rem;padding:0.35rem 0.5rem;">
-                  ปรับ
-                </button>
-                <button class="btn btn-sm btn-outline" onclick="resetCustomerPoints('${customer.uid}', '${customer.email}', ${customer.points})" ${!canRedeem ? 'disabled' : ''} style="white-space:nowrap;font-size:0.7rem;padding:0.35rem 0.5rem;">
-                  รีเซ็ต
-                </button>
-              </div>
+              <button class="btn btn-sm btn-outline" onclick="adjustCustomerPoints('${customer.uid}', '${customer.email}', ${customer.points})" style="white-space:nowrap;font-size:0.7rem;padding:0.35rem 0.5rem;width:100%;">
+                ปรับ
+              </button>
             </td>
           </tr>`;
       });
@@ -1477,6 +1472,8 @@
       renderCustomerPoints(filtered);
     }
 
+    // Removed resetCustomerPoints function - admin can use adjust button to set points to 0 if needed
+    /*
     async function resetCustomerPoints(uid, email, currentPoints) {
       console.log('resetCustomerPoints called:', uid, email, currentPoints);
       
@@ -1496,6 +1493,7 @@
         showToast('เกิดข้อผิดพลาด: ' + err.message, 'error');
       }
     }
+    */
 
     async function adjustCustomerPoints(uid, email, currentPoints) {
       const newPoints = prompt(`ปรับแต้มของ ${email}\n\nแต้มปัจจุบัน: ${currentPoints}\nใส่จำนวนแต้มใหม่:`, currentPoints);
