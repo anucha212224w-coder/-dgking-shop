@@ -892,13 +892,16 @@
   /* TABS - dropdown on mobile */
   .admin-tabs {
     position: fixed;
-    top: 60px;
+    top: 64px;
     left: 0;
     right: 0;
+    margin-top: 0;
     transform: translateY(-100%);
     transition: transform 0.3s ease;
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
   }
 
   .admin-tabs.show {
@@ -910,8 +913,7 @@
     padding: 0;
     overflow-x: visible;
     gap: 0;
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
+    display: flex;
   }
 
   .admin-tabs-inner::-webkit-scrollbar { display: none; }
@@ -923,10 +925,16 @@
     flex-shrink: 0;
     border-bottom: 1px solid var(--border);
     text-align: left;
+    border-radius: 0;
   }
 
   .admin-tab:last-child {
     border-bottom: none;
+  }
+
+  /* Add padding to content so it's not hidden behind fixed menu */
+  .admin-content {
+    padding-top: 1rem;
   }
 
   /* CONTENT */
