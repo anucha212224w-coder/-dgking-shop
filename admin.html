@@ -48,8 +48,15 @@
   <!-- ADMIN PANEL -->
   <div id="adminPanel" class="hidden">
 
+    <!-- MOBILE MENU TOGGLE -->
+    <button class="admin-menu-toggle" id="adminMenuToggle" onclick="toggleAdminMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
     <!-- TABS -->
-    <div class="admin-tabs">
+    <div class="admin-tabs" id="adminTabs">
       <div class="admin-tabs-inner">
         <button class="admin-tab active" onclick="switchTab('dashboard')">แดชบอร์ด</button>
         <button class="admin-tab" onclick="switchTab('orders')">ออเดอร์ทั้งหมด</button>
@@ -527,6 +534,13 @@
       document.querySelectorAll('.admin-content').forEach(el => el.classList.add('hidden'));
       const id = 'tab' + tab.charAt(0).toUpperCase() + tab.slice(1);
       document.getElementById(id).classList.remove('hidden');
+      
+      // Close mobile menu after selecting
+      if (window.innerWidth <= 768) {
+        document.getElementById('adminTabs').classList.remove('show');
+        document.getElementById('adminMenuToggle').classList.remove('active');
+      }
+      
       if (tab === 'dashboard') loadDashboard();
       if (tab === 'orders') loadOrders();
       if (tab === 'keys') loadKeys();
@@ -534,6 +548,14 @@
       if (tab === 'videos') loadVideos();
       if (tab === 'promotions') loadPromotions();
     };
+
+    function toggleAdminMenu() {
+      const menu = document.getElementById('adminTabs');
+      const toggle = document.getElementById('adminMenuToggle');
+      menu.classList.toggle('show');
+      toggle.classList.toggle('active');
+    };
+    window.toggleAdminMenu = toggleAdminMenu;
 
     async function loadDashboard() {
       const [ordersSnap, keysSnap, usersSnap] = await Promise.all([
