@@ -1113,6 +1113,10 @@
       document.getElementById('channelDescTh').value = cfg.channel_desc_th || '';
       document.getElementById('channelDescEn').value = cfg.channel_desc_en || '';
       document.getElementById('pointsActive').checked = cfg.points_active !== false;
+
+      // Add event listeners for toggle switches
+      document.getElementById('marketingBarActive').addEventListener('change', saveMarketingBarToggle);
+      document.getElementById('pointsActive').addEventListener('change', savePointsToggle);
       document.getElementById('pts_1').value = cfg.pts_1 ?? 5;
       document.getElementById('pts_3').value = cfg.pts_3 ?? 12;
       document.getElementById('pts_7').value = cfg.pts_7 ?? 25;
@@ -1223,6 +1227,32 @@
         alert(e.message);
       }
     };
+
+    async function saveMarketingBarToggle() {
+      const isActive = document.getElementById('marketingBarActive').checked;
+      try {
+        await setDoc(doc(db, 'config', 'promotions'), {
+          marketing_active: isActive
+        }, { merge: true });
+        showToast(isActive ? 'เปิดแถบวิ่งแล้ว' : 'ปิดแถบวิ่งแล้ว', 'success');
+      } catch(e) {
+        console.error(e);
+        showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+      }
+    }
+
+    async function savePointsToggle() {
+      const isActive = document.getElementById('pointsActive').checked;
+      try {
+        await setDoc(doc(db, 'config', 'promotions'), {
+          points_active: isActive
+        }, { merge: true });
+        showToast(isActive ? 'เปิดระบบแต้มแล้ว' : 'ปิดระบบแต้มแล้ว', 'success');
+      } catch(e) {
+        console.error(e);
+        showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+      }
+    }
 
     window.saveChannelDesc = async function() {
       const errEl = document.getElementById('channelErr');
