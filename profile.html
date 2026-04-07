@@ -195,10 +195,13 @@
     });
 
     window.redeemPoints = async function(redeem) {
+      console.log('redeemPoints called, redeem:', redeem);
       const userRef  = doc(db, 'users', currentUser.uid);
       const userSnap = await getDoc(userRef);
       const points   = userSnap.data().points || 0;
       const alertEl  = document.getElementById('redeemAlert');
+      
+      console.log('Current points:', points);
 
       if (points < redeem) {
         alertEl.textContent = 'แต้มไม่เพียงพอ';
@@ -207,33 +210,59 @@
         return;
       }
 
-      // Get a free key
-      const keysQ  = query(collection(db, 'keys'), where('product', '==', '1 วัน'), where('used', '==', false), limit(1));
-      const keysSnap = await getDocs(keysQ);
-      if (keysSnap.empty) {
-        alertEl.textContent = 'คีย์หมดสต็อกชั่วคราว กรุณาติดต่อแอดมิน';
+      try {
+        // Get a free key
+        console.log('Searching for available key...');
+        const keysQ  = query(collection(db, 'keys'), where('product', '==', '1 วัน'), where('used', '==', false), limit(1));
+        const keysSnap = await getDocs(keysQ);
+        
+        if (keysSnap.empty) {
+          console.log('No keys available');
+          alertEl.textContent = 'คีย์หมดสต็อกชั่วคราว กรุณาติดต่อแอดมิน';
+          alertEl.className = 'alert alert-error';
+          alertEl.style.display = 'block';
+          return;
+        }
+
+        const keyDoc  = keysSnap.docs[0];
+        const keyCode = keyDoc.data().code;
+        console.log('Found key:', keyCode);
+        
+        // Mark key as used
+        console.log('Marking key as used...');
+        await updateDoc(doc(db, 'keys', keyDoc.id), { used: true, usedAt: serverTimestamp() });
+        
+        // Deduct points
+        console.log('Deducting points...');
+        await updateDoc(userRef, { points: points - redeem });
+        console.log('Points deducted successfully');
+        
+        // Create order
+        console.log('Creating order...');
+        await addDoc(collection(db, 'orders'), {
+          uid: currentUser.uid, email: currentUser.email,
+          product: '1 วัน', price: 0, status: 'delivered',
+          keyCode, keyId: keyDoc.id, redeemed: true,
+          createdAt: serverTimestamp()
+        });
+        console.log('Order created successfully');
+
+        alertEl.innerHTML = `แลกสำเร็จ! คีย์ของคุณ: <strong style="color:var(--gold);font-family:monospace;">${keyCode}</strong>`;
+        alertEl.className = 'alert alert-success';
+        alertEl.style.display = 'block';
+        document.getElementById('displayPoints').textContent = points - redeem;
+        document.getElementById('pointsProgressFill').style.width = ((points - redeem) / redeem * 100) + '%';
+        
+        // Hide redeem button if points < redeem threshold
+        if (points - redeem < redeem) {
+          document.querySelector('#redeemSection button')?.remove();
+        }
+      } catch (err) {
+        console.error('Error in redeemPoints:', err);
+        alertEl.textContent = 'เกิดข้อผิดพลาด: ' + err.message;
         alertEl.className = 'alert alert-error';
         alertEl.style.display = 'block';
-        return;
       }
-
-      const keyDoc  = keysSnap.docs[0];
-      const keyCode = keyDoc.data().code;
-      await updateDoc(doc(db, 'keys', keyDoc.id), { used: true, usedAt: serverTimestamp() });
-      await updateDoc(userRef, { points: points - redeem });
-      await addDoc(collection(db, 'orders'), {
-        uid: currentUser.uid, email: currentUser.email,
-        product: '1 วัน', price: 0, status: 'delivered',
-        keyCode, keyId: keyDoc.id, redeemed: true,
-        createdAt: serverTimestamp()
-      });
-
-      alertEl.innerHTML = `แลกสำเร็จ! คีย์ของคุณ: <strong style="color:var(--gold);font-family:monospace;">${keyCode}</strong>`;
-      alertEl.className = 'alert alert-success';
-      alertEl.style.display = 'block';
-      document.getElementById('displayPoints').textContent = points - redeem;
-      document.getElementById('pointsProgressFill').style.width = '0%';
-      document.querySelector('#redeemSection button')?.remove();
     };
 
     document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
