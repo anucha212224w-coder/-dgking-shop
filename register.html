@@ -46,11 +46,17 @@
         </div>
         <div class="form-group">
           <label for="password" data-i18n="register_pass">รหัสผ่าน</label>
-          <input type="password" id="password" data-i18n-placeholder="ph_pass_min6" placeholder="อย่างน้อย 6 ตัวอักษร" autocomplete="new-password" />
+          <div class="pass-wrap">
+            <input type="password" id="password" data-i18n-placeholder="ph_pass_min6" placeholder="อย่างน้อย 6 ตัวอักษร" autocomplete="new-password" />
+            <button type="button" onclick="togglePass('password', this)">แสดง</button>
+          </div>
         </div>
         <div class="form-group">
           <label for="confirmPassword" data-i18n="register_confirm_pass">ยืนยันรหัสผ่าน</label>
-          <input type="password" id="confirmPassword" data-i18n-placeholder="ph_confirm_pass" placeholder="กรอกรหัสผ่านอีกครั้ง" autocomplete="new-password" />
+          <div class="pass-wrap">
+            <input type="password" id="confirmPassword" data-i18n-placeholder="ph_confirm_pass" placeholder="กรอกรหัสผ่านอีกครั้ง" autocomplete="new-password" />
+            <button type="button" onclick="togglePass('confirmPassword', this)">แสดง</button>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary btn-block" data-i18n="register_btn">สมัครสมาชิก</button>
       </form>
@@ -102,6 +108,18 @@
         showAlert(msg, 'error');
       }
     });
+  </script>
+  <script>
+    function togglePass(id, btn) {
+      const input = document.getElementById(id);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'ซ่อน';
+      } else {
+        input.type = 'password';
+        btn.textContent = 'แสดง';
+      }
+    }
   </script>
 </body>
 </html>

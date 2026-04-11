@@ -362,7 +362,7 @@
 
     <!-- COUPON CODES -->
     <div class="promo-config-card" style="margin-top:1.5rem;">
-      <div class="promo-config-title" data-i18n="admin_coupon_title">โค้ดส่วนลด</div>
+      <div class="promo-config-title" data-i18n="admin_coupon_title">โค้ดส่วนลด <button onclick="loadCoupons()" style="font-size:0.75rem;padding:0.2rem 0.6rem;margin-left:0.5rem;" class="btn btn-sm btn-outline">↻ รีเฟรช</button></div>
       <div class="promo-config-desc" data-i18n="admin_coupon_desc">สร้างโค้ดส่วนลดสำหรับโพสต์ลง Facebook เพื่อกระตุ้นยอดขาย</div>
 
       <!-- ADD COUPON FORM -->
@@ -474,7 +474,7 @@
   </div>
 
   <script type="module">
-    import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, collection, query, orderBy, getDocs, addDoc, serverTimestamp, where, updateDoc, doc, limit, getDoc, setDoc, deleteDoc } from './js/firebase.js';
+    import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, collection, query, orderBy, getDocs, addDoc, serverTimestamp, where, updateDoc, doc, limit, getDoc, setDoc, deleteDoc, getDocsFromServer } from './js/firebase.js';
 
     const ADMIN_EMAIL = 'anucha212224w@gmail.com';
 
@@ -1142,6 +1142,8 @@
       loadMarketingMessages();
       loadAnnouncements();
       loadCoupons();
+      // auto-refresh coupons ทุก 30 วินาที
+      setInterval(loadCoupons, 30000);
     }
 
     async function loadAnnouncements() {
@@ -1312,7 +1314,7 @@
 
     async function loadCoupons() {
       const el   = document.getElementById('couponList');
-      const snap = await getDocs(collection(db, 'coupons'));
+      const snap = await getDocsFromServer(collection(db, 'coupons'));
       if (snap.empty) { el.innerHTML = '<p class="no-data">ยังไม่มีโค้ดส่วนลด</p>'; return; }
       const rows = snap.docs.map(d => {
         const c = d.data();

@@ -27,6 +27,25 @@
 </head>
 <body>
 
+  <!-- BYPASS NOTICE POPUP -->
+  <div class="bypass-overlay" id="bypassOverlay">
+    <div class="bypass-popup">
+      <div class="bypass-popup-header">
+        <div></div>
+        <button class="bypass-popup-close" onclick="document.getElementById('bypassOverlay').classList.remove('show')">ปิด ✕</button>
+      </div>
+      <img src="images/กดเปิดบายพาสโลโก้ทุกครั้ง.png" alt="วิธีเปิดบายพาสโลโก้" />
+      <div class="bypass-popup-desc">
+        <strong>กดเปิดบายพาสโลโก้ทุกครั้งก่อนเล่น!</strong><br>
+        เมื่อเปิดโปรแกรมขึ้นมา ให้กด <strong>Protection Logo</strong> เปิดไว้ทุกครั้ง
+        เพื่อป้องกันการโดนแบน ขั้นตอนนี้สำคัญมาก อย่าลืมทำทุกครั้งที่เข้าเกม
+      </div>
+    </div>
+  </div>
+  <script>
+    document.getElementById('bypassOverlay').classList.add('show');
+  </script>
+
   <!-- NAVBAR -->
   <nav class="navbar" id="navbar" style="opacity:0;">
     <a href="index.html" class="logo">DG <span>KING</span></a>
@@ -119,6 +138,12 @@
     }
 
     loadVideos();
+
+    // โหลดรูป slides strip
+    const stripEl = document.getElementById('slidesStrip');
+    const slideFiles = Array.from({length: 15}, (_, i) => `images/slides/1 (${i+1}).jpg`);
+    const all = [...slideFiles, ...slideFiles]; // duplicate สำหรับ infinite loop
+    stripEl.innerHTML = all.map(src => `<img src="${src}" alt="slide" />`).join('');
     onAuthStateChanged(auth, (user) => {
       const guests = document.querySelectorAll('#navGuest, #navGuest2');
       const member = document.getElementById('navUser');
@@ -172,35 +197,33 @@
     <div class="kv-dots" id="kvDots"></div>
   </section>
 
-  <!-- FEATURES SECTION -->
-  <section class="home-section features-section" id="features">
+  <!-- SLIDES STRIP -->
+  <div class="slides-strip-wrap">
+    <div class="slides-strip" id="slidesStrip">
+      <!-- รูปจะโหลดจาก images/slides/ -->
+    </div>
+  </div>
+
+  <!-- VIDEO SECTION -->
+  <section class="home-section video-section" id="videos">
     <div class="section-inner">
-      <p class="section-label" data-i18n="feat_label">ความสามารถ</p>
-      <p class="section-title" data-i18n="feat_title">ฟีเจอร์โหลดเดอร์</p>
-      <div class="features-grid">
-        <div class="feat-card">
-          <h3>ESP & Visual</h3>
-          <p data-i18n="feat_esp_desc">Line, Box, Skeleton, Health, Name, Head Dots, Distance, Radar Map</p>
+      <p class="section-label" data-i18n="video_label">รีวิวและสาธิต</p>
+      <p class="section-title" data-i18n="video_title">วิดีโอตัวอย่าง</p>
+      <p class="section-sub" data-i18n="video_sub">ดูการใช้งานจริงก่อนตัดสินใจซื้อ</p>
+      <div class="video-grid" id="homeVideoGrid">
+        <div class="video-box">
+          <div class="video-placeholder">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            กำลังโหลด...
+          </div>
         </div>
-        <div class="feat-card">
-          <h3>Bullet Tracking</h3>
-          <p data-i18n="feat_bullet_desc">ระบบติดตามกระสุน ปรับ Aiming Range, Distance และ Target Priority</p>
+        <div class="video-box">
+          <div class="video-placeholder">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            กำลังโหลด...
+          </div>
         </div>
-        <div class="feat-card">
-          <h3>Wide View</h3>
-          <p data-i18n="feat_wide_desc">ขยายมุมมองกล้องได้กว้างขึ้น เห็นศัตรูรอบด้านมากกว่าปกติ</p>
-        </div>
-        <div class="feat-card">
-          <h3>Item ESP</h3>
-          <p data-i18n="feat_item_desc">Crate, AirDrop, Scopes ทุกขนาด และอาวุธ AR ครบทุกชนิด</p>
-        </div>
-        <div class="feat-card">
-          <h3>Protection System</h3>
-          <p data-i18n="feat_protect_desc">ระบบกันแบนในตัว Protection Logo พร้อม Extra Safe Mode</p>
-        </div>
-        <div class="feat-card">
-          <h3>High FPS Support</h3>
-          <p data-i18n="feat_fps_desc">รองรับ Render Framerate สูงสุด 144 FPS เล่นลื่น ไม่กระตุก</p>
+
         </div>
       </div>
     </div>
@@ -239,24 +262,35 @@
     </div>
   </section>
 
-  <!-- VIDEO SECTION -->
-  <section class="home-section video-section" id="videos">
+  <!-- FEATURES SECTION -->
+  <section class="home-section features-section" id="features">
     <div class="section-inner">
-      <p class="section-label" data-i18n="video_label">รีวิวและสาธิต</p>
-      <p class="section-title" data-i18n="video_title">วิดีโอตัวอย่าง</p>
-      <p class="section-sub" data-i18n="video_sub">ดูการใช้งานจริงก่อนตัดสินใจซื้อ</p>
-      <div class="video-grid" id="homeVideoGrid">
-        <div class="video-box">
-          <div class="video-placeholder">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-            กำลังโหลด...
-          </div>
+      <p class="section-label" data-i18n="feat_label">ความสามารถ</p>
+      <p class="section-title" data-i18n="feat_title">ฟีเจอร์โหลดเดอร์</p>
+      <div class="features-grid">
+        <div class="feat-card">
+          <h3>ESP & Visual</h3>
+          <p data-i18n="feat_esp_desc">Line, Box, Skeleton, Health, Name, Head Dots, Distance, Radar Map</p>
         </div>
-        <div class="video-box">
-          <div class="video-placeholder">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-            กำลังโหลด...
-          </div>
+        <div class="feat-card">
+          <h3>Bullet Tracking</h3>
+          <p data-i18n="feat_bullet_desc">ระบบติดตามกระสุน ปรับ Aiming Range, Distance และ Target Priority</p>
+        </div>
+        <div class="feat-card">
+          <h3>Wide View</h3>
+          <p data-i18n="feat_wide_desc">ขยายมุมมองกล้องได้กว้างขึ้น เห็นศัตรูรอบด้านมากกว่าปกติ</p>
+        </div>
+        <div class="feat-card">
+          <h3>Item ESP</h3>
+          <p data-i18n="feat_item_desc">Crate, AirDrop, Scopes ทุกขนาด และอาวุธ AR ครบทุกชนิด</p>
+        </div>
+        <div class="feat-card">
+          <h3>Protection System</h3>
+          <p data-i18n="feat_protect_desc">ระบบกันแบนในตัว Protection Logo พร้อม Extra Safe Mode</p>
+        </div>
+        <div class="feat-card">
+          <h3>High FPS Support</h3>
+          <p data-i18n="feat_fps_desc">รองรับ Render Framerate สูงสุด 144 FPS เล่นลื่น ไม่กระตุก</p>
         </div>
       </div>
     </div>

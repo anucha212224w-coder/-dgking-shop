@@ -124,11 +124,17 @@
       <form id="changePasswordForm">
         <div class="form-group">
           <label for="newPassword" data-i18n="profile_new_pass">รหัสผ่านใหม่</label>
-          <input type="password" id="newPassword" data-i18n-placeholder="profile_new_pass_ph" placeholder="อย่างน้อย 6 ตัวอักษร" />
+          <div class="pass-wrap">
+            <input type="password" id="newPassword" data-i18n-placeholder="profile_new_pass_ph" placeholder="อย่างน้อย 6 ตัวอักษร" />
+            <button type="button" onclick="togglePass('newPassword', this)">แสดง</button>
+          </div>
         </div>
         <div class="form-group">
           <label for="confirmNewPassword" data-i18n="profile_confirm_pass">ยืนยันรหัสผ่านใหม่</label>
-          <input type="password" id="confirmNewPassword" data-i18n-placeholder="profile_confirm_pass_ph" placeholder="กรอกรหัสผ่านอีกครั้ง" />
+          <div class="pass-wrap">
+            <input type="password" id="confirmNewPassword" data-i18n-placeholder="profile_confirm_pass_ph" placeholder="กรอกรหัสผ่านอีกครั้ง" />
+            <button type="button" onclick="togglePass('confirmNewPassword', this)">แสดง</button>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary btn-block" data-i18n="profile_save_pass">บันทึกรหัสผ่านใหม่</button>
       </form>
@@ -301,6 +307,17 @@
     document.getElementById('logoutBtn').addEventListener('click', () => {
       signOut(auth).then(() => window.location.href = 'login.html');
     });
+
+    window.togglePass = function(id, btn) {
+      const input = document.getElementById(id);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'ซ่อน';
+      } else {
+        input.type = 'password';
+        btn.textContent = 'แสดง';
+      }
+    };
   </script>
   <script src="js/main.js"></script>
 </body>

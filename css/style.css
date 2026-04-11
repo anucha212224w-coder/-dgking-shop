@@ -90,15 +90,15 @@ textarea {
 .pass-wrap button {
   position: absolute;
   right: 0.5rem;
-  padding: 0.4rem 0.8rem;
+  padding: 0.3rem 0.6rem;
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-muted);
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
-  font-family: inherit;
+  line-height: 1;
 }
 
 .pass-wrap button:hover {
@@ -956,4 +956,76 @@ footer {
   display: flex;
   gap: 0.5rem;
   margin: 0.8rem 0 0.3rem;
+}
+
+/* BYPASS NOTICE POPUP */
+.bypass-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(0,0,0,0.7);
+  justify-content: center;
+  align-items: center;
+}
+
+.bypass-overlay.show {
+  display: flex;
+}
+
+.bypass-popup {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 1.2rem;
+  width: 90%;
+  max-width: 480px;
+}
+
+.bypass-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.bypass-popup-title {
+  color: var(--gold, #f5a623);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.bypass-popup-close {
+  background: transparent;
+  border: 1px solid #444;
+  color: #aaa;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.bypass-popup-close:hover {
+  border-color: var(--gold, #f5a623);
+  color: var(--gold, #f5a623);
+}
+
+.bypass-popup img {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+}
+
+.bypass-popup-desc {
+  margin-top: 0.8rem;
+  color: #ccc;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  border-top: 1px solid #333;
+  padding-top: 0.8rem;
+}
+
+.bypass-popup-desc strong {
+  color: var(--gold, #f5a623);
 }

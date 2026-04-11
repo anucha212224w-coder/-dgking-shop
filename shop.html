@@ -15,6 +15,25 @@
 </head>
 <body>
 
+  <!-- BYPASS NOTICE POPUP -->
+  <div class="bypass-overlay" id="bypassOverlay">
+    <div class="bypass-popup">
+      <div class="bypass-popup-header">
+        <div></div>
+        <button class="bypass-popup-close" onclick="document.getElementById('bypassOverlay').classList.remove('show')">ปิด ✕</button>
+      </div>
+      <img src="images/กดเปิดบายพาสโลโก้ทุกครั้ง.png" alt="วิธีเปิดบายพาสโลโก้" />
+      <div class="bypass-popup-desc">
+        <strong>กดเปิดบายพาสโลโก้ทุกครั้งก่อนเล่น!</strong><br>
+        เมื่อเปิดโปรแกรมขึ้นมา ให้กด <strong>Protection Logo</strong> เปิดไว้ทุกครั้ง
+        เพื่อป้องกันการโดนแบน ขั้นตอนนี้สำคัญมาก อย่าลืมทำทุกครั้งที่เข้าเกม
+      </div>
+    </div>
+  </div>
+  <script>
+    document.getElementById('bypassOverlay').classList.add('show');
+  </script>
+
   <!-- NAVBAR -->
   <nav class="navbar" id="navbar" style="opacity:0;">
     <a href="index.html" class="logo">DG <span>KING</span></a>
