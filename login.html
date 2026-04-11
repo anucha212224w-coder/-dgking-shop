@@ -16,7 +16,10 @@
 
   <nav class="navbar">
     <a href="index.html" class="logo">DG <span>KING</span></a>
-    <ul class="nav-links">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
       <li><a href="index.html" data-i18n="nav_home">หน้าแรก</a></li>
       <li><a href="register.html" class="btn btn-primary" data-i18n="nav_register">สมัครสมาชิก</a></li>
       <li>
@@ -118,5 +121,6 @@
       }
     }
   </script>
+  <script src="js/main.js"></script>
 </body>
 </html>
