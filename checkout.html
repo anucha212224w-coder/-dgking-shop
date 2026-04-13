@@ -400,6 +400,23 @@
         sucEl.classList.remove('hidden');
         await new Promise(r => setTimeout(r, 1200));
 
+        // ตรวจสอบว่ามีออเดอร์ delivered ซ้ำภายใน 2 ชั่วโมงไหม (ป้องกันส่งคีย์ซ้ำ)
+        const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+        const dupQ = query(
+          collection(db, 'orders'),
+          where('uid', '==', currentUser.uid),
+          where('product', '==', product),
+          where('status', '==', 'delivered')
+        );
+        const dupSnap = await getDocs(dupQ);
+        const recentDup = dupSnap.docs.find(d => {
+          const t = d.data().createdAt;
+          return t && new Date(t.seconds * 1000) >= twoHoursAgo;
+        });
+        if (recentDup) {
+          throw new Error('พบออเดอร์ที่ส่งคีย์แล้วในช่วงเวลาใกล้เคียงกัน กรุณาตรวจสอบประวัติออเดอร์ของคุณ');
+        }
+
         // ดึงคีย์จากสต็อก
         btn.textContent = g('allocating_key');
         const keysQ = query(
