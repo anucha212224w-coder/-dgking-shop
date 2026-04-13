@@ -155,13 +155,13 @@
         <div class="success-icon">
           <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
-        <div class="checkout-card-title" data-i18n="checkout_success_title">ชำระเงินสำเร็จ</div>
-        <p class="success-desc" data-i18n="checkout_success_desc">ระบบตรวจสอบสลิปเรียบร้อยแล้ว<br>ออเดอร์ของคุณกำลังดำเนินการ</p>
+        <div class="checkout-card-title" id="step3Title">ชำระเงินสำเร็จ</div>
+        <p class="success-desc" id="step3Desc"></p>
         <div class="order-id-box">
           <span data-i18n="checkout_order_id">หมายเลขออเดอร์:</span> <span id="confirmedOrderId">-</span>
         </div>
         <div id="keyResultBox"></div>
-        <p class="success-note" data-i18n="checkout_key_note">เก็บคีย์ไว้ให้ดี หากมีปัญหาติดต่อแอดมินได้เลย</p>
+        <p class="success-note hidden" id="keyNote" data-i18n="checkout_key_note">เก็บคีย์ไว้ให้ดี หากมีปัญหาติดต่อแอดมินได้เลย</p>
         <a href="orders.html" class="btn btn-primary btn-full mt-1" data-i18n="checkout_view_orders">ดูออเดอร์ของฉัน</a>
         <a href="shop.html" class="btn btn-outline btn-full mt-05" data-i18n="checkout_back_shop">กลับร้านค้า</a>
       </div>
@@ -170,7 +170,7 @@
   </div>
 
   <script type="module">
-    import { auth, db, onAuthStateChanged, addDoc, collection, query, where, getDocs, updateDoc, doc, serverTimestamp, limit, getDoc, setDoc, runTransaction } from './js/firebase.js';
+    import { auth, db, onAuthStateChanged, addDoc, collection, query, where, getDocs, updateDoc, doc, serverTimestamp, limit, getDoc, setDoc, runTransaction, onSnapshot } from './js/firebase.js';
 
     const SLIPOK_API_KEY = 'SLIPOKVKFKKTP';
     const SLIPOK_BRANCH  = '56967';
@@ -247,6 +247,45 @@
       });
       if (n === 2) generateQR();
     };
+
+    // Real-time listener สำหรับ step 3 - อัพเดทเมื่อแอดมินอนุมัติ
+    let orderUnsubscribe = null;
+    function watchOrder(oid) {
+      if (orderUnsubscribe) orderUnsubscribe();
+      orderUnsubscribe = onSnapshot(doc(db, 'orders', oid), (snap) => {
+        if (!snap.exists()) return;
+        const o = snap.data();
+        const titleEl = document.getElementById('step3Title');
+        const descEl  = document.getElementById('step3Desc');
+        const keyBox  = document.getElementById('keyResultBox');
+        const keyNote = document.getElementById('keyNote');
+
+        if (o.status === 'delivered' && o.keyCode) {
+          // แอดมินอนุมัติแล้ว หรือระบบส่งคีย์แล้ว
+          titleEl.textContent = 'ได้รับคีย์แล้ว';
+          descEl.innerHTML = 'ระบบส่งคีย์ให้คุณเรียบร้อยแล้ว';
+          keyNote.classList.remove('hidden');
+          keyBox.innerHTML = `
+            <div class="key-display">
+              <div class="key-label">คีย์ของคุณ</div>
+              <div class="key-code">${o.keyCode}</div>
+              <div class="key-hint">กดปุ่มด้านล่างเพื่อคัดลอก</div>
+              <button class="btn btn-outline" onclick="navigator.clipboard.writeText('${o.keyCode}');this.textContent='คัดลอกแล้ว'">
+                คัดลอกคีย์
+              </button>
+            </div>`;
+        } else if (o.status === 'manual_review' || o.status === 'pending') {
+          // รอแอดมิน
+          titleEl.textContent = 'รับออเดอร์แล้ว';
+          descEl.innerHTML = 'ระบบตรวจสอบสลิปอัตโนมัติไม่สำเร็จ<br>กำลังรอแอดมินตรวจสอบและอนุมัติ';
+          keyNote.classList.add('hidden');
+          keyBox.innerHTML = `<div class="order-manual-banner">
+            ออเดอร์ของคุณอยู่ที่นี่ ไม่ได้หายไปไหน<br>
+            <strong>กำลังรอแอดมินอนุมัติ</strong> คีย์จะแสดงที่นี่ทันทีเมื่ออนุมัติแล้ว
+          </div>`;
+        }
+      });
+    }
 
     // Generate PromptPay QR
     function generateQR() {
@@ -378,12 +417,7 @@
             });
             orderId = orderRef.id;
             document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
-            document.getElementById('keyResultBox').innerHTML = `
-              <div class="key-nostock">
-                ระบบตรวจสอบสลิปอัตโนมัติไม่สำเร็จ<br>
-                ออเดอร์ของคุณถูกส่งให้แอดมินตรวจสอบแล้ว<br>
-                <small>หมายเลขออเดอร์: ${orderId.slice(0,8).toUpperCase()}</small>
-              </div>`;
+            watchOrder(orderId);
             goStep(3);
             return;
           }
@@ -503,6 +537,7 @@
           }
         }
 
+        watchOrder(orderId);
         goStep(3);
 
       } catch (err) {
@@ -522,12 +557,8 @@
             });
             orderId = orderRef.id;
             document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
-            document.getElementById('keyResultBox').innerHTML = `
-              <div class="key-nostock">
-                ระบบตรวจสอบสลิปใช้เวลานานเกินไป<br>
-                ออเดอร์ของคุณถูกส่งให้แอดมินตรวจสอบแล้ว<br>
-                <small>หมายเลขออเดอร์: ${orderId.slice(0,8).toUpperCase()}</small>
-              </div>`;
+            document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
+            watchOrder(orderId);
             goStep(3);
             return;
           } catch(_) {}
