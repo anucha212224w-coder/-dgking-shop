@@ -49,13 +49,14 @@
   </div>
 
   <script type="module">
-    import { auth, db, onAuthStateChanged, collection, query, where, getDocs } from './js/firebase.js';
+    import { auth, db, onAuthStateChanged, collection, query, where, getDocs, onSnapshot } from './js/firebase.js';
 
     const STATUS_LABEL = {
-      pending:   { key: 'status_pending',   cls: 'status-pending' },
-      approved:  { key: 'status_approved',  cls: 'status-approved' },
-      rejected:  { key: 'status_rejected',  cls: 'status-rejected' },
-      delivered: { key: 'status_delivered', cls: 'status-delivered' }
+      pending:       { key: 'status_pending',   cls: 'status-pending' },
+      manual_review: { key: 'status_manual',    cls: 'status-manual' },
+      approved:      { key: 'status_approved',  cls: 'status-approved' },
+      rejected:      { key: 'status_rejected',  cls: 'status-rejected' },
+      delivered:     { key: 'status_delivered', cls: 'status-delivered' }
     };
 
     function g(key) { return window.i18nGet ? window.i18nGet(key) : key; }
@@ -65,28 +66,32 @@
       document.getElementById('navbar').style.opacity = '1';
 
       const q    = query(collection(db, 'orders'), where('uid', '==', user.uid));
-      const snap = await getDocs(q);
       const list = document.getElementById('ordersList');
 
-      if (snap.empty) {
-        list.innerHTML = `<div class="orders-empty">
-          <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <p>${g('orders_empty')}</p>
-          <a href="shop.html" class="btn btn-primary">${g('orders_go_shop')}</a>
-        </div>`;
-        return;
-      }
+      onSnapshot(q, (snap) => {
+        if (snap.empty) {
+          list.innerHTML = `<div class="orders-empty">
+            <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <p>${g('orders_empty')}</p>
+            <a href="shop.html" class="btn btn-primary">${g('orders_go_shop')}</a>
+          </div>`;
+          return;
+        }
 
-      const orders = [];
-      snap.forEach(d => orders.push({ id: d.id, ...d.data() }));
-      orders.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        const orders = [];
+        snap.forEach(d => orders.push({ id: d.id, ...d.data() }));
+        orders.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
-      const lang = localStorage.getItem('lang') || 'th';
-      const renderOrders = () => {
+        const lang = localStorage.getItem('lang') || 'th';
         list.innerHTML = orders.map(o => {
           const s   = STATUS_LABEL[o.status] || STATUS_LABEL.pending;
           const dt  = o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString(lang === 'en' ? 'en-US' : 'th-TH') : '-';
           const key = o.keyCode ? `<div class="order-key-box">${g('orders_key')}: <span>${o.keyCode}</span></div>` : '';
+          const manualBanner = (o.status === 'manual_review' || o.status === 'pending') && !o.keyCode ? `
+            <div class="order-manual-banner">
+              ออเดอร์ของคุณอยู่ที่นี่ ไม่ได้หายไปไหน<br>
+              <strong>กำลังรอแอดมินตรวจสอบและอนุมัติ</strong> กรุณารอสักครู่
+            </div>` : '';
           return `<div class="order-item">
             <div class="order-item-top">
               <div>
@@ -99,13 +104,11 @@
               </div>
             </div>
             <div class="order-id">${g('orders_id')} ${o.id.slice(0,8).toUpperCase()}</div>
+            ${manualBanner}
             ${key}
           </div>`;
         }).join('');
-      };
-
-      renderOrders();
-      document.addEventListener('langchange', renderOrders);
+      });
     });
   </script>
   <script src="js/main.js"></script>

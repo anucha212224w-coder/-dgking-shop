@@ -548,3 +548,16 @@
 }
 
 .alert:not(.hidden) { display: block !important; }
+
+.order-manual-banner {
+  margin-top: 0.6rem;
+  background: rgba(255,140,0,0.12);
+  border: 1px solid rgba(255,140,0,0.5);
+  border-left: 4px solid #ff8c00;
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+  color: #ffb347;
+  line-height: 1.6;
+}
+.order-manual-banner strong { color: #ff8c00; }
