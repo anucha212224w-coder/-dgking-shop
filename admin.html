@@ -95,7 +95,7 @@
           <div class="dash-stat-value" id="statStock">-</div>
         </div>
         <div class="dash-stat-card">
-          <div class="dash-stat-label">ลูกค้าทั้งหมด</div>
+          <div class="dash-stat-label">สมาชิกทั้งหมด</div>
           <div class="dash-stat-value" id="statCustomers">-</div>
         </div>
         <div class="dash-stat-card">
@@ -479,10 +479,11 @@
     const ADMIN_EMAIL = 'anucha212224w@gmail.com';
 
     const STATUS_LABEL = {
-      pending:   { text: 'รอตรวจสอบ',  cls: 'status-pending' },
-      approved:  { text: 'อนุมัติแล้ว', cls: 'status-approved' },
-      delivered: { text: 'ส่งคีย์แล้ว', cls: 'status-delivered' },
-      rejected:  { text: 'ปฏิเสธ',      cls: 'status-rejected' }
+      pending:       { text: 'รอตรวจสอบ',       cls: 'status-pending' },
+      manual_review: { text: 'รอแอดมินตรวจ',    cls: 'status-manual' },
+      approved:      { text: 'อนุมัติแล้ว',      cls: 'status-approved' },
+      delivered:     { text: 'ส่งคีย์แล้ว',      cls: 'status-delivered' },
+      rejected:      { text: 'ปฏิเสธ',           cls: 'status-rejected' }
     };
 
     onAuthStateChanged(auth, (user) => {
@@ -583,10 +584,10 @@
       const products = ['1 วัน','3 วัน','7 วัน','14 วัน','30 วัน','60 วัน'];
 
       const delivered  = orders.filter(o => o.status === 'delivered');
-      const pending    = orders.filter(o => o.status === 'pending');
+      const pending    = orders.filter(o => o.status === 'pending' || o.status === 'manual_review');
       const revenue    = delivered.reduce((s, o) => s + (o.price || 0), 0);
       const stockAvail = keys.filter(k => !k.used).length;
-      const customers  = new Set(orders.map(o => o.uid)).size;
+      const totalMembers = usersSnap.docs.length;
 
       // รายได้วันนี้
       const today    = new Date(); today.setHours(0,0,0,0);
@@ -597,7 +598,7 @@
       document.getElementById('statOrders').textContent    = orders.length;
       document.getElementById('statPending').textContent   = pending.length;
       document.getElementById('statStock').textContent     = stockAvail + ' ใบ';
-      document.getElementById('statCustomers').textContent = customers + ' คน';
+      document.getElementById('statCustomers').textContent = totalMembers + ' คน';
       document.getElementById('statToday').textContent     = '฿' + todayRev.toLocaleString();
 
       // Sales by product
@@ -699,7 +700,7 @@
       const makeRows = (list) => list.map(o => {
         const s   = STATUS_LABEL[o.status] || STATUS_LABEL.pending;
         const dt  = o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString('th-TH') : '-';
-        const actionBtn = o.status === 'pending'
+        const actionBtn = o.status === 'pending' || o.status === 'manual_review'
           ? `<button class="btn-admin-action" onclick="openOrderDetail('${o.id}')">ดูสลิป / อนุมัติ</button>`
           : `<button class="btn-admin-view" onclick="openOrderDetail('${o.id}')">ดูรายละเอียด</button>
              <button class="btn-admin-delete" onclick="deleteOrder('${o.id}')">ลบ</button>`;
@@ -769,7 +770,7 @@
       }
 
       // แสดงปุ่มอนุมัติเฉพาะ pending
-      document.getElementById('approveSection').style.display = o.status === 'pending' ? 'block' : 'none';
+      document.getElementById('approveSection').style.display = (o.status === 'pending' || o.status === 'manual_review') ? 'block' : 'none';
       modal.classList.remove('hidden');
     };
 

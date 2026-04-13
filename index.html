@@ -311,6 +311,14 @@
 
   <script src="js/main.js"></script>
   <script>
+    // Keep-alive ping ทุก 10 นาที ป้องกัน Railway server หลับ
+    (function keepAlive() {
+      const ping = () => fetch('https://dgking-server-production.up.railway.app/api/ping', { method: 'GET' }).catch(() => {});
+      ping();
+      setInterval(ping, 10 * 60 * 1000);
+    })();
+  </script>
+  <script>
     // KV Slider
     const kvSlides = document.querySelectorAll('.kv-slide');
     const kvDotsEl = document.getElementById('kvDots');

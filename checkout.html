@@ -175,6 +175,9 @@
     const SLIPOK_API_KEY = 'SLIPOKVKFKKTP';
     const SLIPOK_BRANCH  = '56967';
 
+    // ปลุก server ทันทีที่เปิดหน้า checkout
+    fetch('https://dgking-server-production.up.railway.app/api/ping').catch(() => {});
+
     const params  = new URLSearchParams(location.search);
     const product = params.get('product') || '-';
     const price   = parseFloat(params.get('price')) || 0;
@@ -333,30 +336,61 @@
       btn.disabled = true;
       btn.textContent = g('checking_slip');
 
-      try {
-        // ส่ง base64 ไปให้ server proxy ตรวจกับ SlipOK
-        const reader = new FileReader();
-        const imageBase64 = await new Promise(resolve => {
-          reader.onload = e => resolve(e.target.result);
-          reader.readAsDataURL(file);
-        });
+      // อ่านไฟล์ก่อน try เพื่อให้ catch block เข้าถึงได้
+      const reader = new FileReader();
+      const imageBase64 = await new Promise(resolve => {
+        reader.onload = e => resolve(e.target.result);
+        reader.readAsDataURL(file);
+      });
 
-        const res  = await fetch('https://dgking-server-production.up.railway.app/api/verify-slip', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageBase64, amount: finalPrice })
-        });
+      try {
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 40000); // 40 วินาที
+        let res;
+        try {
+          res = await fetch('https://dgking-server-production.up.railway.app/api/verify-slip', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imageBase64, amount: finalPrice }),
+            signal: controller.signal
+          });
+        } finally {
+          clearTimeout(timeoutId);
+        }
 
         const data = await res.json();
 
-        // Translate server error codes
+        // ถ้า SlipOK ตรวจไม่ผ่าน (ยกเว้นสลิปซ้ำและยอดไม่ตรง) → บันทึกรอแอดมินตรวจ
         if (!res.ok) {
+          const skipManual = ['SLIP_DUPLICATE', 'AMOUNT_MISMATCH'];
+          if (!skipManual.includes(data.errorCode)) {
+            // บันทึกออเดอร์รอแอดมินตรวจ
+            const orderRef = await addDoc(collection(db, 'orders'), {
+              uid: currentUser.uid, email: currentUser.email,
+              product, price: finalPrice, originalPrice: price,
+              couponCode: appliedCoupon?.code || null,
+              couponDiscount: appliedCoupon?.discount || 0,
+              status: 'manual_review',
+              slipImage: imageBase64,
+              slipError: data.errorCode || 'UNKNOWN',
+              createdAt: serverTimestamp()
+            });
+            orderId = orderRef.id;
+            document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
+            document.getElementById('keyResultBox').innerHTML = `
+              <div class="key-nostock">
+                ระบบตรวจสอบสลิปอัตโนมัติไม่สำเร็จ<br>
+                ออเดอร์ของคุณถูกส่งให้แอดมินตรวจสอบแล้ว<br>
+                <small>หมายเลขออเดอร์: ${orderId.slice(0,8).toUpperCase()}</small>
+              </div>`;
+            goStep(3);
+            return;
+          }
+          // สลิปซ้ำ / ยอดไม่ตรง → แจ้ง error ปกติ
           const errMap = {
-            SLIP_DUPLICATE: g('err_slip_duplicate'),
-            SLIP_INVALID:   g('err_slip_invalid'),
+            SLIP_DUPLICATE:  g('err_slip_duplicate'),
             AMOUNT_MISMATCH: `${g('err_amount_mismatch_pre')} ฿${data.slipAmount} ${g('err_amount_mismatch_mid')} ฿${data.expectedAmount}`,
-            SERVER_ERROR:   g('err_server'),
-            TIMEOUT:        'ระบบตรวจสอบสลิปใช้เวลานานเกินไป กรุณาลองใหม่อีกครั้ง',
           };
           throw new Error(errMap[data.errorCode] || data.message || g('err_slip_invalid'));
         }
@@ -431,7 +465,34 @@
         goStep(3);
 
       } catch (err) {
-        errEl.textContent = err.message;
+        let msg = err.message;
+        if (err.name === 'AbortError') {
+          // timeout → บันทึกรอแอดมินตรวจ
+          try {
+            const orderRef = await addDoc(collection(db, 'orders'), {
+              uid: currentUser.uid, email: currentUser.email,
+              product, price: finalPrice, originalPrice: price,
+              couponCode: appliedCoupon?.code || null,
+              couponDiscount: appliedCoupon?.discount || 0,
+              status: 'manual_review',
+              slipImage: imageBase64,
+              slipError: 'TIMEOUT',
+              createdAt: serverTimestamp()
+            });
+            orderId = orderRef.id;
+            document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
+            document.getElementById('keyResultBox').innerHTML = `
+              <div class="key-nostock">
+                ระบบตรวจสอบสลิปใช้เวลานานเกินไป<br>
+                ออเดอร์ของคุณถูกส่งให้แอดมินตรวจสอบแล้ว<br>
+                <small>หมายเลขออเดอร์: ${orderId.slice(0,8).toUpperCase()}</small>
+              </div>`;
+            goStep(3);
+            return;
+          } catch(_) {}
+          msg = 'ระบบตรวจสอบสลิปใช้เวลานานเกินไป กรุณาลองใหม่อีกครั้ง';
+        }
+        errEl.textContent = msg;
         errEl.classList.remove('hidden');
         errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         btn.disabled = false;
