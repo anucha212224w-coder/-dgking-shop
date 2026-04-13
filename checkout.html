@@ -356,6 +356,7 @@
             SLIP_INVALID:   g('err_slip_invalid'),
             AMOUNT_MISMATCH: `${g('err_amount_mismatch_pre')} ฿${data.slipAmount} ${g('err_amount_mismatch_mid')} ฿${data.expectedAmount}`,
             SERVER_ERROR:   g('err_server'),
+            TIMEOUT:        'ระบบตรวจสอบสลิปใช้เวลานานเกินไป กรุณาลองใหม่อีกครั้ง',
           };
           throw new Error(errMap[data.errorCode] || data.message || g('err_slip_invalid'));
         }
