@@ -170,7 +170,7 @@
   </div>
 
   <script type="module">
-    import { auth, db, onAuthStateChanged, addDoc, collection, query, where, getDocs, updateDoc, doc, serverTimestamp, limit, getDoc, setDoc } from './js/firebase.js';
+    import { auth, db, onAuthStateChanged, addDoc, collection, query, where, getDocs, updateDoc, doc, serverTimestamp, limit, getDoc, setDoc, runTransaction } from './js/firebase.js';
 
     const SLIPOK_API_KEY = 'SLIPOKVKFKKTP';
     const SLIPOK_BRANCH  = '56967';
@@ -346,7 +346,7 @@
       try {
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 40000); // 40 วินาที
+        const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 วินาที
         let res;
         try {
           res = await fetch('https://dgking-server-production.up.railway.app/api/verify-slip', {
@@ -417,45 +417,69 @@
           throw new Error('พบออเดอร์ที่ส่งคีย์แล้วในช่วงเวลาใกล้เคียงกัน กรุณาตรวจสอบประวัติออเดอร์ของคุณ');
         }
 
-        // ดึงคีย์จากสต็อก
+        // ดึงคีย์และสร้างออเดอร์ด้วย transaction ป้องกัน race condition
         btn.textContent = g('allocating_key');
-        const keysQ = query(
-          collection(db, 'keys'),
-          where('product', '==', product),
-          where('used', '==', false),
-          limit(1)
-        );
-        const keysSnap = await getDocs(keysQ);
 
-        if (keysSnap.empty) {
-          const orderRef = await addDoc(collection(db, 'orders'), {
-            uid: currentUser.uid, email: currentUser.email,
-            product, price: finalPrice, originalPrice: price,
-            couponCode: appliedCoupon?.code || null,
-            couponDiscount: appliedCoupon?.discount || 0,
-            status: 'pending',
-            slipData: data.data || {}, slipImage: imageBase64,
-            createdAt: serverTimestamp()
-          });
-          orderId = orderRef.id;
-          document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
+        let keyCode = null;
+        let newOrderId = null;
+
+        await runTransaction(db, async (transaction) => {
+          // ตรวจ lock ซ้ำ
+          const lockRef = doc(db, 'order_locks', `${currentUser.uid}_${product}`);
+          const lockSnap = await transaction.get(lockRef);
+          if (lockSnap.exists()) {
+            const lockTime = lockSnap.data().lockedAt?.seconds * 1000 || 0;
+            if (Date.now() - lockTime < 2 * 60 * 60 * 1000) {
+              throw new Error('พบออเดอร์ที่ส่งคีย์แล้วในช่วงเวลาใกล้เคียงกัน กรุณาตรวจสอบประวัติออเดอร์ของคุณ');
+            }
+          }
+
+          // หาคีย์ว่าง
+          const keysQ = query(collection(db, 'keys'), where('product','==',product), where('used','==',false), limit(1));
+          const keysSnap = await getDocs(keysQ);
+
+          if (keysSnap.empty) {
+            // ไม่มีคีย์ - สร้างออเดอร์ pending
+            const orderRef = doc(collection(db, 'orders'));
+            newOrderId = orderRef.id;
+            transaction.set(orderRef, {
+              uid: currentUser.uid, email: currentUser.email,
+              product, price: finalPrice, originalPrice: price,
+              couponCode: appliedCoupon?.code || null,
+              couponDiscount: appliedCoupon?.discount || 0,
+              status: 'pending',
+              slipData: data.data || {}, slipImage: imageBase64,
+              createdAt: serverTimestamp()
+            });
+          } else {
+            const keyDoc = keysSnap.docs[0];
+            keyCode = keyDoc.data().code;
+            // mark key used
+            transaction.update(doc(db, 'keys', keyDoc.id), { used: true, usedAt: serverTimestamp() });
+            // สร้างออเดอร์
+            const orderRef = doc(collection(db, 'orders'));
+            newOrderId = orderRef.id;
+            transaction.set(orderRef, {
+              uid: currentUser.uid, email: currentUser.email,
+              product, price: finalPrice, originalPrice: price,
+              couponCode: appliedCoupon?.code || null,
+              couponDiscount: appliedCoupon?.discount || 0,
+              status: 'delivered',
+              keyCode, keyId: keyDoc.id,
+              slipData: data.data || {}, slipImage: imageBase64,
+              createdAt: serverTimestamp()
+            });
+            // set lock
+            transaction.set(lockRef, { lockedAt: serverTimestamp(), product, uid: currentUser.uid });
+          }
+        });
+
+        orderId = newOrderId;
+        document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
+
+        if (!keyCode) {
           document.getElementById('keyResultBox').innerHTML = `<div class="key-nostock">${g('key_nostock_msg')}</div>`;
         } else {
-          const keyDoc  = keysSnap.docs[0];
-          const keyCode = keyDoc.data().code;
-          await updateDoc(doc(db, 'keys', keyDoc.id), { used: true, usedAt: serverTimestamp() });
-          const orderRef = await addDoc(collection(db, 'orders'), {
-            uid: currentUser.uid, email: currentUser.email,
-            product, price: finalPrice, originalPrice: price,
-            couponCode: appliedCoupon?.code || null,
-            couponDiscount: appliedCoupon?.discount || 0,
-            status: 'delivered',
-            keyCode, keyId: keyDoc.id,
-            slipData: data.data || {}, slipImage: imageBase64,
-            createdAt: serverTimestamp()
-          });
-          orderId = orderRef.id;
-          document.getElementById('confirmedOrderId').textContent = orderId.slice(0,8).toUpperCase();
           document.getElementById('keyResultBox').innerHTML = `
             <div class="key-display">
               <div class="key-label">${g('your_key')}</div>
